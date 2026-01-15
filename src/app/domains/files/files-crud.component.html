@@ -1,0 +1,84 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Files</h2>
+    <button type="button" class="ghost" (click)="refresh()">Refresh</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Create</h3>
+    <div class="form-row">
+      <input
+        name="filename"
+        placeholder="Filename"
+        [(ngModel)]="draft.filename"
+      />
+      <input name="path" placeholder="Path" [(ngModel)]="draft.path" />
+      <input
+        name="projectId"
+        placeholder="Project ID"
+        type="number"
+        [(ngModel)]="draft.projectId"
+      />
+      <button type="button" (click)="create()" [disabled]="isLoading">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="form-block" *ngIf="editingId !== null">
+    <h3>Update</h3>
+    <div class="form-row">
+      <input
+        name="editFilename"
+        placeholder="Filename"
+        [(ngModel)]="editDraft.filename"
+      />
+      <input
+        name="editPath"
+        placeholder="Path"
+        [(ngModel)]="editDraft.path"
+      />
+      <input
+        name="editProjectId"
+        placeholder="Project ID"
+        type="number"
+        [(ngModel)]="editDraft.projectId"
+      />
+      <button type="button" (click)="update()" [disabled]="isLoading">
+        Update
+      </button>
+      <button type="button" class="ghost" (click)="cancelEdit()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <ul class="list" *ngIf="files.length; else emptyState">
+    <li *ngFor="let file of files">
+      <div class="list-main">
+        <span>{{ file.filename }}</span>
+        <span class="badge">{{ file.path }}</span>
+      </div>
+      <div class="list-actions">
+        <button type="button" class="ghost" (click)="startEdit(file)">
+          Edit
+        </button>
+        <button
+          type="button"
+          class="danger"
+          (click)="delete(file.id)"
+          [disabled]="isLoading"
+        >
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <ng-template #emptyState>
+    <p class="muted">No files yet.</p>
+  </ng-template>
+</section>

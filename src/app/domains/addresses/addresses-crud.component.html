@@ -1,0 +1,86 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Addresses</h2>
+    <button type="button" class="ghost" (click)="refresh()">Refresh</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Create</h3>
+    <div class="form-row">
+      <input name="street" placeholder="Street" [(ngModel)]="draft.street" />
+      <input name="city" placeholder="City" [(ngModel)]="draft.city" />
+      <input name="state" placeholder="State" [(ngModel)]="draft.state" />
+      <input name="number" placeholder="Number" [(ngModel)]="draft.number" />
+      <input name="zipCode" placeholder="Zip code" [(ngModel)]="draft.zipCode" />
+      <button type="button" (click)="create()" [disabled]="isLoading">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="form-block" *ngIf="editingId !== null">
+    <h3>Update</h3>
+    <div class="form-row">
+      <input
+        name="editStreet"
+        placeholder="Street"
+        [(ngModel)]="editDraft.street"
+      />
+      <input
+        name="editCity"
+        placeholder="City"
+        [(ngModel)]="editDraft.city"
+      />
+      <input
+        name="editState"
+        placeholder="State"
+        [(ngModel)]="editDraft.state"
+      />
+      <input
+        name="editNumber"
+        placeholder="Number"
+        [(ngModel)]="editDraft.number"
+      />
+      <input
+        name="editZipCode"
+        placeholder="Zip code"
+        [(ngModel)]="editDraft.zipCode"
+      />
+      <button type="button" (click)="update()" [disabled]="isLoading">
+        Update
+      </button>
+      <button type="button" class="ghost" (click)="cancelEdit()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <ul class="list" *ngIf="addresses.length; else emptyState">
+    <li *ngFor="let address of addresses">
+      <div class="list-main">
+        <span>{{ address.street }} {{ address.number }}</span>
+        <span class="badge">{{ address.city }}, {{ address.state }}</span>
+      </div>
+      <div class="list-actions">
+        <button type="button" class="ghost" (click)="startEdit(address)">
+          Edit
+        </button>
+        <button
+          type="button"
+          class="danger"
+          (click)="delete(address.id)"
+          [disabled]="isLoading"
+        >
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <ng-template #emptyState>
+    <p class="muted">No addresses yet.</p>
+  </ng-template>
+</section>
