@@ -3,6 +3,108 @@ Project Hub Frontend Angular App
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
 
+## Architecture overview
+
+The frontend is organized as a small, layered Angular app that keeps routing, UI
+composition, domain logic, and HTTP access separated. The main layers live under
+`src/app` and are designed to make each responsibility easy to find.
+
+### 1) Application shell (bootstrap + app-level providers)
+
+**Responsibility:** initialize global providers and render the root router outlet.
+
+- `src/app/app.config.ts` wires the router and HTTP client.
+- `src/app/app.ts` hosts the root component and the `RouterOutlet`.
+
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideHttpClient()
+  ]
+};
+```
+
+### 2) Routing layer
+
+**Responsibility:** map URLs to the top-level feature view(s).
+
+- `src/app/app.routes.ts` redirects `/` to the domain hub.
+- The hub route renders the `DomainHubComponent`.
+
+```ts
+export const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'domains' },
+  { path: 'domains', component: DomainHubComponent }
+];
+```
+
+### 3) Feature composition (domain hub)
+
+**Responsibility:** compose the main domain CRUD panels on a single page.
+
+- `src/app/domains/domain-hub/domain-hub.component.ts` imports each domain
+  section as a standalone component.
+- `src/app/domains/domain-hub/domain-hub.component.html` lays out the grid.
+
+```html
+<section class="grid">
+  <app-projects-crud />
+  <app-owners-crud />
+  <app-addresses-crud />
+  <app-files-crud />
+</section>
+```
+
+### 4) Domain presentation + state (CRUD components)
+
+**Responsibility:** own UI state, bind forms, and call services for data.
+
+Each domain has a CRUD component that holds view state and uses a service
+to load/save data. Example: `src/app/domains/projects/projects-crud.component.ts`
+
+```ts
+projects: Project[] = [];
+draft: Project = { projectName: '' };
+editDraft: Project = { projectName: '' };
+
+refresh(): void {
+  this.projectService.list().subscribe({
+    next: (projects) => (this.projects = projects),
+    error: () => (this.error = 'Failed to load projects.')
+  });
+}
+```
+
+### 5) Data access layer (services)
+
+**Responsibility:** encapsulate HTTP calls to the backend API.
+
+Services live alongside their domain and expose a small CRUD surface. Example:
+`src/app/domains/projects/project.service.ts`
+
+```ts
+private baseUrl = '/api/projects';
+
+list() {
+  return this.http.get<Project[]>(this.baseUrl);
+}
+```
+
+### 6) Domain model layer (shared types)
+
+**Responsibility:** define shared entity shapes for compile-time safety.
+
+All domain interfaces are centralized in `src/app/domains/shared/models.ts`.
+
+```ts
+export interface Project {
+  id?: number;
+  projectName: string;
+}
+```
+
 ## Development server
 
 To start a local development server, run:
