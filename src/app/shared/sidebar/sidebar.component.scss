@@ -1,0 +1,47 @@
+.side-nav {
+  width: 220px;
+  padding: 24px 20px;
+  background: #111827;
+  color: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.brand {
+  display: grid;
+  gap: 6px;
+}
+
+.brand-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.brand-subtitle {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.nav-links {
+  display: grid;
+  gap: 12px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: inherit;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: transparent;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.nav-links a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-links a.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
