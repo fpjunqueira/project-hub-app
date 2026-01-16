@@ -1,17 +1,17 @@
 import { Routes } from '@angular/router';
 
-import { AddressesFormComponent } from './domains/addresses/form/addresses-form.component';
-import { AddressesListComponent } from './domains/addresses/list/addresses-list.component';
-import { AddressesViewComponent } from './domains/addresses/view/addresses-view.component';
-import { FilesFormComponent } from './domains/files/form/files-form.component';
-import { FilesListComponent } from './domains/files/list/files-list.component';
-import { FilesViewComponent } from './domains/files/view/files-view.component';
-import { OwnersFormComponent } from './domains/owners/form/owners-form.component';
-import { OwnersListComponent } from './domains/owners/list/owners-list.component';
-import { OwnersViewComponent } from './domains/owners/view/owners-view.component';
-import { ProjectsFormComponent } from './domains/projects/form/projects-form.component';
-import { ProjectsListComponent } from './domains/projects/list/projects-list.component';
-import { ProjectsViewComponent } from './domains/projects/view/projects-view.component';
+import { AddressesFormComponent } from './components/addresses/form/addresses-form.component';
+import { AddressesListComponent } from './components/addresses/list/addresses-list.component';
+import { AddressesViewComponent } from './components/addresses/view/addresses-view.component';
+import { FilesFormComponent } from './components/files/form/files-form.component';
+import { FilesListComponent } from './components/files/list/files-list.component';
+import { FilesViewComponent } from './components/files/view/files-view.component';
+import { OwnersFormComponent } from './components/owners/form/owners-form.component';
+import { OwnersListComponent } from './components/owners/list/owners-list.component';
+import { OwnersViewComponent } from './components/owners/view/owners-view.component';
+import { ProjectsFormComponent } from './components/projects/form/projects-form.component';
+import { ProjectsListComponent } from './components/projects/list/projects-list.component';
+import { ProjectsViewComponent } from './components/projects/view/projects-view.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'projects' },

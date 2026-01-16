@@ -49,7 +49,7 @@ export const routes: Routes = [
 
 Each domain has standalone list, view, and form components that hold view
 state and use a service to load/save data. Example:
-`src/app/domains/projects/projects-list.component.ts`
+`src/app/components/projects/list/projects-list.component.ts`
 
 ```ts
 projects: Project[] = [];
@@ -69,7 +69,7 @@ refresh(): void {
 **Responsibility:** encapsulate HTTP calls to the backend API.
 
 Services live alongside their domain and expose a small CRUD surface. Example:
-`src/app/domains/projects/project.service.ts`
+`src/app/components/projects/service/project.service.ts`
 
 ```ts
 private baseUrl = '/api/projects';
@@ -79,11 +79,12 @@ list() {
 }
 ```
 
-### 5) Domain model layer (shared types)
+### 5) Domain model layer (domain types)
 
 **Responsibility:** define shared entity shapes for compile-time safety.
 
-All domain interfaces are centralized in `src/app/domains/shared/models.ts`.
+Each domain defines its own interface in a `model` folder, for example:
+`src/app/components/projects/model/project.model.ts`.
 
 ```ts
 export interface Project {
