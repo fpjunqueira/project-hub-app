@@ -1,0 +1,32 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Project Details</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/projects">Back to list</button>
+      <button
+        type="button"
+        class="ghost"
+        [routerLink]="['/projects', project?.id, 'edit']"
+        [disabled]="!project"
+      >
+        Edit
+      </button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="project">
+    <tbody>
+      <tr>
+        <th>Project name</th>
+        <td>{{ project.projectName }}</td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{ project.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

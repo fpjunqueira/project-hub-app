@@ -12,6 +12,10 @@ export class ProjectService {
     return this.http.get<Project[]>(this.baseUrl);
   }
 
+  get(id: number) {
+    return this.http.get<Project>(`${this.baseUrl}/${id}`);
+  }
+
   create(project: Project) {
     return this.http.post<Project>(this.baseUrl, project);
   }

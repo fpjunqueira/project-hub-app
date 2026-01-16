@@ -12,6 +12,10 @@ export class AddressService {
     return this.http.get<Address[]>(this.baseUrl);
   }
 
+  get(id: number) {
+    return this.http.get<Address>(`${this.baseUrl}/${id}`);
+  }
+
   create(address: Address) {
     return this.http.post<Address>(this.baseUrl, address);
   }

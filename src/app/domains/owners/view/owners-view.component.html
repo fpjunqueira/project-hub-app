@@ -1,0 +1,36 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Owner Details</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/owners">Back to list</button>
+      <button
+        type="button"
+        class="ghost"
+        [routerLink]="['/owners', owner?.id, 'edit']"
+        [disabled]="!owner"
+      >
+        Edit
+      </button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="owner">
+    <tbody>
+      <tr>
+        <th>Name</th>
+        <td>{{ owner.name }}</td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td>{{ owner.email }}</td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{ owner.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

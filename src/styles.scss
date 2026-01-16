@@ -159,3 +159,32 @@ button.danger:hover:not(:disabled) {
   color: #b91c1c;
   font-weight: 600;
 }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table thead {
+  background: #f8fafc;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.table-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 24px 0;
+}

@@ -3,8 +3,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 
-import { Address } from '../shared/models';
-import { AddressService } from './address.service';
+import { Address } from '../../shared/models';
+import { AddressService } from '../address.service';
 
 @Component({
   selector: 'app-addresses-crud',

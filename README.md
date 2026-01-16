@@ -28,46 +28,33 @@ export const appConfig: ApplicationConfig = {
 
 ### 2) Routing layer
 
-**Responsibility:** map URLs to the top-level feature view(s).
+**Responsibility:** map URLs to the top-level feature views.
 
-- `src/app/app.routes.ts` redirects `/` to the domain hub.
-- The hub route renders the `DomainHubComponent`.
+- `src/app/app.routes.ts` redirects `/` to `/projects` and defines routes for
+  list, view, and form screens for each domain.
 
 ```ts
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'domains' },
-  { path: 'domains', component: DomainHubComponent }
+  { path: '', pathMatch: 'full', redirectTo: 'projects' },
+  { path: 'projects', component: ProjectsListComponent },
+  { path: 'projects/new', component: ProjectsFormComponent },
+  { path: 'projects/:id/edit', component: ProjectsFormComponent },
+  { path: 'projects/:id/view', component: ProjectsViewComponent }
 ];
 ```
 
-### 3) Feature composition (domain hub)
-
-**Responsibility:** compose the main domain CRUD panels on a single page.
-
-- `src/app/domains/domain-hub/domain-hub.component.ts` imports each domain
-  section as a standalone component.
-- `src/app/domains/domain-hub/domain-hub.component.html` lays out the grid.
-
-```html
-<section class="grid">
-  <app-projects-crud />
-  <app-owners-crud />
-  <app-addresses-crud />
-  <app-files-crud />
-</section>
-```
-
-### 4) Domain presentation + state (CRUD components)
+### 3) Domain presentation + state (list + view + form components)
 
 **Responsibility:** own UI state, bind forms, and call services for data.
 
-Each domain has a CRUD component that holds view state and uses a service
-to load/save data. Example: `src/app/domains/projects/projects-crud.component.ts`
+Each domain has standalone list, view, and form components that hold view
+state and use a service to load/save data. Example:
+`src/app/domains/projects/projects-list.component.ts`
 
 ```ts
 projects: Project[] = [];
-draft: Project = { projectName: '' };
-editDraft: Project = { projectName: '' };
+isLoading = false;
+error = '';
 
 refresh(): void {
   this.projectService.list().subscribe({
@@ -77,7 +64,7 @@ refresh(): void {
 }
 ```
 
-### 5) Data access layer (services)
+### 4) Data access layer (services)
 
 **Responsibility:** encapsulate HTTP calls to the backend API.
 
@@ -92,7 +79,7 @@ list() {
 }
 ```
 
-### 6) Domain model layer (shared types)
+### 5) Domain model layer (shared types)
 
 **Responsibility:** define shared entity shapes for compile-time safety.
 

@@ -3,22 +3,22 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 
-import { Project } from '../shared/models';
-import { ProjectService } from './project.service';
+import { FileRecord } from '../../shared/models';
+import { FileService } from '../file.service';
 
 @Component({
-  selector: 'app-projects-crud',
+  selector: 'app-files-crud',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './projects-crud.component.html',
-  styleUrl: './projects-crud.component.scss'
+  templateUrl: './files-crud.component.html',
+  styleUrl: './files-crud.component.scss'
 })
-export class ProjectsCrudComponent implements OnInit {
-  private projectService = inject(ProjectService);
+export class FilesCrudComponent implements OnInit {
+  private fileService = inject(FileService);
 
-  projects: Project[] = [];
-  draft: Project = { projectName: '' };
-  editDraft: Project = { projectName: '' };
+  files: FileRecord[] = [];
+  draft: FileRecord = { filename: '', path: '', projectId: null };
+  editDraft: FileRecord = { filename: '', path: '', projectId: null };
   editingId: number | null = null;
   isLoading = false;
   error = '';
@@ -30,46 +30,50 @@ export class ProjectsCrudComponent implements OnInit {
   refresh(): void {
     this.isLoading = true;
     this.error = '';
-    this.projectService
+    this.fileService
       .list()
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (projects) => (this.projects = projects),
-        error: () => (this.error = 'Failed to load projects.')
+        next: (files) => (this.files = files),
+        error: () => (this.error = 'Failed to load files.')
       });
   }
 
   create(): void {
-    if (!this.draft.projectName.trim()) {
+    if (!this.draft.filename.trim()) {
       return;
     }
 
     const payload = { ...this.draft };
     this.isLoading = true;
     this.error = '';
-    this.projectService
+    this.fileService
       .create(payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (created) => {
-          this.projects = [...this.projects, created];
-          this.draft = { projectName: '' };
+          this.files = [...this.files, created];
+          this.draft = { filename: '', path: '', projectId: null };
         },
-        error: () => (this.error = 'Failed to create project.')
+        error: () => (this.error = 'Failed to create file.')
       });
   }
 
-  startEdit(project: Project): void {
-    if (project.id === undefined) {
+  startEdit(file: FileRecord): void {
+    if (file.id === undefined) {
       return;
     }
-    this.editingId = project.id;
-    this.editDraft = { projectName: project.projectName };
+    this.editingId = file.id;
+    this.editDraft = {
+      filename: file.filename,
+      path: file.path,
+      projectId: file.projectId ?? null
+    };
   }
 
   cancelEdit(): void {
     this.editingId = null;
-    this.editDraft = { projectName: '' };
+    this.editDraft = { filename: '', path: '', projectId: null };
   }
 
   update(): void {
@@ -80,17 +84,17 @@ export class ProjectsCrudComponent implements OnInit {
     const payload = { ...this.editDraft, id: this.editingId };
     this.isLoading = true;
     this.error = '';
-    this.projectService
+    this.fileService
       .update(this.editingId, payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (updated) => {
-          this.projects = this.projects.map((project) =>
-            project.id === this.editingId ? updated : project
+          this.files = this.files.map((file) =>
+            file.id === this.editingId ? updated : file
           );
           this.cancelEdit();
         },
-        error: () => (this.error = 'Failed to update project.')
+        error: () => (this.error = 'Failed to update file.')
       });
   }
 
@@ -101,13 +105,12 @@ export class ProjectsCrudComponent implements OnInit {
 
     this.isLoading = true;
     this.error = '';
-    this.projectService
+    this.fileService
       .delete(id)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: () =>
-          (this.projects = this.projects.filter((project) => project.id !== id)),
-        error: () => (this.error = 'Failed to delete project.')
+        next: () => (this.files = this.files.filter((file) => file.id !== id)),
+        error: () => (this.error = 'Failed to delete file.')
       });
   }
 }

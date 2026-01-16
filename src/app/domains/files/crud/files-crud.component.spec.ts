@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { FilesCrudComponent } from './files-crud.component';
-import { FileService } from './file.service';
+import { FileService } from '../file.service';
 
 type FileServiceSpy = {
   list: ReturnType<typeof vi.fn>;

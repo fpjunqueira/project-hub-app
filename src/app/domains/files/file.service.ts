@@ -12,6 +12,10 @@ export class FileService {
     return this.http.get<FileRecord[]>(this.baseUrl);
   }
 
+  get(id: number) {
+    return this.http.get<FileRecord>(`${this.baseUrl}/${id}`);
+  }
+
   create(file: FileRecord) {
     return this.http.post<FileRecord>(this.baseUrl, file);
   }

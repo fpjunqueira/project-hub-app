@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { OwnersCrudComponent } from './owners-crud.component';
-import { OwnerService } from './owner.service';
+import { OwnerService } from '../owner.service';
 
 type OwnerServiceSpy = {
   list: ReturnType<typeof vi.fn>;

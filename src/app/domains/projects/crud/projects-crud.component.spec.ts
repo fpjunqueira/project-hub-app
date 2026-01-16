@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { ProjectsCrudComponent } from './projects-crud.component';
-import { ProjectService } from './project.service';
+import { ProjectService } from '../project.service';
 
 type ProjectServiceSpy = {
   list: ReturnType<typeof vi.fn>;

@@ -3,22 +3,22 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 
-import { Owner } from '../shared/models';
-import { OwnerService } from './owner.service';
+import { Project } from '../../shared/models';
+import { ProjectService } from '../project.service';
 
 @Component({
-  selector: 'app-owners-crud',
+  selector: 'app-projects-crud',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './owners-crud.component.html',
-  styleUrl: './owners-crud.component.scss'
+  templateUrl: './projects-crud.component.html',
+  styleUrl: './projects-crud.component.scss'
 })
-export class OwnersCrudComponent implements OnInit {
-  private ownerService = inject(OwnerService);
+export class ProjectsCrudComponent implements OnInit {
+  private projectService = inject(ProjectService);
 
-  owners: Owner[] = [];
-  draft: Owner = { name: '', email: '' };
-  editDraft: Owner = { name: '', email: '' };
+  projects: Project[] = [];
+  draft: Project = { projectName: '' };
+  editDraft: Project = { projectName: '' };
   editingId: number | null = null;
   isLoading = false;
   error = '';
@@ -30,46 +30,46 @@ export class OwnersCrudComponent implements OnInit {
   refresh(): void {
     this.isLoading = true;
     this.error = '';
-    this.ownerService
+    this.projectService
       .list()
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (owners) => (this.owners = owners),
-        error: () => (this.error = 'Failed to load owners.')
+        next: (projects) => (this.projects = projects),
+        error: () => (this.error = 'Failed to load projects.')
       });
   }
 
   create(): void {
-    if (!this.draft.name.trim()) {
+    if (!this.draft.projectName.trim()) {
       return;
     }
 
     const payload = { ...this.draft };
     this.isLoading = true;
     this.error = '';
-    this.ownerService
+    this.projectService
       .create(payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (created) => {
-          this.owners = [...this.owners, created];
-          this.draft = { name: '', email: '' };
+          this.projects = [...this.projects, created];
+          this.draft = { projectName: '' };
         },
-        error: () => (this.error = 'Failed to create owner.')
+        error: () => (this.error = 'Failed to create project.')
       });
   }
 
-  startEdit(owner: Owner): void {
-    if (owner.id === undefined) {
+  startEdit(project: Project): void {
+    if (project.id === undefined) {
       return;
     }
-    this.editingId = owner.id;
-    this.editDraft = { name: owner.name, email: owner.email };
+    this.editingId = project.id;
+    this.editDraft = { projectName: project.projectName };
   }
 
   cancelEdit(): void {
     this.editingId = null;
-    this.editDraft = { name: '', email: '' };
+    this.editDraft = { projectName: '' };
   }
 
   update(): void {
@@ -80,17 +80,17 @@ export class OwnersCrudComponent implements OnInit {
     const payload = { ...this.editDraft, id: this.editingId };
     this.isLoading = true;
     this.error = '';
-    this.ownerService
+    this.projectService
       .update(this.editingId, payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (updated) => {
-          this.owners = this.owners.map((owner) =>
-            owner.id === this.editingId ? updated : owner
+          this.projects = this.projects.map((project) =>
+            project.id === this.editingId ? updated : project
           );
           this.cancelEdit();
         },
-        error: () => (this.error = 'Failed to update owner.')
+        error: () => (this.error = 'Failed to update project.')
       });
   }
 
@@ -101,12 +101,13 @@ export class OwnersCrudComponent implements OnInit {
 
     this.isLoading = true;
     this.error = '';
-    this.ownerService
+    this.projectService
       .delete(id)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: () => (this.owners = this.owners.filter((owner) => owner.id !== id)),
-        error: () => (this.error = 'Failed to delete owner.')
+        next: () =>
+          (this.projects = this.projects.filter((project) => project.id !== id)),
+        error: () => (this.error = 'Failed to delete project.')
       });
   }
 }

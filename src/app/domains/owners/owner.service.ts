@@ -12,6 +12,10 @@ export class OwnerService {
     return this.http.get<Owner[]>(this.baseUrl);
   }
 
+  get(id: number) {
+    return this.http.get<Owner>(`${this.baseUrl}/${id}`);
+  }
+
   create(owner: Owner) {
     return this.http.post<Owner>(this.baseUrl, owner);
   }

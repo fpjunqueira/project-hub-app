@@ -1,0 +1,23 @@
+<section class="card">
+  <header class="card-header">
+    <h2>{{ isEdit ? 'Edit Address' : 'New Address' }}</h2>
+    <button type="button" class="ghost" routerLink="/addresses">Back to list</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Details</h3>
+    <div class="form-row">
+      <input name="street" placeholder="Street" [(ngModel)]="draft.street" />
+      <input name="city" placeholder="City" [(ngModel)]="draft.city" />
+      <input name="state" placeholder="State" [(ngModel)]="draft.state" />
+      <input name="number" placeholder="Number" [(ngModel)]="draft.number" />
+      <input name="zipCode" placeholder="Zip code" [(ngModel)]="draft.zipCode" />
+      <button type="button" (click)="submit()" [disabled]="isLoading">
+        {{ isEdit ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </div>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+</section>

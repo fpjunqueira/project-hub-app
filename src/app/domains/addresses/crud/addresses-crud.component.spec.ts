@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { AddressesCrudComponent } from './addresses-crud.component';
-import { AddressService } from './address.service';
+import { AddressService } from '../address.service';
 
 type AddressServiceSpy = {
   list: ReturnType<typeof vi.fn>;

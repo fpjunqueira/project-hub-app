@@ -3,22 +3,22 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 
-import { FileRecord } from '../shared/models';
-import { FileService } from './file.service';
+import { Owner } from '../../shared/models';
+import { OwnerService } from '../owner.service';
 
 @Component({
-  selector: 'app-files-crud',
+  selector: 'app-owners-crud',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './files-crud.component.html',
-  styleUrl: './files-crud.component.scss'
+  templateUrl: './owners-crud.component.html',
+  styleUrl: './owners-crud.component.scss'
 })
-export class FilesCrudComponent implements OnInit {
-  private fileService = inject(FileService);
+export class OwnersCrudComponent implements OnInit {
+  private ownerService = inject(OwnerService);
 
-  files: FileRecord[] = [];
-  draft: FileRecord = { filename: '', path: '', projectId: null };
-  editDraft: FileRecord = { filename: '', path: '', projectId: null };
+  owners: Owner[] = [];
+  draft: Owner = { name: '', email: '' };
+  editDraft: Owner = { name: '', email: '' };
   editingId: number | null = null;
   isLoading = false;
   error = '';
@@ -30,50 +30,46 @@ export class FilesCrudComponent implements OnInit {
   refresh(): void {
     this.isLoading = true;
     this.error = '';
-    this.fileService
+    this.ownerService
       .list()
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (files) => (this.files = files),
-        error: () => (this.error = 'Failed to load files.')
+        next: (owners) => (this.owners = owners),
+        error: () => (this.error = 'Failed to load owners.')
       });
   }
 
   create(): void {
-    if (!this.draft.filename.trim()) {
+    if (!this.draft.name.trim()) {
       return;
     }
 
     const payload = { ...this.draft };
     this.isLoading = true;
     this.error = '';
-    this.fileService
+    this.ownerService
       .create(payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (created) => {
-          this.files = [...this.files, created];
-          this.draft = { filename: '', path: '', projectId: null };
+          this.owners = [...this.owners, created];
+          this.draft = { name: '', email: '' };
         },
-        error: () => (this.error = 'Failed to create file.')
+        error: () => (this.error = 'Failed to create owner.')
       });
   }
 
-  startEdit(file: FileRecord): void {
-    if (file.id === undefined) {
+  startEdit(owner: Owner): void {
+    if (owner.id === undefined) {
       return;
     }
-    this.editingId = file.id;
-    this.editDraft = {
-      filename: file.filename,
-      path: file.path,
-      projectId: file.projectId ?? null
-    };
+    this.editingId = owner.id;
+    this.editDraft = { name: owner.name, email: owner.email };
   }
 
   cancelEdit(): void {
     this.editingId = null;
-    this.editDraft = { filename: '', path: '', projectId: null };
+    this.editDraft = { name: '', email: '' };
   }
 
   update(): void {
@@ -84,17 +80,17 @@ export class FilesCrudComponent implements OnInit {
     const payload = { ...this.editDraft, id: this.editingId };
     this.isLoading = true;
     this.error = '';
-    this.fileService
+    this.ownerService
       .update(this.editingId, payload)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (updated) => {
-          this.files = this.files.map((file) =>
-            file.id === this.editingId ? updated : file
+          this.owners = this.owners.map((owner) =>
+            owner.id === this.editingId ? updated : owner
           );
           this.cancelEdit();
         },
-        error: () => (this.error = 'Failed to update file.')
+        error: () => (this.error = 'Failed to update owner.')
       });
   }
 
@@ -105,12 +101,12 @@ export class FilesCrudComponent implements OnInit {
 
     this.isLoading = true;
     this.error = '';
-    this.fileService
+    this.ownerService
       .delete(id)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: () => (this.files = this.files.filter((file) => file.id !== id)),
-        error: () => (this.error = 'Failed to delete file.')
+        next: () => (this.owners = this.owners.filter((owner) => owner.id !== id)),
+        error: () => (this.error = 'Failed to delete owner.')
       });
   }
 }
