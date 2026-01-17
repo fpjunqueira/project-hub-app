@@ -8,6 +8,9 @@ import { ProjectService } from '../service/project.service';
 
 type ProjectServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getOwners: ReturnType<typeof vi.fn>;
+  getFiles: ReturnType<typeof vi.fn>;
+  getAddress: ReturnType<typeof vi.fn>;
 };
 
 describe('ProjectsViewComponent', () => {
@@ -21,7 +24,10 @@ describe('ProjectsViewComponent', () => {
     } as unknown as ActivatedRoute;
 
     serviceSpy = {
-      get: vi.fn().mockReturnValue(of({ id: 1, projectName: 'Loaded' }))
+      get: vi.fn().mockReturnValue(of({ id: 1, projectName: 'Loaded' })),
+      getOwners: vi.fn().mockReturnValue(of([])),
+      getFiles: vi.fn().mockReturnValue(of([])),
+      getAddress: vi.fn().mockReturnValue(of(null))
     };
 
     await TestBed.configureTestingModule({
@@ -41,5 +47,8 @@ describe('ProjectsViewComponent', () => {
   it('loads project details', () => {
     expect(component).toBeTruthy();
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getOwners).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getFiles).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
   });
 });

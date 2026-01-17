@@ -8,6 +8,8 @@ import { AddressService } from '../service/address.service';
 
 type AddressServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getOwner: ReturnType<typeof vi.fn>;
+  getProject: ReturnType<typeof vi.fn>;
   create: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
 };
@@ -21,6 +23,8 @@ const setup = async (routeId: string | null) => {
     get: vi.fn().mockReturnValue(
       of({ id: 1, street: 'Main', city: 'A', state: 'TX', number: '1', zipCode: '0' })
     ),
+    getOwner: vi.fn().mockReturnValue(of(null)),
+    getProject: vi.fn().mockReturnValue(of(null)),
     create: vi.fn().mockReturnValue(
       of({ id: 2, street: 'New', city: 'B', state: 'TX', number: '2', zipCode: '1' })
     ),
@@ -52,6 +56,8 @@ describe('AddressesFormComponent', () => {
   it('loads address when route has id', async () => {
     const { serviceSpy } = await setup('1');
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getOwner).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProject).toHaveBeenCalledWith(1);
   });
 
   it('creates an address when no id is provided', async () => {

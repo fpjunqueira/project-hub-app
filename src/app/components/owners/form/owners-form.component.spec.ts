@@ -8,6 +8,8 @@ import { OwnerService } from '../service/owner.service';
 
 type OwnerServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getProjects: ReturnType<typeof vi.fn>;
+  getAddress: ReturnType<typeof vi.fn>;
   create: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
 };
@@ -19,6 +21,8 @@ const setup = async (routeId: string | null) => {
 
   const serviceSpy: OwnerServiceSpy = {
     get: vi.fn().mockReturnValue(of({ id: 1, name: 'Loaded', email: 'a@b.com' })),
+    getProjects: vi.fn().mockReturnValue(of([])),
+    getAddress: vi.fn().mockReturnValue(of(null)),
     create: vi.fn().mockReturnValue(of({ id: 2, name: 'New', email: 'n@b.com' })),
     update: vi.fn().mockReturnValue(of({ id: 1, name: 'Updated', email: 'u@b.com' }))
   };
@@ -46,6 +50,8 @@ describe('OwnersFormComponent', () => {
   it('loads owner when route has id', async () => {
     const { serviceSpy } = await setup('1');
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProjects).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
   });
 
   it('creates an owner when no id is provided', async () => {
