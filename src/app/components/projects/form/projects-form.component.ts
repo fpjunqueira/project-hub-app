@@ -117,7 +117,7 @@ export class ProjectsFormComponent implements OnInit {
 
     this.ownersLoading.set(true);
     this.ownerService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -145,7 +145,7 @@ export class ProjectsFormComponent implements OnInit {
 
     this.filesLoading.set(true);
     this.fileService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -173,7 +173,7 @@ export class ProjectsFormComponent implements OnInit {
 
     this.addressLoading.set(true);
     this.addressService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -202,7 +202,7 @@ export class ProjectsFormComponent implements OnInit {
 
     this.ownersLoading.set(true);
     this.ownerService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -214,7 +214,7 @@ export class ProjectsFormComponent implements OnInit {
 
     this.filesLoading.set(true);
     this.fileService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -226,7 +226,7 @@ export class ProjectsFormComponent implements OnInit {
 
     this.addressLoading.set(true);
     this.addressService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');

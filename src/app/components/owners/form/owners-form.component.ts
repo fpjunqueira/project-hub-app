@@ -108,7 +108,7 @@ export class OwnersFormComponent implements OnInit {
 
     this.projectsLoading.set(true);
     this.projectService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -136,7 +136,7 @@ export class OwnersFormComponent implements OnInit {
 
     this.addressLoading.set(true);
     this.addressService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -165,7 +165,7 @@ export class OwnersFormComponent implements OnInit {
 
     this.projectsLoading.set(true);
     this.projectService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -177,7 +177,7 @@ export class OwnersFormComponent implements OnInit {
 
     this.addressLoading.set(true);
     this.addressService
-      .list()
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');

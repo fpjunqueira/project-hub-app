@@ -41,4 +41,28 @@
   <ng-template #emptyState>
     <p class="table-empty">No owners yet.</p>
   </ng-template>
+
+  <div class="pagination" *ngIf="totalPages() >= 1">
+    <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
+      Previous
+    </button>
+    <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
+    <select
+      class="pagination-select"
+      [value]="pageSize()"
+      (change)="updatePageSize($any($event.target).value)"
+    >
+      <option [value]="10">10</option>
+      <option [value]="50">50</option>
+      <option [value]="100">100</option>
+    </select>
+    <button
+      type="button"
+      class="ghost"
+      (click)="nextPage()"
+      [disabled]="pageIndex() + 1 >= totalPages()"
+    >
+      Next
+    </button>
+  </div>
 </section>

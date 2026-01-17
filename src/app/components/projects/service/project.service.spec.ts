@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
+import { PageResponse } from '../../../shared/pagination/page.model';
 import { Project } from '../model/project.model';
 import { ProjectService } from './project.service';
 
@@ -23,13 +24,31 @@ describe('ProjectService', () => {
   });
 
   it('lists projects', () => {
-    const response: Project[] = [{ id: 1, projectName: 'Alpha' }];
+    const response: PageResponse<Project> = {
+      content: [{ id: 1, projectName: 'Alpha' }],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0
+    };
 
     service.list().subscribe((projects) => {
       expect(projects).toEqual(response);
     });
 
-    const req = httpMock.expectOne('/api/projects');
+    const req = httpMock.expectOne('/api/projects?page=0&size=10');
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+  });
+
+  it('lists all projects', () => {
+    const response: Project[] = [{ id: 1, projectName: 'Alpha' }];
+
+    service.listAll().subscribe((projects) => {
+      expect(projects).toEqual(response);
+    });
+
+    const req = httpMock.expectOne('/api/projects/all');
     expect(req.request.method).toBe('GET');
     req.flush(response);
   });

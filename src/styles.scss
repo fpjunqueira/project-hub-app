@@ -237,3 +237,28 @@ button.danger:hover:not(:disabled) {
   color: #64748b;
   padding: 24px 0;
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination span {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pagination-select {
+  border: 1px solid #cbd5f5;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  background: transparent;
+  color: #1e293b;
+  cursor: pointer;
+  min-width: 90px;
+}

@@ -17,6 +17,10 @@ export class OwnersListComponent implements OnInit {
   private ownerService = inject(OwnerService);
 
   owners = signal<Owner[]>([]);
+  pageIndex = signal(0);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  pageSize = signal(10);
   isLoading = signal(false);
   deletingIds = signal<Set<number>>(new Set<number>());
   error = signal('');
@@ -25,14 +29,19 @@ export class OwnersListComponent implements OnInit {
     this.refresh();
   }
 
-  refresh(): void {
+  refresh(page = this.pageIndex()): void {
     this.isLoading.set(true);
     this.error.set('');
     this.ownerService
-      .list()
+      .list(page, this.pageSize())
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (owners) => this.owners.set(owners),
+        next: (response) => {
+          this.owners.set(response.content);
+          this.pageIndex.set(response.number);
+          this.totalPages.set(response.totalPages);
+          this.totalElements.set(response.totalElements);
+        },
         error: () => this.error.set('Failed to load owners.')
       });
   }
@@ -60,12 +69,40 @@ export class OwnersListComponent implements OnInit {
         )
       )
       .subscribe({
-        next: () => this.owners.update((owners) => owners.filter((owner) => owner.id !== id)),
+        next: () => {
+          const targetPage = this.owners().length <= 1 && this.pageIndex() > 0
+            ? this.pageIndex() - 1
+            : this.pageIndex();
+          this.refresh(targetPage);
+        },
         error: () => this.error.set('Failed to delete owner.')
       });
   }
 
   isDeleting(id?: number): boolean {
     return id !== undefined && this.deletingIds().has(id);
+  }
+
+  previousPage(): void {
+    if (this.pageIndex() > 0) {
+      this.refresh(this.pageIndex() - 1);
+    }
+  }
+
+  nextPage(): void {
+    if (this.pageIndex() + 1 < this.totalPages()) {
+      this.refresh(this.pageIndex() + 1);
+    }
+  }
+
+  updatePageSize(value: number | string): void {
+    const nextSize = Number(value);
+    if (!Number.isFinite(nextSize) || nextSize <= 0) {
+      return;
+    }
+    if (nextSize !== this.pageSize()) {
+      this.pageSize.set(nextSize);
+      this.refresh(0);
+    }
   }
 }

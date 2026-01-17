@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
+import { PageResponse } from '../../../shared/pagination/page.model';
 import { Address } from '../model/address.model';
 import { AddressService } from './address.service';
 
@@ -23,15 +24,35 @@ describe('AddressService', () => {
   });
 
   it('lists addresses', () => {
-    const response: Address[] = [
-      { id: 1, street: 'Main', city: 'A', state: 'TX', number: '1', zipCode: '0' }
-    ];
+    const response: PageResponse<Address> = {
+      content: [
+        { id: 1, street: 'Main', city: 'A', state: 'TX', number: '1', zipCode: '0' }
+      ],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0
+    };
 
     service.list().subscribe((addresses) => {
       expect(addresses).toEqual(response);
     });
 
-    const req = httpMock.expectOne('/api/addresses');
+    const req = httpMock.expectOne('/api/addresses?page=0&size=10');
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+  });
+
+  it('lists all addresses', () => {
+    const response: Address[] = [
+      { id: 1, street: 'Main', city: 'A', state: 'TX', number: '1', zipCode: '0' }
+    ];
+
+    service.listAll().subscribe((addresses) => {
+      expect(addresses).toEqual(response);
+    });
+
+    const req = httpMock.expectOne('/api/addresses/all');
     expect(req.request.method).toBe('GET');
     req.flush(response);
   });
