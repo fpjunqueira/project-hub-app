@@ -27,9 +27,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Project</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="projectLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!projectLoading()">
       <thead>
         <tr>
           <th>Project</th>
@@ -40,7 +40,7 @@
         <tr *ngIf="project() as fileProject; else noProject">
           <td>{{ fileProject.projectName }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id]">
+            <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id, 'view']">
               View
             </button>
           </td>

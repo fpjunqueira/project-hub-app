@@ -63,7 +63,7 @@
           <td>{{ addressOwner.name }}</td>
           <td>{{ addressOwner.email }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id]">
+            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
               View
             </button>
           </td>
@@ -89,7 +89,7 @@
         <tr *ngIf="project() as addressProject; else noProject">
           <td>{{ addressProject.projectName }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id]">
+            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
               View
             </button>
           </td>

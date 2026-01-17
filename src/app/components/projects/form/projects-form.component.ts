@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
 import { Address } from '../../addresses/model/address.model';
@@ -31,7 +31,9 @@ export class ProjectsFormComponent implements OnInit {
   address = signal<Address | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
-  relationsLoading = signal(false);
+  addressLoading = signal(false);
+  ownersLoading = signal(false);
+  filesLoading = signal(false);
   relationsError = signal('');
   error = signal('');
 
@@ -97,42 +99,52 @@ export class ProjectsFormComponent implements OnInit {
   }
 
   private loadRelations(id: number): void {
-    this.relationsLoading.set(true);
     this.relationsError.set('');
 
-    forkJoin({
-      owners: this.projectService.getOwners(id).pipe(
+    this.ownersLoading.set(true);
+    this.projectService
+      .getOwners(id)
+      .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
           return of([]);
-        })
-      ),
-      files: this.projectService.getFiles(id).pipe(
+        }),
+        finalize(() => this.ownersLoading.set(false))
+      )
+      .subscribe((owners) => this.owners.set(owners));
+
+    this.filesLoading.set(true);
+    this.projectService
+      .getFiles(id)
+      .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
           return of([]);
-        })
-      ),
-      address: this.projectService.getAddress(id).pipe(
+        }),
+        finalize(() => this.filesLoading.set(false))
+      )
+      .subscribe((files) => this.files.set(files));
+
+    this.addressLoading.set(true);
+    this.projectService
+      .getAddress(id)
+      .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
           return of(null);
-        })
+        }),
+        finalize(() => this.addressLoading.set(false))
       )
-    })
-      .pipe(finalize(() => this.relationsLoading.set(false)))
-      .subscribe(({ owners, files, address }) => {
-        this.owners.set(owners);
-        this.files.set(files);
-        this.address.set(address);
-      });
+      .subscribe((address) => this.address.set(address));
   }
 
   private resetRelations(): void {
     this.owners.set([]);
     this.files.set([]);
     this.address.set(null);
-    this.relationsLoading.set(false);
+    this.addressLoading.set(false);
+    this.ownersLoading.set(false);
+    this.filesLoading.set(false);
     this.relationsError.set('');
   }
 

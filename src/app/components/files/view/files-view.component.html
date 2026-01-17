@@ -43,7 +43,7 @@
         <tr *ngIf="project() as fileProject; else noProject">
           <td>{{ fileProject.projectName }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id]">
+            <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id, 'view']">
               View
             </button>
           </td>

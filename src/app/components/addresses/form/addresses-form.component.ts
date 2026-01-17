@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
 import { Owner } from '../../owners/model/owner.model';
@@ -29,7 +29,8 @@ export class AddressesFormComponent implements OnInit {
   project = signal<Project | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
-  relationsLoading = signal(false);
+  ownerLoading = signal(false);
+  projectLoading = signal(false);
   relationsError = signal('');
   error = signal('');
 
@@ -95,34 +96,38 @@ export class AddressesFormComponent implements OnInit {
   }
 
   private loadRelations(id: number): void {
-    this.relationsLoading.set(true);
     this.relationsError.set('');
 
-    forkJoin({
-      owner: this.addressService.getOwner(id).pipe(
+    this.ownerLoading.set(true);
+    this.addressService
+      .getOwner(id)
+      .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
           return of(null);
-        })
-      ),
-      project: this.addressService.getProject(id).pipe(
-        catchError(() => {
-          this.relationsError.set('Failed to load related data.');
-          return of(null);
-        })
+        }),
+        finalize(() => this.ownerLoading.set(false))
       )
-    })
-      .pipe(finalize(() => this.relationsLoading.set(false)))
-      .subscribe(({ owner, project }) => {
-        this.owner.set(owner);
-        this.project.set(project);
-      });
+      .subscribe((owner) => this.owner.set(owner));
+
+    this.projectLoading.set(true);
+    this.addressService
+      .getProject(id)
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        }),
+        finalize(() => this.projectLoading.set(false))
+      )
+      .subscribe((project) => this.project.set(project));
   }
 
   private resetRelations(): void {
     this.owner.set(null);
     this.project.set(null);
-    this.relationsLoading.set(false);
+    this.ownerLoading.set(false);
+    this.projectLoading.set(false);
     this.relationsError.set('');
   }
 

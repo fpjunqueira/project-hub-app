@@ -27,7 +27,7 @@ export class FilesFormComponent implements OnInit {
   project = signal<Project | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
-  relationsLoading = signal(false);
+  projectLoading = signal(false);
   relationsError = signal('');
   error = signal('');
 
@@ -98,7 +98,7 @@ export class FilesFormComponent implements OnInit {
   }
 
   private loadRelations(id: number): void {
-    this.relationsLoading.set(true);
+    this.projectLoading.set(true);
     this.relationsError.set('');
 
     this.fileService
@@ -108,14 +108,14 @@ export class FilesFormComponent implements OnInit {
           this.relationsError.set('Failed to load related data.');
           return of(null);
         }),
-        finalize(() => this.relationsLoading.set(false))
+        finalize(() => this.projectLoading.set(false))
       )
       .subscribe((project) => this.project.set(project));
   }
 
   private resetRelations(): void {
     this.project.set(null);
-    this.relationsLoading.set(false);
+    this.projectLoading.set(false);
     this.relationsError.set('');
   }
 
