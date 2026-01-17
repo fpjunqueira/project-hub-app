@@ -85,18 +85,4 @@ export class FilesFormComponent implements OnInit {
   updatePath(path: string): void {
     this.draft.update((draft) => ({ ...draft, path }));
   }
-
-  updateProjectId(projectId: number | null): void {
-    this.draft.update((draft) => ({ ...draft, projectId }));
-  }
-
-  updateProjectIdFromInput(value: string | number | null): void {
-    if (value === null || value === '') {
-      this.updateProjectId(null);
-      return;
-    }
-
-    const parsed = typeof value === 'number' ? value : Number(value);
-    this.updateProjectId(Number.isNaN(parsed) ? null : parsed);
-  }
 }

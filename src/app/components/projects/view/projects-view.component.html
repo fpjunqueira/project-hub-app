@@ -13,13 +13,6 @@
         [value]="project()?.projectName ?? ''"
         disabled
       />
-      <input
-        name="id"
-        placeholder="ID"
-        type="number"
-        [value]="project()?.id ?? ''"
-        disabled
-      />
       <button
         type="button"
         [routerLink]="['/projects', project()?.id, 'edit']"

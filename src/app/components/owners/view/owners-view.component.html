@@ -19,13 +19,6 @@
         [value]="owner()?.email ?? ''"
         disabled
       />
-      <input
-        name="id"
-        placeholder="ID"
-        type="number"
-        [value]="owner()?.id ?? ''"
-        disabled
-      />
       <button
         type="button"
         [routerLink]="['/owners', owner()?.id, 'edit']"
