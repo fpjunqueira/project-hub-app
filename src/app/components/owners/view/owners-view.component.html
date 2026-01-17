@@ -1,36 +1,41 @@
 <section class="card">
   <header class="card-header">
     <h2>Owner Details</h2>
-    <div class="header-actions">
-      <button type="button" class="ghost" routerLink="/owners">Back to list</button>
+    <button type="button" class="ghost" routerLink="/owners">Back to list</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Details</h3>
+    <div class="form-row">
+      <input
+        name="ownerName"
+        placeholder="Name"
+        [value]="owner()?.name ?? ''"
+        disabled
+      />
+      <input
+        name="ownerEmail"
+        placeholder="Email"
+        [value]="owner()?.email ?? ''"
+        disabled
+      />
+      <input
+        name="id"
+        placeholder="ID"
+        type="number"
+        [value]="owner()?.id ?? ''"
+        disabled
+      />
       <button
         type="button"
-        class="ghost"
         [routerLink]="['/owners', owner()?.id, 'edit']"
         [disabled]="!owner()"
       >
         Edit
       </button>
     </div>
-  </header>
+  </div>
 
   <p class="muted" *ngIf="isLoading()">Loading...</p>
   <p class="error" *ngIf="error()">{{ error() }}</p>
-
-  <table class="table" *ngIf="owner()">
-    <tbody>
-      <tr>
-        <th>Name</th>
-        <td>{{ owner()?.name }}</td>
-      </tr>
-      <tr>
-        <th>Email</th>
-        <td>{{ owner()?.email }}</td>
-      </tr>
-      <tr>
-        <th>ID</th>
-        <td>{{ owner()?.id }}</td>
-      </tr>
-    </tbody>
-  </table>
 </section>
