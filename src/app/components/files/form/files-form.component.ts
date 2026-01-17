@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
 
 import { FileRecord } from '../model/file.model';
@@ -18,52 +19,84 @@ export class FilesFormComponent implements OnInit {
   private fileService = inject(FileService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  draft: FileRecord = { filename: '', path: '', projectId: null };
-  isEdit = false;
-  isLoading = false;
-  error = '';
+  draft = signal<FileRecord>({ filename: '', path: '', projectId: null });
+  isEdit = signal(false);
+  isLoading = signal(false);
+  error = signal('');
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.isEdit = true;
-      this.loadFile(Number(idParam));
-    }
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const idParam = params.get('id');
+        if (idParam) {
+          this.isEdit.set(true);
+          this.loadFile(Number(idParam));
+        } else {
+          this.isEdit.set(false);
+          this.error.set('');
+          this.draft.set({ filename: '', path: '', projectId: null });
+        }
+      });
   }
 
   submit(): void {
-    if (!this.draft.filename.trim()) {
+    const draft = this.draft();
+    if (!draft.filename.trim()) {
       return;
     }
 
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
 
-    const request = this.isEdit && this.draft.id !== undefined
-      ? this.fileService.update(this.draft.id, this.draft)
-      : this.fileService.create(this.draft);
+    const request = this.isEdit() && draft.id !== undefined
+      ? this.fileService.update(draft.id, draft)
+      : this.fileService.create(draft);
 
-    request.pipe(finalize(() => (this.isLoading = false))).subscribe({
+    request.pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: () => this.router.navigate(['/files']),
       error: () =>
-        (this.error = this.isEdit ? 'Failed to update file.' : 'Failed to create file.')
+        this.error.set(this.isEdit() ? 'Failed to update file.' : 'Failed to create file.')
     });
   }
 
   private loadFile(id: number): void {
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
     this.fileService
       .get(id)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (file) =>
-          (this.draft = {
+          this.draft.set({
             ...file,
             projectId: file.projectId ?? null
           }),
-        error: () => (this.error = 'Failed to load file.')
+        error: () => this.error.set('Failed to load file.')
       });
+  }
+
+  updateFilename(filename: string): void {
+    this.draft.update((draft) => ({ ...draft, filename }));
+  }
+
+  updatePath(path: string): void {
+    this.draft.update((draft) => ({ ...draft, path }));
+  }
+
+  updateProjectId(projectId: number | null): void {
+    this.draft.update((draft) => ({ ...draft, projectId }));
+  }
+
+  updateProjectIdFromInput(value: string | number | null): void {
+    if (value === null || value === '') {
+      this.updateProjectId(null);
+      return;
+    }
+
+    const parsed = typeof value === 'number' ? value : Number(value);
+    this.updateProjectId(Number.isNaN(parsed) ? null : parsed);
   }
 }

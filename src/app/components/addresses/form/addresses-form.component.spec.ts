@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -14,7 +14,7 @@ type AddressServiceSpy = {
 
 const setup = async (routeId: string | null) => {
   const routeStub = {
-    snapshot: { paramMap: { get: () => routeId } }
+    paramMap: of(convertToParamMap(routeId ? { id: routeId } : {}))
   } as unknown as ActivatedRoute;
 
   const serviceSpy: AddressServiceSpy = {
@@ -57,13 +57,13 @@ describe('AddressesFormComponent', () => {
   it('creates an address when no id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup(null);
 
-    component.draft = {
+    component.draft.set({
       street: 'Main',
       city: 'A',
       state: 'TX',
       number: '1',
       zipCode: '0'
-    };
+    });
     component.submit();
 
     expect(serviceSpy.create).toHaveBeenCalled();
@@ -73,14 +73,14 @@ describe('AddressesFormComponent', () => {
   it('updates an address when id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup('1');
 
-    component.draft = {
+    component.draft.set({
       id: 1,
       street: 'Updated',
       city: 'C',
       state: 'TX',
       number: '3',
       zipCode: '2'
-    };
+    });
     component.submit();
 
     expect(serviceSpy.update).toHaveBeenCalledWith(1, {

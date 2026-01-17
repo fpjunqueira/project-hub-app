@@ -6,30 +6,30 @@
       <button
         type="button"
         class="ghost"
-        [routerLink]="['/owners', owner?.id, 'edit']"
-        [disabled]="!owner"
+        [routerLink]="['/owners', owner()?.id, 'edit']"
+        [disabled]="!owner()"
       >
         Edit
       </button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="owner">
+  <table class="table" *ngIf="owner()">
     <tbody>
       <tr>
         <th>Name</th>
-        <td>{{ owner.name }}</td>
+        <td>{{ owner()?.name }}</td>
       </tr>
       <tr>
         <th>Email</th>
-        <td>{{ owner.email }}</td>
+        <td>{{ owner()?.email }}</td>
       </tr>
       <tr>
         <th>ID</th>
-        <td>{{ owner.id }}</td>
+        <td>{{ owner()?.id }}</td>
       </tr>
     </tbody>
   </table>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
@@ -16,23 +16,24 @@ import { FileService } from '../service/file.service';
 export class FilesListComponent implements OnInit {
   private fileService = inject(FileService);
 
-  files: FileRecord[] = [];
-  isLoading = false;
-  error = '';
+  files = signal<FileRecord[]>([]);
+  isLoading = signal(false);
+  deletingIds = signal<Set<number>>(new Set<number>());
+  error = signal('');
 
   ngOnInit(): void {
     this.refresh();
   }
 
   refresh(): void {
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
     this.fileService
       .list()
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (files) => (this.files = files),
-        error: () => (this.error = 'Failed to load files.')
+        next: (files) => this.files.set(files),
+        error: () => this.error.set('Failed to load files.')
       });
   }
 
@@ -41,14 +42,30 @@ export class FilesListComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-    this.error = '';
+    this.error.set('');
+    this.deletingIds.update((ids) => {
+      const next = new Set(ids);
+      next.add(id);
+      return next;
+    });
     this.fileService
       .delete(id)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() =>
+          this.deletingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          })
+        )
+      )
       .subscribe({
-        next: () => (this.files = this.files.filter((file) => file.id !== id)),
-        error: () => (this.error = 'Failed to delete file.')
+        next: () => this.files.update((files) => files.filter((file) => file.id !== id)),
+        error: () => this.error.set('Failed to delete file.')
       });
+  }
+
+  isDeleting(id?: number): boolean {
+    return id !== undefined && this.deletingIds().has(id);
   }
 }

@@ -3,14 +3,13 @@
     <h2>Owners</h2>
     <div class="header-actions">
       <button type="button" class="ghost" routerLink="/owners/new">New</button>
-      <button type="button" class="ghost" (click)="refresh()">Refresh</button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="owners.length; else emptyState">
+  <table class="table" *ngIf="owners().length; else emptyState">
     <thead>
       <tr>
         <th>Name</th>
@@ -19,7 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let owner of owners">
+      <tr *ngFor="let owner of owners()">
         <td>{{ owner.name }}</td>
         <td>{{ owner.email }}</td>
         <td>
@@ -30,7 +29,7 @@
             <button type="button" class="ghost" [routerLink]="['/owners', owner.id, 'edit']">
               Edit
             </button>
-            <button type="button" class="danger" (click)="delete(owner.id)" [disabled]="isLoading">
+            <button type="button" class="danger" (click)="delete(owner.id)" [disabled]="isDeleting(owner.id)">
               Delete
             </button>
           </div>

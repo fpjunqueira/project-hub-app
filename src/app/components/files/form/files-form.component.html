@@ -1,26 +1,37 @@
 <section class="card">
   <header class="card-header">
-    <h2>{{ isEdit ? 'Edit File' : 'New File' }}</h2>
+    <h2>{{ isEdit() ? 'Edit File' : 'New File' }}</h2>
     <button type="button" class="ghost" routerLink="/files">Back to list</button>
   </header>
 
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input name="filename" placeholder="Filename" [(ngModel)]="draft.filename" />
-      <input name="path" placeholder="Path" [(ngModel)]="draft.path" />
+      <input
+        name="filename"
+        placeholder="Filename"
+        [ngModel]="draft().filename"
+        (ngModelChange)="updateFilename($event)"
+      />
+      <input
+        name="path"
+        placeholder="Path"
+        [ngModel]="draft().path"
+        (ngModelChange)="updatePath($event)"
+      />
       <input
         name="projectId"
         placeholder="Project ID"
         type="number"
-        [(ngModel)]="draft.projectId"
+        [ngModel]="draft().projectId"
+        (ngModelChange)="updateProjectIdFromInput($event)"
       />
-      <button type="button" (click)="submit()" [disabled]="isLoading">
-        {{ isEdit ? 'Update' : 'Create' }}
+      <button type="button" (click)="submit()" [disabled]="isLoading()">
+        {{ isEdit() ? 'Update' : 'Create' }}
       </button>
     </div>
   </div>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 </section>

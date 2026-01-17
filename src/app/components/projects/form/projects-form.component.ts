@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
 
 import { Project } from '../model/project.model';
@@ -18,48 +19,64 @@ export class ProjectsFormComponent implements OnInit {
   private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  draft: Project = { projectName: '' };
-  isEdit = false;
-  isLoading = false;
-  error = '';
+  draft = signal<Project>({ projectName: '' });
+  isEdit = signal(false);
+  isLoading = signal(false);
+  error = signal('');
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.isEdit = true;
-      this.loadProject(Number(idParam));
-    }
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const idParam = params.get('id');
+        if (idParam) {
+          this.isEdit.set(true);
+          this.loadProject(Number(idParam));
+        } else {
+          this.isEdit.set(false);
+          this.error.set('');
+          this.draft.set({ projectName: '' });
+        }
+      });
   }
 
   submit(): void {
-    if (!this.draft.projectName.trim()) {
+    const draft = this.draft();
+    if (!draft.projectName.trim()) {
       return;
     }
 
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
 
-    const request = this.isEdit && this.draft.id !== undefined
-      ? this.projectService.update(this.draft.id, this.draft)
-      : this.projectService.create(this.draft);
+    const request = this.isEdit() && draft.id !== undefined
+      ? this.projectService.update(draft.id, draft)
+      : this.projectService.create(draft);
 
-    request.pipe(finalize(() => (this.isLoading = false))).subscribe({
+    request.pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: () => this.router.navigate(['/projects']),
       error: () =>
-        (this.error = this.isEdit ? 'Failed to update project.' : 'Failed to create project.')
+        this.error.set(
+          this.isEdit() ? 'Failed to update project.' : 'Failed to create project.'
+        )
     });
   }
 
   private loadProject(id: number): void {
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
     this.projectService
       .get(id)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (project) => (this.draft = { ...project }),
-        error: () => (this.error = 'Failed to load project.')
+        next: (project) => this.draft.set({ ...project }),
+        error: () => this.error.set('Failed to load project.')
       });
+  }
+
+  updateProjectName(projectName: string): void {
+    this.draft.update((draft) => ({ ...draft, projectName }));
   }
 }
