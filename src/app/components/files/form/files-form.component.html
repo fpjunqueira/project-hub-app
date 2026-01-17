@@ -19,13 +19,6 @@
         [ngModel]="draft().path"
         (ngModelChange)="updatePath($event)"
       />
-      <input
-        name="projectId"
-        placeholder="Project ID"
-        type="number"
-        [ngModel]="draft().projectId"
-        (ngModelChange)="updateProjectIdFromInput($event)"
-      />
       <button type="button" (click)="submit()" [disabled]="isLoading()">
         {{ isEdit() ? 'Update' : 'Create' }}
       </button>

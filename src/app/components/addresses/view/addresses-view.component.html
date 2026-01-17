@@ -37,12 +37,6 @@
         [value]="address()?.zipCode ?? ''"
         disabled
       />
-      <input
-        name="id"
-        placeholder="ID"
-        [value]="address()?.id ?? ''"
-        disabled
-      />
       <button
         type="button"
         [routerLink]="['/addresses', address()?.id, 'edit']"

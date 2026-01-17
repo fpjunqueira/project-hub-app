@@ -14,7 +14,6 @@
       <tr>
         <th>Filename</th>
         <th>Path</th>
-        <th>Project ID</th>
         <th>Commands</th>
       </tr>
     </thead>
@@ -22,7 +21,6 @@
       <tr *ngFor="let file of files()">
         <td>{{ file.filename }}</td>
         <td>{{ file.path }}</td>
-        <td>{{ file.projectId }}</td>
         <td>
           <div class="table-actions">
             <button type="button" class="ghost" [routerLink]="['/files', file.id, 'view']">

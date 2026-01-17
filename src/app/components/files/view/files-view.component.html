@@ -19,20 +19,6 @@
         [value]="file()?.path ?? ''"
         disabled
       />
-      <input
-        name="projectId"
-        placeholder="Project ID"
-        type="number"
-        [value]="file()?.projectId ?? ''"
-        disabled
-      />
-      <input
-        name="id"
-        placeholder="ID"
-        type="number"
-        [value]="file()?.id ?? ''"
-        disabled
-      />
       <button
         type="button"
         [routerLink]="['/files', file()?.id, 'edit']"
