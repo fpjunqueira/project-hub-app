@@ -3,8 +3,11 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
+import { Owner } from '../../owners/model/owner.model';
+import { Project } from '../../projects/model/project.model';
 import { Address } from '../model/address.model';
 import { AddressService } from '../service/address.service';
 
@@ -22,8 +25,12 @@ export class AddressesFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   draft = signal<Address>({ street: '', city: '', state: '', number: '', zipCode: '' });
+  owner = signal<Owner | null>(null);
+  project = signal<Project | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
+  relationsLoading = signal(false);
+  relationsError = signal('');
   error = signal('');
 
   ngOnInit(): void {
@@ -38,6 +45,7 @@ export class AddressesFormComponent implements OnInit {
           this.isEdit.set(false);
           this.error.set('');
           this.draft.set({ street: '', city: '', state: '', number: '', zipCode: '' });
+          this.resetRelations();
         }
       });
   }
@@ -71,9 +79,51 @@ export class AddressesFormComponent implements OnInit {
       .get(id)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (address) => this.draft.set({ ...address }),
-        error: () => this.error.set('Failed to load address.')
+        next: (address) => {
+          this.draft.set({ ...address });
+          if (address.id !== undefined) {
+            this.loadRelations(address.id);
+          } else {
+            this.resetRelations();
+          }
+        },
+        error: () => {
+          this.error.set('Failed to load address.');
+          this.resetRelations();
+        }
       });
+  }
+
+  private loadRelations(id: number): void {
+    this.relationsLoading.set(true);
+    this.relationsError.set('');
+
+    forkJoin({
+      owner: this.addressService.getOwner(id).pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        })
+      ),
+      project: this.addressService.getProject(id).pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        })
+      )
+    })
+      .pipe(finalize(() => this.relationsLoading.set(false)))
+      .subscribe(({ owner, project }) => {
+        this.owner.set(owner);
+        this.project.set(project);
+      });
+  }
+
+  private resetRelations(): void {
+    this.owner.set(null);
+    this.project.set(null);
+    this.relationsLoading.set(false);
+    this.relationsError.set('');
   }
 
   updateStreet(street: string): void {

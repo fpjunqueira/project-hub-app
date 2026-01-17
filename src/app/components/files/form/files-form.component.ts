@@ -3,8 +3,10 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
+import { Project } from '../../projects/model/project.model';
 import { FileRecord } from '../model/file.model';
 import { FileService } from '../service/file.service';
 
@@ -22,8 +24,11 @@ export class FilesFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   draft = signal<FileRecord>({ filename: '', path: '', projectId: null });
+  project = signal<Project | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
+  relationsLoading = signal(false);
+  relationsError = signal('');
   error = signal('');
 
   ngOnInit(): void {
@@ -38,6 +43,7 @@ export class FilesFormComponent implements OnInit {
           this.isEdit.set(false);
           this.error.set('');
           this.draft.set({ filename: '', path: '', projectId: null });
+          this.resetRelations();
         }
       });
   }
@@ -70,12 +76,47 @@ export class FilesFormComponent implements OnInit {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (file) =>
-          this.draft.set({
-            ...file,
-            projectId: file.projectId ?? null
-          }),
-        error: () => this.error.set('Failed to load file.')
+          this.handleFileLoad(file),
+        error: () => {
+          this.error.set('Failed to load file.');
+          this.resetRelations();
+        }
       });
+  }
+
+  private handleFileLoad(file: FileRecord): void {
+    this.draft.set({
+      ...file,
+      projectId: file.projectId ?? null
+    });
+
+    if (file.id !== undefined) {
+      this.loadRelations(file.id);
+    } else {
+      this.resetRelations();
+    }
+  }
+
+  private loadRelations(id: number): void {
+    this.relationsLoading.set(true);
+    this.relationsError.set('');
+
+    this.fileService
+      .getProject(id)
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        }),
+        finalize(() => this.relationsLoading.set(false))
+      )
+      .subscribe((project) => this.project.set(project));
+  }
+
+  private resetRelations(): void {
+    this.project.set(null);
+    this.relationsLoading.set(false);
+    this.relationsError.set('');
   }
 
   updateFilename(filename: string): void {

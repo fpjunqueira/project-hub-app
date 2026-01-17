@@ -47,6 +47,60 @@
     </div>
   </div>
 
+  <div class="form-block">
+    <h3>Owner</h3>
+    <p class="muted" *ngIf="ownerLoading()">Loading related data...</p>
+    <table class="table" *ngIf="!ownerLoading()">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="owner() as addressOwner; else noOwner">
+          <td>{{ addressOwner.name }}</td>
+          <td>{{ addressOwner.email }}</td>
+          <td>
+            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id]">
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noOwner>
+      <div class="table-empty">No owner linked.</div>
+    </ng-template>
+  </div>
+
+  <div class="form-block">
+    <h3>Project</h3>
+    <p class="muted" *ngIf="projectLoading()">Loading related data...</p>
+    <table class="table" *ngIf="!projectLoading()">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="project() as addressProject; else noProject">
+          <td>{{ addressProject.projectName }}</td>
+          <td>
+            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id]">
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noProject>
+      <div class="table-empty">No project linked.</div>
+    </ng-template>
+  </div>
+
   <p class="muted" *ngIf="isLoading()">Loading...</p>
   <p class="error" *ngIf="error()">{{ error() }}</p>
 </section>

@@ -19,6 +19,103 @@
     </div>
   </div>
 
+  <div class="form-block" *ngIf="isEdit()">
+    <h3>Address</h3>
+    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
+    <table class="table" *ngIf="!relationsLoading()">
+      <thead>
+        <tr>
+          <th>Street</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Number</th>
+          <th>Zip code</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="address() as projectAddress; else noProjectAddress">
+          <td>{{ projectAddress.street }}</td>
+          <td>{{ projectAddress.city }}</td>
+          <td>{{ projectAddress.state }}</td>
+          <td>{{ projectAddress.number }}</td>
+          <td>{{ projectAddress.zipCode }}</td>
+          <td>
+            <button
+              type="button"
+              class="ghost"
+              [routerLink]="['/addresses', projectAddress.id]"
+            >
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noProjectAddress>
+      <div class="table-empty">No address assigned.</div>
+    </ng-template>
+  </div>
+
+  <div class="form-block" *ngIf="isEdit()">
+    <h3>Owners</h3>
+    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
+    <table class="table" *ngIf="!relationsLoading()">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let owner of owners()">
+          <td>{{ owner.name }}</td>
+          <td>{{ owner.email }}</td>
+          <td>
+            <button type="button" class="ghost" [routerLink]="['/owners', owner.id]">
+              View
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="owners().length === 0">
+          <td colspan="3" class="table-empty">No owners linked.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-block" *ngIf="isEdit()">
+    <h3>Files</h3>
+    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
+    <table class="table" *ngIf="!relationsLoading()">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Path</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let file of files()">
+          <td>{{ file.filename }}</td>
+          <td>{{ file.path }}</td>
+          <td>
+            <button type="button" class="ghost" [routerLink]="['/files', file.id]">
+              View
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="files().length === 0">
+          <td colspan="3" class="table-empty">No files linked.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <p class="muted" *ngIf="isLoading()">Loading...</p>
   <p class="error" *ngIf="error()">{{ error() }}</p>
 </section>
