@@ -3,7 +3,7 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
 import { Address } from '../../addresses/model/address.model';
@@ -29,7 +29,8 @@ export class OwnersFormComponent implements OnInit {
   projects = signal<Project[]>([]);
   isEdit = signal(false);
   isLoading = signal(false);
-  relationsLoading = signal(false);
+  addressLoading = signal(false);
+  projectsLoading = signal(false);
   relationsError = signal('');
   error = signal('');
 
@@ -93,34 +94,38 @@ export class OwnersFormComponent implements OnInit {
   }
 
   private loadRelations(id: number): void {
-    this.relationsLoading.set(true);
     this.relationsError.set('');
 
-    forkJoin({
-      projects: this.ownerService.getProjects(id).pipe(
+    this.projectsLoading.set(true);
+    this.ownerService
+      .getProjects(id)
+      .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
           return of([]);
-        })
-      ),
-      address: this.ownerService.getAddress(id).pipe(
+        }),
+        finalize(() => this.projectsLoading.set(false))
+      )
+      .subscribe((projects) => this.projects.set(projects));
+
+    this.addressLoading.set(true);
+    this.ownerService
+      .getAddress(id)
+      .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
           return of(null);
-        })
+        }),
+        finalize(() => this.addressLoading.set(false))
       )
-    })
-      .pipe(finalize(() => this.relationsLoading.set(false)))
-      .subscribe(({ projects, address }) => {
-        this.projects.set(projects);
-        this.address.set(address);
-      });
+      .subscribe((address) => this.address.set(address));
   }
 
   private resetRelations(): void {
     this.address.set(null);
     this.projects.set([]);
-    this.relationsLoading.set(false);
+    this.addressLoading.set(false);
+    this.projectsLoading.set(false);
     this.relationsError.set('');
   }
 

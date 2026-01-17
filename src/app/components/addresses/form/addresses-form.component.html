@@ -45,9 +45,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Owner</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="ownerLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!ownerLoading()">
       <thead>
         <tr>
           <th>Name</th>
@@ -60,7 +60,7 @@
           <td>{{ addressOwner.name }}</td>
           <td>{{ addressOwner.email }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id]">
+            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
               View
             </button>
           </td>
@@ -74,9 +74,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Project</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="projectLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!projectLoading()">
       <thead>
         <tr>
           <th>Project</th>
@@ -87,7 +87,7 @@
         <tr *ngIf="project() as addressProject; else noProject">
           <td>{{ addressProject.projectName }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id]">
+            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
               View
             </button>
           </td>

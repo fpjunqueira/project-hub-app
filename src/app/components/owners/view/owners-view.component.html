@@ -54,7 +54,7 @@
             <button
               type="button"
               class="ghost"
-              [routerLink]="['/addresses', ownerAddress.id]"
+              [routerLink]="['/addresses', ownerAddress.id, 'view']"
             >
               View
             </button>
@@ -81,7 +81,7 @@
         <tr *ngFor="let project of projects()">
           <td>{{ project.projectName }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', project.id]">
+            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
               View
             </button>
           </td>

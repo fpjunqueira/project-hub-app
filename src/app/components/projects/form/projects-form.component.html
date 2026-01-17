@@ -21,9 +21,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Address</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!addressLoading()">
       <thead>
         <tr>
           <th>Street</th>
@@ -45,7 +45,7 @@
             <button
               type="button"
               class="ghost"
-              [routerLink]="['/addresses', projectAddress.id]"
+              [routerLink]="['/addresses', projectAddress.id, 'view']"
             >
               View
             </button>
@@ -60,9 +60,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Owners</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="ownersLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!ownersLoading()">
       <thead>
         <tr>
           <th>Name</th>
@@ -75,7 +75,7 @@
           <td>{{ owner.name }}</td>
           <td>{{ owner.email }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', owner.id]">
+            <button type="button" class="ghost" [routerLink]="['/owners', owner.id, 'view']">
               View
             </button>
           </td>
@@ -89,9 +89,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Files</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="filesLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!filesLoading()">
       <thead>
         <tr>
           <th>Filename</th>
@@ -104,7 +104,7 @@
           <td>{{ file.filename }}</td>
           <td>{{ file.path }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/files', file.id]">
+            <button type="button" class="ghost" [routerLink]="['/files', file.id, 'view']">
               View
             </button>
           </td>

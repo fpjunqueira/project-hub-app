@@ -48,7 +48,7 @@
             <button
               type="button"
               class="ghost"
-              [routerLink]="['/addresses', projectAddress.id]"
+              [routerLink]="['/addresses', projectAddress.id, 'view']"
             >
               View
             </button>
@@ -77,7 +77,7 @@
           <td>{{ owner.name }}</td>
           <td>{{ owner.email }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', owner.id]">
+            <button type="button" class="ghost" [routerLink]="['/owners', owner.id, 'view']">
               View
             </button>
           </td>
@@ -105,7 +105,7 @@
           <td>{{ file.filename }}</td>
           <td>{{ file.path }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/files', file.id]">
+            <button type="button" class="ghost" [routerLink]="['/files', file.id, 'view']">
               View
             </button>
           </td>

@@ -27,9 +27,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Address</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!addressLoading()">
       <thead>
         <tr>
           <th>Street</th>
@@ -51,7 +51,7 @@
             <button
               type="button"
               class="ghost"
-              [routerLink]="['/addresses', ownerAddress.id]"
+              [routerLink]="['/addresses', ownerAddress.id, 'view']"
             >
               View
             </button>
@@ -66,9 +66,9 @@
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Projects</h3>
-    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="muted" *ngIf="projectsLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!relationsLoading()">
+    <table class="table" *ngIf="!projectsLoading()">
       <thead>
         <tr>
           <th>Project</th>
@@ -79,7 +79,7 @@
         <tr *ngFor="let project of projects()">
           <td>{{ project.projectName }}</td>
           <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', project.id]">
+            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
               View
             </button>
           </td>
