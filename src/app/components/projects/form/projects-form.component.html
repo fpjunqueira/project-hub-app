@@ -7,12 +7,16 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="projectName"
-        placeholder="Project name"
-        [ngModel]="draft().projectName"
-        (ngModelChange)="updateProjectName($event)"
-      />
+      <div class="field">
+        <label for="project-name">Project name</label>
+        <input
+          id="project-name"
+          name="projectName"
+          placeholder="Project name"
+          [ngModel]="draft().projectName"
+          (ngModelChange)="updateProjectName($event)"
+        />
+      </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
         {{ isEdit() ? 'Update' : 'Create' }}
       </button>
@@ -23,97 +27,72 @@
     <h3>Address</h3>
     <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!addressLoading()">
-      <thead>
-        <tr>
-          <th>Street</th>
-          <th>City</th>
-          <th>State</th>
-          <th>Number</th>
-          <th>Zip code</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="address() as projectAddress; else noProjectAddress">
-          <td>{{ projectAddress.street }}</td>
-          <td>{{ projectAddress.city }}</td>
-          <td>{{ projectAddress.state }}</td>
-          <td>{{ projectAddress.number }}</td>
-          <td>{{ projectAddress.zipCode }}</td>
-          <td>
-            <button
-              type="button"
-              class="ghost"
-              [routerLink]="['/addresses', projectAddress.id, 'view']"
-            >
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noProjectAddress>
-      <div class="table-empty">No address assigned.</div>
-    </ng-template>
+    <div class="field" *ngIf="!addressLoading()">
+      <label for="project-address">Address</label>
+      <select
+        id="project-address"
+        name="projectAddress"
+        [ngModel]="selectedAddressId()"
+        (ngModelChange)="updateSelectedAddress($event)"
+      >
+        <option *ngIf="addresses().length === 0" [ngValue]="null" disabled>
+          No addresses available
+        </option>
+        <option *ngIf="addresses().length > 0" [ngValue]="null">
+          No address assigned
+        </option>
+        <option *ngFor="let addressOption of addresses()" [ngValue]="addressOption.id">
+          {{ addressOption.street }}, {{ addressOption.city }}, {{ addressOption.state }}
+          {{ addressOption.number }} ({{ addressOption.zipCode }})
+        </option>
+      </select>
+    </div>
   </div>
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Owners</h3>
     <p class="muted" *ngIf="ownersLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!ownersLoading()">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let owner of owners()">
-          <td>{{ owner.name }}</td>
-          <td>{{ owner.email }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', owner.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="owners().length === 0">
-          <td colspan="3" class="table-empty">No owners linked.</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="field" *ngIf="!ownersLoading()">
+      <label for="project-owners">Owners</label>
+      <select
+        id="project-owners"
+        name="projectOwners"
+        multiple
+        [ngModel]="selectedOwnerIds()"
+        (ngModelChange)="updateSelectedOwners($event)"
+      >
+        <option *ngIf="owners().length === 0" [ngValue]="null" disabled>
+          No owners available
+        </option>
+        <option *ngFor="let owner of owners()" [ngValue]="owner.id">
+          {{ owner.name }} ({{ owner.email }})
+        </option>
+      </select>
+    </div>
   </div>
 
   <div class="form-block" *ngIf="isEdit()">
     <h3>Files</h3>
     <p class="muted" *ngIf="filesLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!filesLoading()">
-      <thead>
-        <tr>
-          <th>Filename</th>
-          <th>Path</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let file of files()">
-          <td>{{ file.filename }}</td>
-          <td>{{ file.path }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/files', file.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="files().length === 0">
-          <td colspan="3" class="table-empty">No files linked.</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="field" *ngIf="!filesLoading()">
+      <label for="project-files">Files</label>
+      <select
+        id="project-files"
+        name="projectFiles"
+        multiple
+        [ngModel]="selectedFileIds()"
+        (ngModelChange)="updateSelectedFiles($event)"
+      >
+        <option *ngIf="files().length === 0" [ngValue]="null" disabled>
+          No files available
+        </option>
+        <option *ngFor="let file of files()" [ngValue]="file.id">
+          {{ file.filename }} ({{ file.path }})
+        </option>
+      </select>
+    </div>
   </div>
 
   <p class="muted" *ngIf="isLoading()">Loading...</p>

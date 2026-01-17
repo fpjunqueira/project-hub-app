@@ -7,18 +7,26 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="filename"
-        placeholder="Filename"
-        [value]="file()?.filename ?? ''"
-        disabled
-      />
-      <input
-        name="path"
-        placeholder="Path"
-        [value]="file()?.path ?? ''"
-        disabled
-      />
+      <div class="field">
+        <label for="file-filename-view">Filename</label>
+        <input
+          id="file-filename-view"
+          name="filename"
+          placeholder="Filename"
+          [value]="file()?.filename ?? ''"
+          disabled
+        />
+      </div>
+      <div class="field">
+        <label for="file-path-view">Path</label>
+        <input
+          id="file-path-view"
+          name="path"
+          placeholder="Path"
+          [value]="file()?.path ?? ''"
+          disabled
+        />
+      </div>
       <button
         type="button"
         [routerLink]="['/files', file()?.id, 'edit']"

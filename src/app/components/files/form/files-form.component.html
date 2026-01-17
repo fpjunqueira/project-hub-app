@@ -7,18 +7,26 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="filename"
-        placeholder="Filename"
-        [ngModel]="draft().filename"
-        (ngModelChange)="updateFilename($event)"
-      />
-      <input
-        name="path"
-        placeholder="Path"
-        [ngModel]="draft().path"
-        (ngModelChange)="updatePath($event)"
-      />
+      <div class="field">
+        <label for="file-filename">Filename</label>
+        <input
+          id="file-filename"
+          name="filename"
+          placeholder="Filename"
+          [ngModel]="draft().filename"
+          (ngModelChange)="updateFilename($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="file-path">Path</label>
+        <input
+          id="file-path"
+          name="path"
+          placeholder="Path"
+          [ngModel]="draft().path"
+          (ngModelChange)="updatePath($event)"
+        />
+      </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
         {{ isEdit() ? 'Update' : 'Create' }}
       </button>

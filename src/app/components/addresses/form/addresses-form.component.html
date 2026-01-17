@@ -7,36 +7,56 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="street"
-        placeholder="Street"
-        [ngModel]="draft().street"
-        (ngModelChange)="updateStreet($event)"
-      />
-      <input
-        name="city"
-        placeholder="City"
-        [ngModel]="draft().city"
-        (ngModelChange)="updateCity($event)"
-      />
-      <input
-        name="state"
-        placeholder="State"
-        [ngModel]="draft().state"
-        (ngModelChange)="updateState($event)"
-      />
-      <input
-        name="number"
-        placeholder="Number"
-        [ngModel]="draft().number"
-        (ngModelChange)="updateNumber($event)"
-      />
-      <input
-        name="zipCode"
-        placeholder="Zip code"
-        [ngModel]="draft().zipCode"
-        (ngModelChange)="updateZipCode($event)"
-      />
+      <div class="field">
+        <label for="address-street">Street</label>
+        <input
+          id="address-street"
+          name="street"
+          placeholder="Street"
+          [ngModel]="draft().street"
+          (ngModelChange)="updateStreet($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="address-city">City</label>
+        <input
+          id="address-city"
+          name="city"
+          placeholder="City"
+          [ngModel]="draft().city"
+          (ngModelChange)="updateCity($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="address-state">State</label>
+        <input
+          id="address-state"
+          name="state"
+          placeholder="State"
+          [ngModel]="draft().state"
+          (ngModelChange)="updateState($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="address-number">Number</label>
+        <input
+          id="address-number"
+          name="number"
+          placeholder="Number"
+          [ngModel]="draft().number"
+          (ngModelChange)="updateNumber($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="address-zip">Zip code</label>
+        <input
+          id="address-zip"
+          name="zipCode"
+          placeholder="Zip code"
+          [ngModel]="draft().zipCode"
+          (ngModelChange)="updateZipCode($event)"
+        />
+      </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
         {{ isEdit() ? 'Update' : 'Create' }}
       </button>

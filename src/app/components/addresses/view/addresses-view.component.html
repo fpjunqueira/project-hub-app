@@ -7,36 +7,56 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="street"
-        placeholder="Street"
-        [value]="address()?.street ?? ''"
-        disabled
-      />
-      <input
-        name="city"
-        placeholder="City"
-        [value]="address()?.city ?? ''"
-        disabled
-      />
-      <input
-        name="state"
-        placeholder="State"
-        [value]="address()?.state ?? ''"
-        disabled
-      />
-      <input
-        name="number"
-        placeholder="Number"
-        [value]="address()?.number ?? ''"
-        disabled
-      />
-      <input
-        name="zipCode"
-        placeholder="Zip code"
-        [value]="address()?.zipCode ?? ''"
-        disabled
-      />
+      <div class="field">
+        <label for="address-street-view">Street</label>
+        <input
+          id="address-street-view"
+          name="street"
+          placeholder="Street"
+          [value]="address()?.street ?? ''"
+          disabled
+        />
+      </div>
+      <div class="field">
+        <label for="address-city-view">City</label>
+        <input
+          id="address-city-view"
+          name="city"
+          placeholder="City"
+          [value]="address()?.city ?? ''"
+          disabled
+        />
+      </div>
+      <div class="field">
+        <label for="address-state-view">State</label>
+        <input
+          id="address-state-view"
+          name="state"
+          placeholder="State"
+          [value]="address()?.state ?? ''"
+          disabled
+        />
+      </div>
+      <div class="field">
+        <label for="address-number-view">Number</label>
+        <input
+          id="address-number-view"
+          name="number"
+          placeholder="Number"
+          [value]="address()?.number ?? ''"
+          disabled
+        />
+      </div>
+      <div class="field">
+        <label for="address-zip-view">Zip code</label>
+        <input
+          id="address-zip-view"
+          name="zipCode"
+          placeholder="Zip code"
+          [value]="address()?.zipCode ?? ''"
+          disabled
+        />
+      </div>
       <button
         type="button"
         [routerLink]="['/addresses', address()?.id, 'edit']"
