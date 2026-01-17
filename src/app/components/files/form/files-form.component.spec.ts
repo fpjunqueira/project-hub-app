@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -14,7 +14,7 @@ type FileServiceSpy = {
 
 const setup = async (routeId: string | null) => {
   const routeStub = {
-    snapshot: { paramMap: { get: () => routeId } }
+    paramMap: of(convertToParamMap(routeId ? { id: routeId } : {}))
   } as unknown as ActivatedRoute;
 
   const serviceSpy: FileServiceSpy = {
@@ -57,11 +57,7 @@ describe('FilesFormComponent', () => {
   it('creates a file when no id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup(null);
 
-    component.draft = {
-      filename: 'new.txt',
-      path: '/new.txt',
-      projectId: null
-    };
+    component.draft.set({ filename: 'new.txt', path: '/new.txt', projectId: null });
     component.submit();
 
     expect(serviceSpy.create).toHaveBeenCalled();
@@ -71,12 +67,12 @@ describe('FilesFormComponent', () => {
   it('updates a file when id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup('1');
 
-    component.draft = {
+    component.draft.set({
       id: 1,
       filename: 'updated.txt',
       path: '/updated.txt',
       projectId: null
-    };
+    });
     component.submit();
 
     expect(serviceSpy.update).toHaveBeenCalledWith(1, {
