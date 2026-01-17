@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
@@ -16,23 +16,24 @@ import { AddressService } from '../service/address.service';
 export class AddressesListComponent implements OnInit {
   private addressService = inject(AddressService);
 
-  addresses: Address[] = [];
-  isLoading = false;
-  error = '';
+  addresses = signal<Address[]>([]);
+  isLoading = signal(false);
+  deletingIds = signal<Set<number>>(new Set<number>());
+  error = signal('');
 
   ngOnInit(): void {
     this.refresh();
   }
 
   refresh(): void {
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
     this.addressService
       .list()
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (addresses) => (this.addresses = addresses),
-        error: () => (this.error = 'Failed to load addresses.')
+        next: (addresses) => this.addresses.set(addresses),
+        error: () => this.error.set('Failed to load addresses.')
       });
   }
 
@@ -41,15 +42,33 @@ export class AddressesListComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-    this.error = '';
+    this.error.set('');
+    this.deletingIds.update((ids) => {
+      const next = new Set(ids);
+      next.add(id);
+      return next;
+    });
     this.addressService
       .delete(id)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() =>
+          this.deletingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          })
+        )
+      )
       .subscribe({
         next: () =>
-          (this.addresses = this.addresses.filter((address) => address.id !== id)),
-        error: () => (this.error = 'Failed to delete address.')
+          this.addresses.update((addresses) =>
+            addresses.filter((address) => address.id !== id)
+          ),
+        error: () => this.error.set('Failed to delete address.')
       });
+  }
+
+  isDeleting(id?: number): boolean {
+    return id !== undefined && this.deletingIds().has(id);
   }
 }

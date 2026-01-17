@@ -3,14 +3,13 @@
     <h2>Addresses</h2>
     <div class="header-actions">
       <button type="button" class="ghost" routerLink="/addresses/new">New</button>
-      <button type="button" class="ghost" (click)="refresh()">Refresh</button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="addresses.length; else emptyState">
+  <table class="table" *ngIf="addresses().length; else emptyState">
     <thead>
       <tr>
         <th>Street</th>
@@ -22,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let address of addresses">
+      <tr *ngFor="let address of addresses()">
         <td>{{ address.street }}</td>
         <td>{{ address.city }}</td>
         <td>{{ address.state }}</td>
@@ -48,7 +47,7 @@
               type="button"
               class="danger"
               (click)="delete(address.id)"
-              [disabled]="isLoading"
+              [disabled]="isDeleting(address.id)"
             >
               Delete
             </button>

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -14,7 +14,7 @@ type OwnerServiceSpy = {
 
 const setup = async (routeId: string | null) => {
   const routeStub = {
-    snapshot: { paramMap: { get: () => routeId } }
+    paramMap: of(convertToParamMap(routeId ? { id: routeId } : {}))
   } as unknown as ActivatedRoute;
 
   const serviceSpy: OwnerServiceSpy = {
@@ -51,8 +51,7 @@ describe('OwnersFormComponent', () => {
   it('creates an owner when no id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup(null);
 
-    component.draft.name = 'Ada';
-    component.draft.email = 'ada@example.com';
+    component.draft.set({ name: 'Ada', email: 'ada@example.com' });
     component.submit();
 
     expect(serviceSpy.create).toHaveBeenCalled();
@@ -62,7 +61,7 @@ describe('OwnersFormComponent', () => {
   it('updates an owner when id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup('1');
 
-    component.draft = { id: 1, name: 'Updated', email: 'u@example.com' };
+    component.draft.set({ id: 1, name: 'Updated', email: 'u@example.com' });
     component.submit();
 
     expect(serviceSpy.update).toHaveBeenCalledWith(1, {

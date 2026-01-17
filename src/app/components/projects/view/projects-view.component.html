@@ -6,26 +6,26 @@
       <button
         type="button"
         class="ghost"
-        [routerLink]="['/projects', project?.id, 'edit']"
-        [disabled]="!project"
+        [routerLink]="['/projects', project()?.id, 'edit']"
+        [disabled]="!project()"
       >
         Edit
       </button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="project">
+  <table class="table" *ngIf="project()">
     <tbody>
       <tr>
         <th>Project name</th>
-        <td>{{ project.projectName }}</td>
+        <td>{{ project()?.projectName }}</td>
       </tr>
       <tr>
         <th>ID</th>
-        <td>{{ project.id }}</td>
+        <td>{{ project()?.id }}</td>
       </tr>
     </tbody>
   </table>

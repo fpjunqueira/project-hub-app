@@ -3,14 +3,13 @@
     <h2>Files</h2>
     <div class="header-actions">
       <button type="button" class="ghost" routerLink="/files/new">New</button>
-      <button type="button" class="ghost" (click)="refresh()">Refresh</button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="files.length; else emptyState">
+  <table class="table" *ngIf="files().length; else emptyState">
     <thead>
       <tr>
         <th>Filename</th>
@@ -20,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let file of files">
+      <tr *ngFor="let file of files()">
         <td>{{ file.filename }}</td>
         <td>{{ file.path }}</td>
         <td>{{ file.projectId }}</td>
@@ -32,7 +31,7 @@
             <button type="button" class="ghost" [routerLink]="['/files', file.id, 'edit']">
               Edit
             </button>
-            <button type="button" class="danger" (click)="delete(file.id)" [disabled]="isLoading">
+            <button type="button" class="danger" (click)="delete(file.id)" [disabled]="isDeleting(file.id)">
               Delete
             </button>
           </div>

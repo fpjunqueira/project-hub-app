@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
@@ -16,23 +16,24 @@ import { ProjectService } from '../service/project.service';
 export class ProjectsListComponent implements OnInit {
   private projectService = inject(ProjectService);
 
-  projects: Project[] = [];
-  isLoading = false;
-  error = '';
+  projects = signal<Project[]>([]);
+  isLoading = signal(false);
+  deletingIds = signal<Set<number>>(new Set<number>());
+  error = signal('');
 
   ngOnInit(): void {
     this.refresh();
   }
 
   refresh(): void {
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
     this.projectService
       .list()
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (projects) => (this.projects = projects),
-        error: () => (this.error = 'Failed to load projects.')
+        next: (projects) => this.projects.set(projects),
+        error: () => this.error.set('Failed to load projects.')
       });
   }
 
@@ -41,15 +42,31 @@ export class ProjectsListComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-    this.error = '';
+    this.error.set('');
+    this.deletingIds.update((ids) => {
+      const next = new Set(ids);
+      next.add(id);
+      return next;
+    });
     this.projectService
       .delete(id)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(
+        finalize(() =>
+          this.deletingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          })
+        )
+      )
       .subscribe({
         next: () =>
-          (this.projects = this.projects.filter((project) => project.id !== id)),
-        error: () => (this.error = 'Failed to delete project.')
+          this.projects.update((projects) => projects.filter((project) => project.id !== id)),
+        error: () => this.error.set('Failed to delete project.')
       });
+  }
+
+  isDeleting(id?: number): boolean {
+    return id !== undefined && this.deletingIds().has(id);
   }
 }

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs/operators';
 
 import { FileRecord } from '../model/file.model';
@@ -16,27 +17,34 @@ import { FileService } from '../service/file.service';
 export class FilesViewComponent implements OnInit {
   private fileService = inject(FileService);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
-  file: FileRecord | null = null;
-  isLoading = false;
-  error = '';
+  file = signal<FileRecord | null>(null);
+  isLoading = signal(false);
+  error = signal('');
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.loadFile(Number(idParam));
-    }
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const idParam = params.get('id');
+        if (idParam) {
+          this.loadFile(Number(idParam));
+        } else {
+          this.file.set(null);
+        }
+      });
   }
 
   private loadFile(id: number): void {
-    this.isLoading = true;
-    this.error = '';
+    this.isLoading.set(true);
+    this.error.set('');
     this.fileService
       .get(id)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (file) => (this.file = file),
-        error: () => (this.error = 'Failed to load file.')
+        next: (file) => this.file.set(file),
+        error: () => this.error.set('Failed to load file.')
       });
   }
 }

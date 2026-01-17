@@ -6,34 +6,34 @@
       <button
         type="button"
         class="ghost"
-        [routerLink]="['/files', file?.id, 'edit']"
-        [disabled]="!file"
+        [routerLink]="['/files', file()?.id, 'edit']"
+        [disabled]="!file()"
       >
         Edit
       </button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="file">
+  <table class="table" *ngIf="file()">
     <tbody>
       <tr>
         <th>Filename</th>
-        <td>{{ file.filename }}</td>
+        <td>{{ file()?.filename }}</td>
       </tr>
       <tr>
         <th>Path</th>
-        <td>{{ file.path }}</td>
+        <td>{{ file()?.path }}</td>
       </tr>
       <tr>
         <th>Project ID</th>
-        <td>{{ file.projectId }}</td>
+        <td>{{ file()?.projectId }}</td>
       </tr>
       <tr>
         <th>ID</th>
-        <td>{{ file.id }}</td>
+        <td>{{ file()?.id }}</td>
       </tr>
     </tbody>
   </table>
@@ -46,34 +46,34 @@
       <button
         type="button"
         class="ghost"
-        [routerLink]="['/files', file?.id, 'edit']"
-        [disabled]="!file"
+        [routerLink]="['/files', file()?.id, 'edit']"
+        [disabled]="!file()"
       >
         Edit
       </button>
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading">Loading...</p>
-  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
 
-  <table class="table" *ngIf="file">
+  <table class="table" *ngIf="file()">
     <tbody>
       <tr>
         <th>Filename</th>
-        <td>{{ file.filename }}</td>
+        <td>{{ file()?.filename }}</td>
       </tr>
       <tr>
         <th>Path</th>
-        <td>{{ file.path }}</td>
+        <td>{{ file()?.path }}</td>
       </tr>
       <tr>
         <th>Project ID</th>
-        <td>{{ file.projectId }}</td>
+        <td>{{ file()?.projectId }}</td>
       </tr>
       <tr>
         <th>ID</th>
-        <td>{{ file.id }}</td>
+        <td>{{ file()?.id }}</td>
       </tr>
     </tbody>
   </table>
