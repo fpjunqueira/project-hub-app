@@ -38,15 +38,15 @@ describe('AddressesListComponent', () => {
   });
 
   it('removes an address on delete', () => {
-    component.addresses = [
+    component.addresses.set([
       { id: 1, street: 'One', city: 'A', state: 'TX', number: '1', zipCode: '0' },
       { id: 2, street: 'Two', city: 'B', state: 'TX', number: '2', zipCode: '0' }
-    ];
+    ]);
 
     component.delete(1);
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
-    expect(component.addresses).toEqual([
+    expect(component.addresses()).toEqual([
       { id: 2, street: 'Two', city: 'B', state: 'TX', number: '2', zipCode: '0' }
     ]);
   });

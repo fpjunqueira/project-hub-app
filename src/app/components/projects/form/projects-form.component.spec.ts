@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -14,7 +14,7 @@ type ProjectServiceSpy = {
 
 const setup = async (routeId: string | null) => {
   const routeStub = {
-    snapshot: { paramMap: { get: () => routeId } }
+    paramMap: of(convertToParamMap(routeId ? { id: routeId } : {}))
   } as unknown as ActivatedRoute;
 
   const serviceSpy: ProjectServiceSpy = {
@@ -51,7 +51,7 @@ describe('ProjectsFormComponent', () => {
   it('creates a project when no id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup(null);
 
-    component.draft.projectName = 'New';
+    component.draft.set({ projectName: 'New' });
     component.submit();
 
     expect(serviceSpy.create).toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe('ProjectsFormComponent', () => {
   it('updates a project when id is provided', async () => {
     const { component, serviceSpy, navigateSpy } = await setup('1');
 
-    component.draft = { id: 1, projectName: 'Updated' };
+    component.draft.set({ id: 1, projectName: 'Updated' });
     component.submit();
 
     expect(serviceSpy.update).toHaveBeenCalledWith(1, {

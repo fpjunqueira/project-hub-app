@@ -38,14 +38,14 @@ describe('ProjectsListComponent', () => {
   });
 
   it('removes a project on delete', () => {
-    component.projects = [
+    component.projects.set([
       { id: 1, projectName: 'One' },
       { id: 2, projectName: 'Two' }
-    ];
+    ]);
 
     component.delete(1);
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
-    expect(component.projects).toEqual([{ id: 2, projectName: 'Two' }]);
+    expect(component.projects()).toEqual([{ id: 2, projectName: 'Two' }]);
   });
 });

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -17,7 +17,7 @@ describe('ProjectsViewComponent', () => {
 
   beforeEach(async () => {
     const routeStub = {
-      snapshot: { paramMap: { get: () => '1' } }
+      paramMap: of(convertToParamMap({ id: '1' }))
     } as unknown as ActivatedRoute;
 
     serviceSpy = {

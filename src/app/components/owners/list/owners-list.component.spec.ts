@@ -38,15 +38,15 @@ describe('OwnersListComponent', () => {
   });
 
   it('removes an owner on delete', () => {
-    component.owners = [
+    component.owners.set([
       { id: 1, name: 'One', email: 'one@example.com' },
       { id: 2, name: 'Two', email: 'two@example.com' }
-    ];
+    ]);
 
     component.delete(1);
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
-    expect(component.owners).toEqual([
+    expect(component.owners()).toEqual([
       { id: 2, name: 'Two', email: 'two@example.com' }
     ]);
   });

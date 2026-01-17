@@ -38,15 +38,15 @@ describe('FilesListComponent', () => {
   });
 
   it('removes a file on delete', () => {
-    component.files = [
+    component.files.set([
       { id: 1, filename: 'one.txt', path: '/1.txt', projectId: null },
       { id: 2, filename: 'two.txt', path: '/2.txt', projectId: null }
-    ];
+    ]);
 
     component.delete(1);
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
-    expect(component.files).toEqual([
+    expect(component.files()).toEqual([
       { id: 2, filename: 'two.txt', path: '/2.txt', projectId: null }
     ]);
   });
