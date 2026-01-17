@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
+import { Project } from '../../projects/model/project.model';
 import { FileRecord } from '../model/file.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,5 +27,9 @@ export class FileService {
 
   delete(id: number) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  getProject(id: number) {
+    return this.http.get<Project | null>(`${this.baseUrl}/${id}/project`);
   }
 }

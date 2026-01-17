@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
+import { Project } from '../../projects/model/project.model';
 import { FileRecord } from '../model/file.model';
 import { FileService } from '../service/file.service';
 
@@ -20,7 +22,10 @@ export class FilesViewComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   file = signal<FileRecord | null>(null);
+  project = signal<Project | null>(null);
   isLoading = signal(false);
+  projectLoading = signal(false);
+  relationsError = signal('');
   error = signal('');
 
   ngOnInit(): void {
@@ -32,6 +37,7 @@ export class FilesViewComponent implements OnInit {
           this.loadFile(Number(idParam));
         } else {
           this.file.set(null);
+          this.resetRelations();
         }
       });
   }
@@ -43,8 +49,40 @@ export class FilesViewComponent implements OnInit {
       .get(id)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (file) => this.file.set(file),
-        error: () => this.error.set('Failed to load file.')
+        next: (file) => {
+          this.file.set(file);
+          if (file.id !== undefined) {
+            this.loadRelations(file.id);
+          } else {
+            this.resetRelations();
+          }
+        },
+        error: () => {
+          this.error.set('Failed to load file.');
+          this.resetRelations();
+        }
       });
+  }
+
+  private loadRelations(id: number): void {
+    this.projectLoading.set(true);
+    this.relationsError.set('');
+
+    this.fileService
+      .getProject(id)
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        }),
+        finalize(() => this.projectLoading.set(false))
+      )
+      .subscribe((project) => this.project.set(project));
+  }
+
+  private resetRelations(): void {
+    this.project.set(null);
+    this.projectLoading.set(false);
+    this.relationsError.set('');
   }
 }

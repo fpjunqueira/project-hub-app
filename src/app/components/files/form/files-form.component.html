@@ -25,6 +25,33 @@
     </div>
   </div>
 
+  <div class="form-block" *ngIf="isEdit()">
+    <h3>Project</h3>
+    <p class="muted" *ngIf="relationsLoading()">Loading related data...</p>
+    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
+    <table class="table" *ngIf="!relationsLoading()">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="project() as fileProject; else noProject">
+          <td>{{ fileProject.projectName }}</td>
+          <td>
+            <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id]">
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noProject>
+      <div class="table-empty">No project linked.</div>
+    </ng-template>
+  </div>
+
   <p class="muted" *ngIf="isLoading()">Loading...</p>
   <p class="error" *ngIf="error()">{{ error() }}</p>
 </section>

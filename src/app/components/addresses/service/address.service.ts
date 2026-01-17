@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
+import { Owner } from '../../owners/model/owner.model';
+import { Project } from '../../projects/model/project.model';
 import { Address } from '../model/address.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,5 +28,13 @@ export class AddressService {
 
   delete(id: number) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  getOwner(id: number) {
+    return this.http.get<Owner | null>(`${this.baseUrl}/${id}/owner`);
+  }
+
+  getProject(id: number) {
+    return this.http.get<Project | null>(`${this.baseUrl}/${id}/project`);
   }
 }

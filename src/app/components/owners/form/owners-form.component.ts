@@ -3,8 +3,11 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
+import { Address } from '../../addresses/model/address.model';
+import { Project } from '../../projects/model/project.model';
 import { Owner } from '../model/owner.model';
 import { OwnerService } from '../service/owner.service';
 
@@ -22,8 +25,12 @@ export class OwnersFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   draft = signal<Owner>({ name: '', email: '' });
+  address = signal<Address | null>(null);
+  projects = signal<Project[]>([]);
   isEdit = signal(false);
   isLoading = signal(false);
+  relationsLoading = signal(false);
+  relationsError = signal('');
   error = signal('');
 
   ngOnInit(): void {
@@ -38,6 +45,7 @@ export class OwnersFormComponent implements OnInit {
           this.isEdit.set(false);
           this.error.set('');
           this.draft.set({ name: '', email: '' });
+          this.resetRelations();
         }
       });
   }
@@ -69,9 +77,51 @@ export class OwnersFormComponent implements OnInit {
       .get(id)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: (owner) => this.draft.set({ ...owner }),
-        error: () => this.error.set('Failed to load owner.')
+        next: (owner) => {
+          this.draft.set({ ...owner });
+          if (owner.id !== undefined) {
+            this.loadRelations(owner.id);
+          } else {
+            this.resetRelations();
+          }
+        },
+        error: () => {
+          this.error.set('Failed to load owner.');
+          this.resetRelations();
+        }
       });
+  }
+
+  private loadRelations(id: number): void {
+    this.relationsLoading.set(true);
+    this.relationsError.set('');
+
+    forkJoin({
+      projects: this.ownerService.getProjects(id).pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        })
+      ),
+      address: this.ownerService.getAddress(id).pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        })
+      )
+    })
+      .pipe(finalize(() => this.relationsLoading.set(false)))
+      .subscribe(({ projects, address }) => {
+        this.projects.set(projects);
+        this.address.set(address);
+      });
+  }
+
+  private resetRelations(): void {
+    this.address.set(null);
+    this.projects.set([]);
+    this.relationsLoading.set(false);
+    this.relationsError.set('');
   }
 
   updateName(name: string): void {
