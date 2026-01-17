@@ -1,0 +1,64 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Addresses</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/addresses/new">New</button>
+      <button type="button" class="ghost" (click)="refresh()">Refresh</button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="addresses.length; else emptyState">
+    <thead>
+      <tr>
+        <th>Street</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Number</th>
+        <th>Zip code</th>
+        <th>Commands</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let address of addresses">
+        <td>{{ address.street }}</td>
+        <td>{{ address.city }}</td>
+        <td>{{ address.state }}</td>
+        <td>{{ address.number }}</td>
+        <td>{{ address.zipCode }}</td>
+        <td>
+          <div class="table-actions">
+            <button
+              type="button"
+              class="ghost"
+              [routerLink]="['/addresses', address.id, 'view']"
+            >
+              View
+            </button>
+            <button
+              type="button"
+              class="ghost"
+              [routerLink]="['/addresses', address.id, 'edit']"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="danger"
+              (click)="delete(address.id)"
+              [disabled]="isLoading"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #emptyState>
+    <p class="table-empty">No addresses yet.</p>
+  </ng-template>
+</section>

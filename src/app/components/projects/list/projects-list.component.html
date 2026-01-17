@@ -1,0 +1,45 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Projects</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/projects/new">New</button>
+      <button type="button" class="ghost" (click)="refresh()">Refresh</button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="projects.length; else emptyState">
+    <thead>
+      <tr>
+        <th>Project name</th>
+        <th>ID</th>
+        <th>Commands</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let project of projects">
+        <td>{{ project.projectName }}</td>
+        <td>{{ project.id }}</td>
+        <td>
+          <div class="table-actions">
+            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
+              View
+            </button>
+            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'edit']">
+              Edit
+            </button>
+            <button type="button" class="danger" (click)="delete(project.id)" [disabled]="isLoading">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #emptyState>
+    <p class="table-empty">No projects yet.</p>
+  </ng-template>
+</section>

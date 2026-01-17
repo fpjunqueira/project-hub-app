@@ -1,0 +1,80 @@
+<section class="card">
+  <header class="card-header">
+    <h2>File Details</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/files">Back to list</button>
+      <button
+        type="button"
+        class="ghost"
+        [routerLink]="['/files', file?.id, 'edit']"
+        [disabled]="!file"
+      >
+        Edit
+      </button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="file">
+    <tbody>
+      <tr>
+        <th>Filename</th>
+        <td>{{ file.filename }}</td>
+      </tr>
+      <tr>
+        <th>Path</th>
+        <td>{{ file.path }}</td>
+      </tr>
+      <tr>
+        <th>Project ID</th>
+        <td>{{ file.projectId }}</td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{ file.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <header class="card-header">
+    <h2>File Details</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/files">Back to list</button>
+      <button
+        type="button"
+        class="ghost"
+        [routerLink]="['/files', file?.id, 'edit']"
+        [disabled]="!file"
+      >
+        Edit
+      </button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="file">
+    <tbody>
+      <tr>
+        <th>Filename</th>
+        <td>{{ file.filename }}</td>
+      </tr>
+      <tr>
+        <th>Path</th>
+        <td>{{ file.path }}</td>
+      </tr>
+      <tr>
+        <th>Project ID</th>
+        <td>{{ file.projectId }}</td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{ file.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

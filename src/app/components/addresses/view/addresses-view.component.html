@@ -1,0 +1,48 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Address Details</h2>
+    <div class="header-actions">
+      <button type="button" class="ghost" routerLink="/addresses">Back to list</button>
+      <button
+        type="button"
+        class="ghost"
+        [routerLink]="['/addresses', address?.id, 'edit']"
+        [disabled]="!address"
+      >
+        Edit
+      </button>
+    </div>
+  </header>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <table class="table" *ngIf="address">
+    <tbody>
+      <tr>
+        <th>Street</th>
+        <td>{{ address.street }}</td>
+      </tr>
+      <tr>
+        <th>City</th>
+        <td>{{ address.city }}</td>
+      </tr>
+      <tr>
+        <th>State</th>
+        <td>{{ address.state }}</td>
+      </tr>
+      <tr>
+        <th>Number</th>
+        <td>{{ address.number }}</td>
+      </tr>
+      <tr>
+        <th>Zip code</th>
+        <td>{{ address.zipCode }}</td>
+      </tr>
+      <tr>
+        <th>ID</th>
+        <td>{{ address.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

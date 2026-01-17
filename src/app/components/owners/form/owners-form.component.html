@@ -1,0 +1,20 @@
+<section class="card">
+  <header class="card-header">
+    <h2>{{ isEdit ? 'Edit Owner' : 'New Owner' }}</h2>
+    <button type="button" class="ghost" routerLink="/owners">Back to list</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Details</h3>
+    <div class="form-row">
+      <input name="ownerName" placeholder="Name" [(ngModel)]="draft.name" />
+      <input name="ownerEmail" placeholder="Email" [(ngModel)]="draft.email" />
+      <button type="button" (click)="submit()" [disabled]="isLoading">
+        {{ isEdit ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </div>
+
+  <p class="muted" *ngIf="isLoading">Loading...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+</section>

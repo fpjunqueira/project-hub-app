@@ -3,6 +3,96 @@ Project Hub Frontend Angular App
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
 
+## Architecture overview
+
+The frontend is organized as a small, layered Angular app that keeps routing, UI
+composition, domain logic, and HTTP access separated. The main layers live under
+`src/app` and are designed to make each responsibility easy to find.
+
+### 1) Application shell (bootstrap + app-level providers)
+
+**Responsibility:** initialize global providers and render the root router outlet.
+
+- `src/app/app.config.ts` wires the router and HTTP client.
+- `src/app/app.ts` hosts the root component and the `RouterOutlet`.
+
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideHttpClient()
+  ]
+};
+```
+
+### 2) Routing layer
+
+**Responsibility:** map URLs to the top-level feature views.
+
+- `src/app/app.routes.ts` redirects `/` to `/projects` and defines routes for
+  list, view, and form screens for each domain.
+
+```ts
+export const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'projects' },
+  { path: 'projects', component: ProjectsListComponent },
+  { path: 'projects/new', component: ProjectsFormComponent },
+  { path: 'projects/:id/edit', component: ProjectsFormComponent },
+  { path: 'projects/:id/view', component: ProjectsViewComponent }
+];
+```
+
+### 3) Domain presentation + state (list + view + form components)
+
+**Responsibility:** own UI state, bind forms, and call services for data.
+
+Each domain has standalone list, view, and form components that hold view
+state and use a service to load/save data. Example:
+`src/app/components/projects/list/projects-list.component.ts`
+
+```ts
+projects: Project[] = [];
+isLoading = false;
+error = '';
+
+refresh(): void {
+  this.projectService.list().subscribe({
+    next: (projects) => (this.projects = projects),
+    error: () => (this.error = 'Failed to load projects.')
+  });
+}
+```
+
+### 4) Data access layer (services)
+
+**Responsibility:** encapsulate HTTP calls to the backend API.
+
+Services live alongside their domain and expose a small CRUD surface. Example:
+`src/app/components/projects/service/project.service.ts`
+
+```ts
+private baseUrl = '/api/projects';
+
+list() {
+  return this.http.get<Project[]>(this.baseUrl);
+}
+```
+
+### 5) Domain model layer (domain types)
+
+**Responsibility:** define shared entity shapes for compile-time safety.
+
+Each domain defines its own interface in a `model` folder, for example:
+`src/app/components/projects/model/project.model.ts`.
+
+```ts
+export interface Project {
+  id?: number;
+  projectName: string;
+}
+```
+
 ## Development server
 
 To start a local development server, run:
