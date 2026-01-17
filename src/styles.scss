@@ -212,10 +212,19 @@ button.danger:hover:not(:disabled) {
   border-bottom: 1px solid #e2e8f0;
 }
 
+.table th:last-child,
+.table td:last-child {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 12px;
+}
+
 .table-actions {
-  display: flex;
+  display: inline-flex;
+  justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .table-empty {

@@ -1,6 +1,7 @@
 <div class="app-shell">
-  <app-sidebar />
+  <app-sidebar *ngIf="showSidebar()"></app-sidebar>
   <main class="content">
+    <app-topbar *ngIf="showSidebar()"></app-topbar>
     <router-outlet />
   </main>
 </div>

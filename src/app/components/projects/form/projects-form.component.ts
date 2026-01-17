@@ -62,6 +62,7 @@ export class ProjectsFormComponent implements OnInit {
           this.error.set('');
           this.draft.set({ projectName: '' });
           this.resetRelations();
+          this.loadRelationsForCreate();
         }
       });
   }
@@ -75,9 +76,7 @@ export class ProjectsFormComponent implements OnInit {
     this.isLoading.set(true);
     this.error.set('');
 
-    const payload = this.isEdit()
-      ? this.buildUpdatePayload(draft)
-      : draft;
+    const payload = this.buildUpdatePayload(draft);
     const request = this.isEdit() && draft.id !== undefined
       ? this.projectService.update(draft.id, payload)
       : this.projectService.create(payload);
@@ -196,6 +195,46 @@ export class ProjectsFormComponent implements OnInit {
         this.address.set(address);
         this.selectedAddressId.set(address?.id ?? null);
       });
+  }
+
+  private loadRelationsForCreate(): void {
+    this.relationsError.set('');
+
+    this.ownersLoading.set(true);
+    this.ownerService
+      .list()
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        }),
+        finalize(() => this.ownersLoading.set(false))
+      )
+      .subscribe((owners) => this.owners.set(owners));
+
+    this.filesLoading.set(true);
+    this.fileService
+      .list()
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        }),
+        finalize(() => this.filesLoading.set(false))
+      )
+      .subscribe((files) => this.files.set(files));
+
+    this.addressLoading.set(true);
+    this.addressService
+      .list()
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        }),
+        finalize(() => this.addressLoading.set(false))
+      )
+      .subscribe((addresses) => this.addresses.set(addresses));
   }
 
   private resetRelations(): void {

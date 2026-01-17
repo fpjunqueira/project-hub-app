@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div class="form-block" *ngIf="isEdit()">
+  <div class="form-block">
     <h3>Address</h3>
     <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <div class="form-block" *ngIf="isEdit()">
+  <div class="form-block">
     <h3>Projects</h3>
     <p class="muted" *ngIf="projectsLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>

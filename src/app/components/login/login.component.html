@@ -1,0 +1,37 @@
+<section class="login-shell">
+  <div class="login-card">
+    <header>
+      <h1>Project Hub</h1>
+      <p>Sign in to continue.</p>
+    </header>
+
+    <form (ngSubmit)="submit()">
+      <label for="login-username">Login</label>
+      <input
+        id="login-username"
+        name="login"
+        type="text"
+        autocomplete="username"
+        [ngModel]="username()"
+        (ngModelChange)="username.set($event)"
+      />
+
+      <label for="login-password">Password</label>
+      <input
+        id="login-password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+      />
+
+      <button type="submit" [disabled]="isLoading()">
+        {{ isLoading() ? 'Signing in...' : 'Sign in' }}
+      </button>
+    </form>
+
+    <p class="error" *ngIf="error()">{{ error() }}</p>
+    <p class="hint">Mock credentials: adm / adm</p>
+  </div>
+</section>
