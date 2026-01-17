@@ -1,48 +1,58 @@
 <section class="card">
   <header class="card-header">
     <h2>Address Details</h2>
-    <div class="header-actions">
-      <button type="button" class="ghost" routerLink="/addresses">Back to list</button>
+    <button type="button" class="ghost" routerLink="/addresses">Back to list</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Details</h3>
+    <div class="form-row">
+      <input
+        name="street"
+        placeholder="Street"
+        [value]="address()?.street ?? ''"
+        disabled
+      />
+      <input
+        name="city"
+        placeholder="City"
+        [value]="address()?.city ?? ''"
+        disabled
+      />
+      <input
+        name="state"
+        placeholder="State"
+        [value]="address()?.state ?? ''"
+        disabled
+      />
+      <input
+        name="number"
+        placeholder="Number"
+        [value]="address()?.number ?? ''"
+        disabled
+      />
+      <input
+        name="zipCode"
+        placeholder="Zip code"
+        [value]="address()?.zipCode ?? ''"
+        disabled
+      />
+      <input
+        name="id"
+        placeholder="ID"
+        [value]="address()?.id ?? ''"
+        disabled
+      />
       <button
         type="button"
-        class="ghost"
         [routerLink]="['/addresses', address()?.id, 'edit']"
         [disabled]="!address()"
       >
         Edit
       </button>
     </div>
-  </header>
+  </div>
 
   <p class="muted" *ngIf="isLoading()">Loading...</p>
   <p class="error" *ngIf="error()">{{ error() }}</p>
-
-  <table class="table" *ngIf="address()">
-    <tbody>
-      <tr>
-        <th>Street</th>
-        <td>{{ address()?.street }}</td>
-      </tr>
-      <tr>
-        <th>City</th>
-        <td>{{ address()?.city }}</td>
-      </tr>
-      <tr>
-        <th>State</th>
-        <td>{{ address()?.state }}</td>
-      </tr>
-      <tr>
-        <th>Number</th>
-        <td>{{ address()?.number }}</td>
-      </tr>
-      <tr>
-        <th>Zip code</th>
-        <td>{{ address()?.zipCode }}</td>
-      </tr>
-      <tr>
-        <th>ID</th>
-        <td>{{ address()?.id }}</td>
-      </tr>
-    </tbody>
-  </table>
 </section>
