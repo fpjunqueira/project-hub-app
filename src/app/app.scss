@@ -9,9 +9,29 @@
 .app-shell {
   display: flex;
   min-height: 100vh;
+  align-items: stretch;
 }
 
 .content {
   flex: 1;
   padding: 24px;
+}
+
+.content-stack {
+  display: block;
+}
+
+.content-stack.is-auth {
+  display: grid;
+  gap: 16px;
+}
+
+.content-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.content-body {
+  padding: 0;
 }

@@ -1,7 +1,11 @@
 <div class="app-shell">
   <app-sidebar *ngIf="showSidebar()"></app-sidebar>
   <main class="content">
-    <app-topbar *ngIf="showSidebar()"></app-topbar>
-    <router-outlet />
+    <div class="content-stack" [class.is-auth]="showSidebar()">
+      <app-topbar *ngIf="showSidebar()" class="content-panel"></app-topbar>
+      <div [class.content-panel]="showSidebar()" [class.content-body]="showSidebar()">
+        <router-outlet />
+      </div>
+    </div>
   </main>
 </div>
