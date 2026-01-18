@@ -19,15 +19,15 @@ type ProjectServiceSpy = {
 };
 
 type AddressServiceSpy = {
-  list: ReturnType<typeof vi.fn>;
+  listAll: ReturnType<typeof vi.fn>;
 };
 
 type OwnerServiceSpy = {
-  list: ReturnType<typeof vi.fn>;
+  listAll: ReturnType<typeof vi.fn>;
 };
 
 type FileServiceSpy = {
-  list: ReturnType<typeof vi.fn>;
+  listAll: ReturnType<typeof vi.fn>;
 };
 
 const setup = async (routeId: string | null) => {
@@ -45,15 +45,15 @@ const setup = async (routeId: string | null) => {
   };
 
   const addressServiceSpy: AddressServiceSpy = {
-    list: vi.fn().mockReturnValue(of([]))
+    listAll: vi.fn().mockReturnValue(of([]))
   };
 
   const ownerServiceSpy: OwnerServiceSpy = {
-    list: vi.fn().mockReturnValue(of([]))
+    listAll: vi.fn().mockReturnValue(of([]))
   };
 
   const fileServiceSpy: FileServiceSpy = {
-    list: vi.fn().mockReturnValue(of([]))
+    listAll: vi.fn().mockReturnValue(of([]))
   };
 
   await TestBed.configureTestingModule({
@@ -85,9 +85,9 @@ describe('ProjectsFormComponent', () => {
     expect(serviceSpy.getOwners).toHaveBeenCalledWith(1);
     expect(serviceSpy.getFiles).toHaveBeenCalledWith(1);
     expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
-    expect(addressServiceSpy.list).toHaveBeenCalled();
-    expect(ownerServiceSpy.list).toHaveBeenCalled();
-    expect(fileServiceSpy.list).toHaveBeenCalled();
+    expect(addressServiceSpy.listAll).toHaveBeenCalled();
+    expect(ownerServiceSpy.listAll).toHaveBeenCalled();
+    expect(fileServiceSpy.listAll).toHaveBeenCalled();
   });
 
   it('creates a project when no id is provided', async () => {

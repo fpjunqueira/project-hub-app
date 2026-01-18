@@ -17,11 +17,11 @@ type OwnerServiceSpy = {
 };
 
 type AddressServiceSpy = {
-  list: ReturnType<typeof vi.fn>;
+  listAll: ReturnType<typeof vi.fn>;
 };
 
 type ProjectServiceSpy = {
-  list: ReturnType<typeof vi.fn>;
+  listAll: ReturnType<typeof vi.fn>;
 };
 
 const setup = async (routeId: string | null) => {
@@ -38,11 +38,11 @@ const setup = async (routeId: string | null) => {
   };
 
   const addressServiceSpy: AddressServiceSpy = {
-    list: vi.fn().mockReturnValue(of([]))
+    listAll: vi.fn().mockReturnValue(of([]))
   };
 
   const projectServiceSpy: ProjectServiceSpy = {
-    list: vi.fn().mockReturnValue(of([]))
+    listAll: vi.fn().mockReturnValue(of([]))
   };
 
   await TestBed.configureTestingModule({
@@ -72,8 +72,8 @@ describe('OwnersFormComponent', () => {
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
     expect(serviceSpy.getProjects).toHaveBeenCalledWith(1);
     expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
-    expect(addressServiceSpy.list).toHaveBeenCalled();
-    expect(projectServiceSpy.list).toHaveBeenCalled();
+    expect(addressServiceSpy.listAll).toHaveBeenCalled();
+    expect(projectServiceSpy.listAll).toHaveBeenCalled();
   });
 
   it('creates an owner when no id is provided', async () => {
@@ -92,11 +92,16 @@ describe('OwnersFormComponent', () => {
     component.draft.set({ id: 1, name: 'Updated', email: 'u@example.com' });
     component.submit();
 
-    expect(serviceSpy.update).toHaveBeenCalledWith(1, {
-      id: 1,
-      name: 'Updated',
-      email: 'u@example.com'
-    });
+    expect(serviceSpy.update).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({
+        id: 1,
+        name: 'Updated',
+        email: 'u@example.com',
+        address: null,
+        projects: []
+      })
+    );
     expect(navigateSpy).toHaveBeenCalledWith(['/owners']);
   });
 });
