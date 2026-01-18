@@ -37,10 +37,18 @@ export class OwnersListComponent implements OnInit {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (response) => {
-          this.owners.set(response.content);
-          this.pageIndex.set(response.number);
-          this.totalPages.set(response.totalPages);
-          this.totalElements.set(response.totalElements);
+          if (Array.isArray(response)) {
+            this.owners.set(response);
+            this.pageIndex.set(0);
+            this.totalPages.set(response.length ? 1 : 0);
+            this.totalElements.set(response.length);
+            return;
+          }
+
+          this.owners.set(response.content ?? []);
+          this.pageIndex.set(response.number ?? 0);
+          this.totalPages.set(response.totalPages ?? 0);
+          this.totalElements.set(response.totalElements ?? 0);
         },
         error: () => this.error.set('Failed to load owners.')
       });

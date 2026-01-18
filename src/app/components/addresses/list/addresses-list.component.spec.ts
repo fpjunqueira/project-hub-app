@@ -11,6 +11,14 @@ type AddressServiceSpy = {
   delete: ReturnType<typeof vi.fn>;
 };
 
+const buildPage = (content: Array<{ id?: number; street: string; city: string; state: string; number: string; zipCode: string }>) => ({
+  content,
+  totalElements: content.length,
+  totalPages: content.length ? 1 : 0,
+  size: 10,
+  number: 0
+});
+
 describe('AddressesListComponent', () => {
   let fixture: ComponentFixture<AddressesListComponent>;
   let component: AddressesListComponent;
@@ -18,7 +26,7 @@ describe('AddressesListComponent', () => {
 
   beforeEach(async () => {
     serviceSpy = {
-      list: vi.fn().mockReturnValue(of([])),
+      list: vi.fn().mockReturnValue(of(buildPage([]))),
       delete: vi.fn().mockReturnValue(of(void 0))
     };
 
@@ -46,8 +54,6 @@ describe('AddressesListComponent', () => {
     component.delete(1);
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
-    expect(component.addresses()).toEqual([
-      { id: 2, street: 'Two', city: 'B', state: 'TX', number: '2', zipCode: '0' }
-    ]);
+    expect(serviceSpy.list).toHaveBeenCalledTimes(2);
   });
 });

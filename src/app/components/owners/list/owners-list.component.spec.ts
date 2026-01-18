@@ -11,6 +11,14 @@ type OwnerServiceSpy = {
   delete: ReturnType<typeof vi.fn>;
 };
 
+const buildPage = (content: Array<{ id?: number; name: string; email: string }>) => ({
+  content,
+  totalElements: content.length,
+  totalPages: content.length ? 1 : 0,
+  size: 10,
+  number: 0
+});
+
 describe('OwnersListComponent', () => {
   let fixture: ComponentFixture<OwnersListComponent>;
   let component: OwnersListComponent;
@@ -18,7 +26,7 @@ describe('OwnersListComponent', () => {
 
   beforeEach(async () => {
     serviceSpy = {
-      list: vi.fn().mockReturnValue(of([])),
+      list: vi.fn().mockReturnValue(of(buildPage([]))),
       delete: vi.fn().mockReturnValue(of(void 0))
     };
 
@@ -46,8 +54,6 @@ describe('OwnersListComponent', () => {
     component.delete(1);
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
-    expect(component.owners()).toEqual([
-      { id: 2, name: 'Two', email: 'two@example.com' }
-    ]);
+    expect(serviceSpy.list).toHaveBeenCalledTimes(2);
   });
 });
