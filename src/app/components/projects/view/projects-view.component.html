@@ -7,12 +7,16 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="projectName"
-        placeholder="Project name"
-        [value]="project()?.projectName ?? ''"
-        disabled
-      />
+      <div class="field">
+        <label for="project-name-view">Project name</label>
+        <input
+          id="project-name-view"
+          name="projectName"
+          placeholder="Project name"
+          [value]="project()?.projectName ?? ''"
+          disabled
+        />
+      </div>
       <button
         type="button"
         [routerLink]="['/projects', project()?.id, 'edit']"

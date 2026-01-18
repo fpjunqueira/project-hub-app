@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
+import { PageResponse } from '../../../shared/pagination/page.model';
 import { Owner } from '../model/owner.model';
 import { OwnerService } from './owner.service';
 
@@ -23,13 +24,31 @@ describe('OwnerService', () => {
   });
 
   it('lists owners', () => {
-    const response: Owner[] = [{ id: 1, name: 'Ada', email: 'ada@example.com' }];
+    const response: PageResponse<Owner> = {
+      content: [{ id: 1, name: 'Ada', email: 'ada@example.com' }],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0
+    };
 
     service.list().subscribe((owners) => {
       expect(owners).toEqual(response);
     });
 
-    const req = httpMock.expectOne('/api/owners');
+    const req = httpMock.expectOne('/api/owners?page=0&size=10');
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+  });
+
+  it('lists all owners', () => {
+    const response: Owner[] = [{ id: 1, name: 'Ada', email: 'ada@example.com' }];
+
+    service.listAll().subscribe((owners) => {
+      expect(owners).toEqual(response);
+    });
+
+    const req = httpMock.expectOne('/api/owners/all');
     expect(req.request.method).toBe('GET');
     req.flush(response);
   });

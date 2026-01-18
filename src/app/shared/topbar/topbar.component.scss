@@ -1,0 +1,53 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 16px 24px;
+}
+
+.topbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2933;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #1f2933;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.topbar-mark {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #111827;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}

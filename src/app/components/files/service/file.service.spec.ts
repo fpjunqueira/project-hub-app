@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
+import { PageResponse } from '../../../shared/pagination/page.model';
 import { FileRecord } from '../model/file.model';
 import { FileService } from './file.service';
 
@@ -23,13 +24,31 @@ describe('FileService', () => {
   });
 
   it('lists files', () => {
-    const response: FileRecord[] = [{ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null }];
+    const response: PageResponse<FileRecord> = {
+      content: [{ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null }],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0
+    };
 
     service.list().subscribe((files) => {
       expect(files).toEqual(response);
     });
 
-    const req = httpMock.expectOne('/api/files');
+    const req = httpMock.expectOne('/api/files?page=0&size=10');
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+  });
+
+  it('lists all files', () => {
+    const response: FileRecord[] = [{ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null }];
+
+    service.listAll().subscribe((files) => {
+      expect(files).toEqual(response);
+    });
+
+    const req = httpMock.expectOne('/api/files/all');
     expect(req.request.method).toBe('GET');
     req.flush(response);
   });

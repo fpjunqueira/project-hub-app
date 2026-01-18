@@ -8,6 +8,8 @@ import { OwnerService } from '../service/owner.service';
 
 type OwnerServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getProjects: ReturnType<typeof vi.fn>;
+  getAddress: ReturnType<typeof vi.fn>;
 };
 
 describe('OwnersViewComponent', () => {
@@ -21,7 +23,9 @@ describe('OwnersViewComponent', () => {
     } as unknown as ActivatedRoute;
 
     serviceSpy = {
-      get: vi.fn().mockReturnValue(of({ id: 1, name: 'Loaded', email: 'a@b.com' }))
+      get: vi.fn().mockReturnValue(of({ id: 1, name: 'Loaded', email: 'a@b.com' })),
+      getProjects: vi.fn().mockReturnValue(of([])),
+      getAddress: vi.fn().mockReturnValue(of(null))
     };
 
     await TestBed.configureTestingModule({
@@ -41,5 +45,7 @@ describe('OwnersViewComponent', () => {
   it('loads owner details', () => {
     expect(component).toBeTruthy();
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProjects).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
   });
 });

@@ -8,6 +8,7 @@ import { FileService } from '../service/file.service';
 
 type FileServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getProject: ReturnType<typeof vi.fn>;
   create: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
 };
@@ -21,6 +22,7 @@ const setup = async (routeId: string | null) => {
     get: vi.fn().mockReturnValue(
       of({ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null })
     ),
+    getProject: vi.fn().mockReturnValue(of(null)),
     create: vi.fn().mockReturnValue(
       of({ id: 2, filename: 'new.txt', path: '/new.txt', projectId: null })
     ),
@@ -52,6 +54,7 @@ describe('FilesFormComponent', () => {
   it('loads file when route has id', async () => {
     const { serviceSpy } = await setup('1');
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProject).toHaveBeenCalledWith(1);
   });
 
   it('creates a file when no id is provided', async () => {

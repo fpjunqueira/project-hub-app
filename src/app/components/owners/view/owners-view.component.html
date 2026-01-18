@@ -7,18 +7,26 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="ownerName"
-        placeholder="Name"
-        [value]="owner()?.name ?? ''"
-        disabled
-      />
-      <input
-        name="ownerEmail"
-        placeholder="Email"
-        [value]="owner()?.email ?? ''"
-        disabled
-      />
+      <div class="field">
+        <label for="owner-name-view">Name</label>
+        <input
+          id="owner-name-view"
+          name="ownerName"
+          placeholder="Name"
+          [value]="owner()?.name ?? ''"
+          disabled
+        />
+      </div>
+      <div class="field">
+        <label for="owner-email-view">Email</label>
+        <input
+          id="owner-email-view"
+          name="ownerEmail"
+          placeholder="Email"
+          [value]="owner()?.email ?? ''"
+          disabled
+        />
+      </div>
       <button
         type="button"
         [routerLink]="['/owners', owner()?.id, 'edit']"

@@ -8,6 +8,8 @@ import { AddressService } from '../service/address.service';
 
 type AddressServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getOwner: ReturnType<typeof vi.fn>;
+  getProject: ReturnType<typeof vi.fn>;
 };
 
 describe('AddressesViewComponent', () => {
@@ -23,7 +25,9 @@ describe('AddressesViewComponent', () => {
     serviceSpy = {
       get: vi.fn().mockReturnValue(
         of({ id: 1, street: 'Main', city: 'A', state: 'TX', number: '1', zipCode: '0' })
-      )
+      ),
+      getOwner: vi.fn().mockReturnValue(of(null)),
+      getProject: vi.fn().mockReturnValue(of(null))
     };
 
     await TestBed.configureTestingModule({
@@ -43,5 +47,7 @@ describe('AddressesViewComponent', () => {
   it('loads address details', () => {
     expect(component).toBeTruthy();
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getOwner).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProject).toHaveBeenCalledWith(1);
   });
 });

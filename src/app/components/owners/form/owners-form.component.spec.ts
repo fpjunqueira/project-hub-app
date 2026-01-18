@@ -4,12 +4,24 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { OwnersFormComponent } from './owners-form.component';
+import { AddressService } from '../../addresses/service/address.service';
+import { ProjectService } from '../../projects/service/project.service';
 import { OwnerService } from '../service/owner.service';
 
 type OwnerServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getProjects: ReturnType<typeof vi.fn>;
+  getAddress: ReturnType<typeof vi.fn>;
   create: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
+};
+
+type AddressServiceSpy = {
+  list: ReturnType<typeof vi.fn>;
+};
+
+type ProjectServiceSpy = {
+  list: ReturnType<typeof vi.fn>;
 };
 
 const setup = async (routeId: string | null) => {
@@ -19,8 +31,18 @@ const setup = async (routeId: string | null) => {
 
   const serviceSpy: OwnerServiceSpy = {
     get: vi.fn().mockReturnValue(of({ id: 1, name: 'Loaded', email: 'a@b.com' })),
+    getProjects: vi.fn().mockReturnValue(of([])),
+    getAddress: vi.fn().mockReturnValue(of(null)),
     create: vi.fn().mockReturnValue(of({ id: 2, name: 'New', email: 'n@b.com' })),
     update: vi.fn().mockReturnValue(of({ id: 1, name: 'Updated', email: 'u@b.com' }))
+  };
+
+  const addressServiceSpy: AddressServiceSpy = {
+    list: vi.fn().mockReturnValue(of([]))
+  };
+
+  const projectServiceSpy: ProjectServiceSpy = {
+    list: vi.fn().mockReturnValue(of([]))
   };
 
   await TestBed.configureTestingModule({
@@ -28,7 +50,9 @@ const setup = async (routeId: string | null) => {
     providers: [
       provideRouter([]),
       { provide: ActivatedRoute, useValue: routeStub },
-      { provide: OwnerService, useValue: serviceSpy }
+      { provide: OwnerService, useValue: serviceSpy },
+      { provide: AddressService, useValue: addressServiceSpy },
+      { provide: ProjectService, useValue: projectServiceSpy }
     ]
   }).compileComponents();
 
@@ -39,13 +63,17 @@ const setup = async (routeId: string | null) => {
   const router = TestBed.inject(Router);
   const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-  return { fixture, component, serviceSpy, navigateSpy };
+  return { fixture, component, serviceSpy, addressServiceSpy, projectServiceSpy, navigateSpy };
 };
 
 describe('OwnersFormComponent', () => {
   it('loads owner when route has id', async () => {
-    const { serviceSpy } = await setup('1');
+    const { serviceSpy, addressServiceSpy, projectServiceSpy } = await setup('1');
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProjects).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
+    expect(addressServiceSpy.list).toHaveBeenCalled();
+    expect(projectServiceSpy.list).toHaveBeenCalled();
   });
 
   it('creates an owner when no id is provided', async () => {

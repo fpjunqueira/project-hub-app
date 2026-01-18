@@ -3,6 +3,11 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background: #f6f7f9;
@@ -48,7 +53,22 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  align-items: center;
+  align-items: flex-end;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-row button {
+  align-self: flex-end;
 }
 
 input {
@@ -65,6 +85,26 @@ input:focus {
   outline: none;
   border-color: #60a5fa;
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+}
+
+select {
+  min-width: 200px;
+  padding: 10px 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #111827;
+}
+
+select:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+}
+
+select[multiple] {
+  min-height: 160px;
 }
 
 button {
@@ -177,14 +217,48 @@ button.danger:hover:not(:disabled) {
   border-bottom: 1px solid #e2e8f0;
 }
 
+.table th:last-child,
+.table td:last-child {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 12px;
+}
+
 .table-actions {
-  display: flex;
+  display: inline-flex;
+  justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .table-empty {
   text-align: center;
   color: #64748b;
   padding: 24px 0;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination span {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pagination-select {
+  border: 1px solid #cbd5f5;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  background: transparent;
+  color: #1e293b;
+  cursor: pointer;
+  min-width: 90px;
 }

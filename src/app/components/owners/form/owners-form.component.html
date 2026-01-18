@@ -7,88 +7,79 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <input
-        name="ownerName"
-        placeholder="Name"
-        [ngModel]="draft().name"
-        (ngModelChange)="updateName($event)"
-      />
-      <input
-        name="ownerEmail"
-        placeholder="Email"
-        [ngModel]="draft().email"
-        (ngModelChange)="updateEmail($event)"
-      />
+      <div class="field">
+        <label for="owner-name">Name</label>
+        <input
+          id="owner-name"
+          name="ownerName"
+          placeholder="Name"
+          [ngModel]="draft().name"
+          (ngModelChange)="updateName($event)"
+        />
+      </div>
+      <div class="field">
+        <label for="owner-email">Email</label>
+        <input
+          id="owner-email"
+          name="ownerEmail"
+          placeholder="Email"
+          [ngModel]="draft().email"
+          (ngModelChange)="updateEmail($event)"
+        />
+      </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
         {{ isEdit() ? 'Update' : 'Create' }}
       </button>
     </div>
   </div>
 
-  <div class="form-block" *ngIf="isEdit()">
+  <div class="form-block">
     <h3>Address</h3>
     <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!addressLoading()">
-      <thead>
-        <tr>
-          <th>Street</th>
-          <th>City</th>
-          <th>State</th>
-          <th>Number</th>
-          <th>Zip code</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="address() as ownerAddress; else noOwnerAddress">
-          <td>{{ ownerAddress.street }}</td>
-          <td>{{ ownerAddress.city }}</td>
-          <td>{{ ownerAddress.state }}</td>
-          <td>{{ ownerAddress.number }}</td>
-          <td>{{ ownerAddress.zipCode }}</td>
-          <td>
-            <button
-              type="button"
-              class="ghost"
-              [routerLink]="['/addresses', ownerAddress.id, 'view']"
-            >
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noOwnerAddress>
-      <div class="table-empty">No address assigned.</div>
-    </ng-template>
+    <div class="field" *ngIf="!addressLoading()">
+      <label for="owner-address">Address</label>
+      <select
+        id="owner-address"
+        name="ownerAddress"
+        [ngModel]="selectedAddressId()"
+        (ngModelChange)="updateSelectedAddress($event)"
+      >
+        <option *ngIf="addresses().length === 0" [ngValue]="null" disabled>
+          No addresses available
+        </option>
+        <option *ngIf="addresses().length > 0" [ngValue]="null">
+          No address assigned
+        </option>
+        <option *ngFor="let addressOption of addresses()" [ngValue]="addressOption.id">
+          {{ addressOption.street }}, {{ addressOption.city }}, {{ addressOption.state }}
+          {{ addressOption.number }} ({{ addressOption.zipCode }})
+        </option>
+      </select>
+    </div>
   </div>
 
-  <div class="form-block" *ngIf="isEdit()">
+  <div class="form-block">
     <h3>Projects</h3>
     <p class="muted" *ngIf="projectsLoading()">Loading related data...</p>
     <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!projectsLoading()">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let project of projects()">
-          <td>{{ project.projectName }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="projects().length === 0">
-          <td colspan="2" class="table-empty">No projects linked.</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="field" *ngIf="!projectsLoading()">
+      <label for="owner-projects">Projects</label>
+      <select
+        id="owner-projects"
+        name="ownerProjects"
+        multiple
+        [ngModel]="selectedProjectIds()"
+        (ngModelChange)="updateSelectedProjects($event)"
+      >
+        <option *ngIf="projects().length === 0" [ngValue]="null" disabled>
+          No projects available
+        </option>
+        <option *ngFor="let project of projects()" [ngValue]="project.id">
+          {{ project.projectName }}
+        </option>
+      </select>
+    </div>
   </div>
 
   <p class="muted" *ngIf="isLoading()">Loading...</p>

@@ -7,7 +7,9 @@ import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
 import { Address } from '../../addresses/model/address.model';
+import { AddressService } from '../../addresses/service/address.service';
 import { Project } from '../../projects/model/project.model';
+import { ProjectService } from '../../projects/service/project.service';
 import { Owner } from '../model/owner.model';
 import { OwnerService } from '../service/owner.service';
 
@@ -20,6 +22,8 @@ import { OwnerService } from '../service/owner.service';
 })
 export class OwnersFormComponent implements OnInit {
   private ownerService = inject(OwnerService);
+  private addressService = inject(AddressService);
+  private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -27,6 +31,10 @@ export class OwnersFormComponent implements OnInit {
   draft = signal<Owner>({ name: '', email: '' });
   address = signal<Address | null>(null);
   projects = signal<Project[]>([]);
+  selectedProjects = signal<Project[]>([]);
+  addresses = signal<Address[]>([]);
+  selectedProjectIds = signal<number[]>([]);
+  selectedAddressId = signal<number | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
   addressLoading = signal(false);
@@ -47,6 +55,7 @@ export class OwnersFormComponent implements OnInit {
           this.error.set('');
           this.draft.set({ name: '', email: '' });
           this.resetRelations();
+          this.loadRelationsForCreate();
         }
       });
   }
@@ -60,9 +69,10 @@ export class OwnersFormComponent implements OnInit {
     this.isLoading.set(true);
     this.error.set('');
 
+    const payload = this.buildUpdatePayload(draft);
     const request = this.isEdit() && draft.id !== undefined
-      ? this.ownerService.update(draft.id, draft)
-      : this.ownerService.create(draft);
+      ? this.ownerService.update(draft.id, payload)
+      : this.ownerService.create(payload);
 
     request.pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: () => this.router.navigate(['/owners']),
@@ -97,8 +107,65 @@ export class OwnersFormComponent implements OnInit {
     this.relationsError.set('');
 
     this.projectsLoading.set(true);
+    this.projectService
+      .listAll()
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        }),
+        finalize(() => this.projectsLoading.set(false))
+      )
+      .subscribe((projects) => this.projects.set(projects));
+
     this.ownerService
       .getProjects(id)
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        })
+      )
+      .subscribe((projects) => {
+        const ids = projects
+          .map((project) => project.id)
+          .filter((projectId): projectId is number => projectId !== undefined);
+        this.selectedProjects.set(projects);
+        this.selectedProjectIds.set(ids);
+      });
+
+    this.addressLoading.set(true);
+    this.addressService
+      .listAll()
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of([]);
+        }),
+        finalize(() => this.addressLoading.set(false))
+      )
+      .subscribe((addresses) => this.addresses.set(addresses));
+
+    this.ownerService
+      .getAddress(id)
+      .pipe(
+        catchError(() => {
+          this.relationsError.set('Failed to load related data.');
+          return of(null);
+        })
+      )
+      .subscribe((address) => {
+        this.address.set(address);
+        this.selectedAddressId.set(address?.id ?? null);
+      });
+  }
+
+  private loadRelationsForCreate(): void {
+    this.relationsError.set('');
+
+    this.projectsLoading.set(true);
+    this.projectService
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
@@ -109,24 +176,46 @@ export class OwnersFormComponent implements OnInit {
       .subscribe((projects) => this.projects.set(projects));
 
     this.addressLoading.set(true);
-    this.ownerService
-      .getAddress(id)
+    this.addressService
+      .listAll()
       .pipe(
         catchError(() => {
           this.relationsError.set('Failed to load related data.');
-          return of(null);
+          return of([]);
         }),
         finalize(() => this.addressLoading.set(false))
       )
-      .subscribe((address) => this.address.set(address));
+      .subscribe((addresses) => this.addresses.set(addresses));
   }
 
   private resetRelations(): void {
     this.address.set(null);
     this.projects.set([]);
+    this.selectedProjects.set([]);
+    this.addresses.set([]);
+    this.selectedProjectIds.set([]);
+    this.selectedAddressId.set(null);
     this.addressLoading.set(false);
     this.projectsLoading.set(false);
     this.relationsError.set('');
+  }
+
+  private buildUpdatePayload(owner: Owner): Owner {
+    const selectedProjects = this.projects().length
+      ? this.projects().filter((project) =>
+          project.id !== undefined && this.selectedProjectIds().includes(project.id)
+        )
+      : this.selectedProjects();
+    const selectedAddressId = this.selectedAddressId();
+    const selectedAddress = selectedAddressId !== null
+      ? this.addresses().find((address) => address.id === selectedAddressId) ?? this.address()
+      : null;
+
+    return {
+      ...owner,
+      address: selectedAddress ?? null,
+      projects: selectedProjects
+    };
   }
 
   updateName(name: string): void {
@@ -135,5 +224,22 @@ export class OwnersFormComponent implements OnInit {
 
   updateEmail(email: string): void {
     this.draft.update((draft) => ({ ...draft, email }));
+  }
+
+  updateSelectedProjects(selected: Array<number | string> | null): void {
+    const ids = Array.isArray(selected)
+      ? selected.map((value) => Number(value)).filter((value) => Number.isFinite(value))
+      : [];
+    this.selectedProjectIds.set(ids);
+  }
+
+  updateSelectedAddress(selected: number | string | null): void {
+    if (selected === null || selected === '') {
+      this.selectedAddressId.set(null);
+      return;
+    }
+
+    const id = Number(selected);
+    this.selectedAddressId.set(Number.isFinite(id) ? id : null);
   }
 }

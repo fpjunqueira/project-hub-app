@@ -8,6 +8,7 @@ import { FileService } from '../service/file.service';
 
 type FileServiceSpy = {
   get: ReturnType<typeof vi.fn>;
+  getProject: ReturnType<typeof vi.fn>;
 };
 
 describe('FilesViewComponent', () => {
@@ -23,7 +24,8 @@ describe('FilesViewComponent', () => {
     serviceSpy = {
       get: vi.fn().mockReturnValue(
         of({ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null })
-      )
+      ),
+      getProject: vi.fn().mockReturnValue(of(null))
     };
 
     await TestBed.configureTestingModule({
@@ -43,5 +45,6 @@ describe('FilesViewComponent', () => {
   it('loads file details', () => {
     expect(component).toBeTruthy();
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
+    expect(serviceSpy.getProject).toHaveBeenCalledWith(1);
   });
 });
