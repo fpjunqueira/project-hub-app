@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { AddressesFormComponent } from './addresses-form.component';
@@ -98,5 +98,64 @@ describe('AddressesFormComponent', () => {
       zipCode: '2'
     });
     expect(navigateSpy).toHaveBeenCalledWith(['/addresses']);
+  });
+
+  it('does not submit when street is blank', async () => {
+    const { component, serviceSpy } = await setup(null);
+
+    component.draft.set({ street: '  ', city: 'A', state: 'TX', number: '1', zipCode: '0' });
+    component.submit();
+
+    expect(serviceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('renders edit state with empty relations', async () => {
+    const { fixture } = await setup('1');
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h2')?.textContent).toContain('Edit Address');
+    expect(compiled.textContent).toContain('No owner linked.');
+    expect(compiled.textContent).toContain('No project linked.');
+  });
+
+  it('renders loading and error states for relations', async () => {
+    const { component, fixture } = await setup('1');
+
+    component.ownerLoading.set(true);
+    component.projectLoading.set(true);
+    component.relationsError.set('Failed to load related data.');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Loading related data...');
+    expect(compiled.textContent).toContain('Failed to load related data.');
+  });
+
+  it('sets relation error when relation fetch fails', async () => {
+    const { component, serviceSpy } = await setup('1');
+    serviceSpy.getOwner.mockReturnValueOnce(throwError(() => new Error('fail')));
+    serviceSpy.getProject.mockReturnValueOnce(throwError(() => new Error('fail')));
+
+    component['loadRelations'](1);
+
+    expect(component.relationsError()).toBe('Failed to load related data.');
+  });
+
+  it('updates draft fields from input handlers', async () => {
+    const { component } = await setup(null);
+
+    component.updateStreet('Main');
+    component.updateCity('City');
+    component.updateState('TX');
+    component.updateNumber('10');
+    component.updateZipCode('00000');
+
+    expect(component.draft()).toEqual({
+      street: 'Main',
+      city: 'City',
+      state: 'TX',
+      number: '10',
+      zipCode: '00000'
+    });
   });
 });

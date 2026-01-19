@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { FilesFormComponent } from './files-form.component';
@@ -85,5 +85,61 @@ describe('FilesFormComponent', () => {
       projectId: null
     });
     expect(navigateSpy).toHaveBeenCalledWith(['/files']);
+  });
+
+  it('does not submit when filename is blank', async () => {
+    const { component, serviceSpy } = await setup(null);
+
+    component.draft.set({ filename: '  ', path: '/new.txt', projectId: null });
+    component.submit();
+
+    expect(serviceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('renders edit state with empty project', async () => {
+    const { fixture } = await setup('1');
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h2')?.textContent).toContain('Edit File');
+    expect(compiled.textContent).toContain('No project linked.');
+  });
+
+  it('renders loading and error states for relations', async () => {
+    const { component, fixture } = await setup('1');
+
+    component.projectLoading.set(true);
+    component.relationsError.set('Failed to load related data.');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Loading related data...');
+    expect(compiled.textContent).toContain('Failed to load related data.');
+  });
+
+  it('sets relation error when relation fetch fails', async () => {
+    const { component, serviceSpy } = await setup('1');
+    serviceSpy.getProject.mockReturnValueOnce(throwError(() => new Error('fail')));
+
+    component['loadRelations'](1);
+
+    expect(component.relationsError()).toBe('Failed to load related data.');
+  });
+
+  it('resets relations when file has no id', async () => {
+    const { component } = await setup(null);
+
+    component.project.set({ id: 1, projectName: 'P' });
+    component['handleFileLoad']({ id: undefined, filename: 'a', path: '/a', projectId: null });
+
+    expect(component.project()).toBeNull();
+  });
+
+  it('updates draft fields from input handlers', async () => {
+    const { component } = await setup(null);
+
+    component.updateFilename('doc.txt');
+    component.updatePath('/doc.txt');
+
+    expect(component.draft()).toEqual({ filename: 'doc.txt', path: '/doc.txt', projectId: null });
   });
 });
