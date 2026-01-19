@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -44,7 +45,25 @@ export class LoginComponent {
       )
       .subscribe({
         next: () => this.router.navigate(['/projects']),
-        error: () => this.error.set('Invalid login or password.')
+        error: (error) => this.error.set(this.getErrorMessage(error))
       });
+  }
+
+  private getErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 0) {
+        return 'Unable to reach the server.';
+      }
+
+      if (error.error?.message) {
+        return error.error.message as string;
+      }
+
+      if (error.status === 401 || error.status === 403) {
+        return 'Invalid login or password.';
+      }
+    }
+
+    return 'Login failed. Please try again.';
   }
 }
