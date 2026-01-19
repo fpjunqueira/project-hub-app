@@ -45,10 +45,19 @@ export class FilesListComponent implements OnInit {
             return;
           }
 
+          const pageInfo = response.page;
+          const pageIndex = response.number ?? pageInfo?.number ?? 0;
+          const totalPages = response.totalPages ?? pageInfo?.totalPages ?? 0;
+          const totalElements = response.totalElements ?? pageInfo?.totalElements ?? 0;
+          const pageSize = response.size ?? pageInfo?.size;
+
           this.files.set(response.content ?? []);
-          this.pageIndex.set(response.number ?? 0);
-          this.totalPages.set(response.totalPages ?? 0);
-          this.totalElements.set(response.totalElements ?? 0);
+          this.pageIndex.set(pageIndex);
+          this.totalPages.set(totalPages);
+          this.totalElements.set(totalElements);
+          if (pageSize && pageSize > 0 && pageSize !== this.pageSize()) {
+            this.pageSize.set(pageSize);
+          }
         },
         error: () => this.error.set('Failed to load files.')
       });
@@ -112,5 +121,13 @@ export class FilesListComponent implements OnInit {
       this.pageSize.set(nextSize);
       this.refresh(0);
     }
+  }
+
+  rangeStart(): number {
+    return this.totalElements() === 0 ? 0 : this.pageIndex() * this.pageSize() + 1;
+  }
+
+  rangeEnd(): number {
+    return Math.min(this.totalElements(), (this.pageIndex() + 1) * this.pageSize());
   }
 }
