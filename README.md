@@ -30,16 +30,14 @@ export const appConfig: ApplicationConfig = {
 
 **Responsibility:** map URLs to the top-level feature views.
 
-- `src/app/app.routes.ts` redirects `/` to `/projects` and defines routes for
-  list, view, and form screens for each domain.
+- `src/app/app.routes.ts` redirects `/` to `/login` and defines guarded routes
+  for list, view, and form screens for each domain.
 
 ```ts
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'projects' },
-  { path: 'projects', component: ProjectsListComponent },
-  { path: 'projects/new', component: ProjectsFormComponent },
-  { path: 'projects/:id/edit', component: ProjectsFormComponent },
-  { path: 'projects/:id/view', component: ProjectsViewComponent }
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
+  { path: 'projects', component: ProjectsListComponent, canActivate: [authGuard] }
 ];
 ```
 
@@ -93,7 +91,15 @@ export interface Project {
 }
 ```
 
-## Development server
+## Configuration and access
+
+- **Backend URL:** the app expects the API at `http://localhost:8080` and uses
+  `proxy.conf.json` to forward `/api` requests during development.
+- **Login endpoint:** `POST /api/auth/login` (see the Spring Security backend).
+- **Authorization:** the JWT token is stored in local storage and sent as
+  `Authorization: Bearer <token>` for all API calls.
+
+### Development server
 
 To start a local development server, run:
 
@@ -101,7 +107,33 @@ To start a local development server, run:
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+If you want the proxy enabled explicitly, use:
+
+```bash
+ng serve --proxy-config proxy.conf.json
+```
+
+Once the server is running, open your browser and navigate to
+`http://localhost:4200/`. The application will automatically reload whenever
+you modify any of the source files.
+
+### Accessing the app
+
+1. Start the backend (`project-hub` Java service) on port `8080`.
+2. Start the Angular dev server on port `4200`.
+3. Navigate to `http://localhost:4200/` and log in with a valid backend user.
+
+## Security implementation (frontend)
+
+The frontend mirrors the backend security model by authenticating with the
+login endpoint and attaching the JWT to every API request.
+
+- **Auth service:** `src/app/auth/auth.service.ts` calls `/api/auth/login`,
+  persists the token and expiry, and exposes `isAuthenticated()`.
+- **Route guards:** `src/app/auth/auth.guard.ts` protects private routes and
+  redirects to `/login` when the session is missing or expired.
+- **HTTP interceptor:** `src/app/auth/auth.interceptor.ts` injects the
+  `Authorization` header and logs out on `401` responses.
 
 ## Code scaffolding
 
