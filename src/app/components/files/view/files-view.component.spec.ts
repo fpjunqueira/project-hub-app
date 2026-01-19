@@ -47,4 +47,25 @@ describe('FilesViewComponent', () => {
     expect(serviceSpy.get).toHaveBeenCalledWith(1);
     expect(serviceSpy.getProject).toHaveBeenCalledWith(1);
   });
+
+  it('renders empty project state', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('No project linked.');
+  });
+
+  it('renders project details when available', () => {
+    component.project.set({ id: 1, projectName: 'Project' });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Project');
+  });
+
+  it('shows loading indicator for relations', () => {
+    component.projectLoading.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Loading related data...');
+  });
 });

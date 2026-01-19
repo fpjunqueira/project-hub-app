@@ -48,4 +48,36 @@ describe('OwnersViewComponent', () => {
     expect(serviceSpy.getProjects).toHaveBeenCalledWith(1);
     expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
   });
+
+  it('renders empty address and projects states', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('No address assigned.');
+    expect(compiled.textContent).toContain('No projects linked.');
+  });
+
+  it('renders address and projects when available', () => {
+    component.address.set({
+      id: 10,
+      street: 'Main',
+      city: 'A',
+      state: 'TX',
+      number: '1',
+      zipCode: '0'
+    });
+    component.projects.set([{ id: 2, projectName: 'Alpha' }]);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Main');
+    expect(compiled.textContent).toContain('Alpha');
+  });
+
+  it('shows loading indicators for relations', () => {
+    component.addressLoading.set(true);
+    component.projectsLoading.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Loading related data...');
+  });
 });

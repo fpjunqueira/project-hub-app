@@ -50,4 +50,29 @@ describe('AddressesViewComponent', () => {
     expect(serviceSpy.getOwner).toHaveBeenCalledWith(1);
     expect(serviceSpy.getProject).toHaveBeenCalledWith(1);
   });
+
+  it('renders empty owner and project states', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('No owner linked.');
+    expect(compiled.textContent).toContain('No project linked.');
+  });
+
+  it('renders owner and project details when available', () => {
+    component.owner.set({ id: 1, name: 'Owner', email: 'owner@example.com' });
+    component.project.set({ id: 2, projectName: 'Project' });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Owner');
+    expect(compiled.textContent).toContain('Project');
+  });
+
+  it('shows loading indicators for relations', () => {
+    component.ownerLoading.set(true);
+    component.projectLoading.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Loading related data...');
+  });
 });

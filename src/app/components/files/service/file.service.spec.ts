@@ -41,6 +41,22 @@ describe('FileService', () => {
     req.flush(response);
   });
 
+  it('maps array responses into a page', () => {
+    const response: FileRecord[] = [
+      { id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null },
+      { id: 2, filename: 'log.txt', path: '/log.txt', projectId: null }
+    ];
+
+    service.list(0, 1).subscribe((page) => {
+      expect(page.content).toEqual([response[0]]);
+      expect(page.totalPages).toBe(2);
+    });
+
+    const req = httpMock.expectOne('/api/files?page=0&size=1');
+    expect(req.request.method).toBe('GET');
+    req.flush(response);
+  });
+
   it('lists all files', () => {
     const response: FileRecord[] = [{ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null }];
 
@@ -51,6 +67,24 @@ describe('FileService', () => {
     const req = httpMock.expectOne('/api/files/all');
     expect(req.request.method).toBe('GET');
     req.flush(response);
+  });
+
+  it('falls back to list when listAll fails', () => {
+    service.listAll().subscribe((files) => {
+      expect(files).toEqual([{ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null }]);
+    });
+
+    const allReq = httpMock.expectOne('/api/files/all');
+    allReq.flush(null, { status: 500, statusText: 'Server error' });
+
+    const fallbackReq = httpMock.expectOne('/api/files?page=0&size=1000');
+    fallbackReq.flush({
+      content: [{ id: 1, filename: 'doc.txt', path: '/doc.txt', projectId: null }],
+      totalElements: 1,
+      totalPages: 1,
+      size: 1000,
+      number: 0
+    });
   });
 
   it('gets a file by id', () => {
@@ -100,5 +134,15 @@ describe('FileService', () => {
     const req = httpMock.expectOne('/api/files/5');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
+  });
+
+  it('gets file project', () => {
+    service.getProject(1).subscribe((project) => {
+      expect(project?.projectName).toBe('Project');
+    });
+
+    const req = httpMock.expectOne('/api/files/1/project');
+    expect(req.request.method).toBe('GET');
+    req.flush({ id: 1, projectName: 'Project' });
   });
 });

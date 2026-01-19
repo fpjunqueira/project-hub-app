@@ -104,4 +104,61 @@ describe('OwnersFormComponent', () => {
     );
     expect(navigateSpy).toHaveBeenCalledWith(['/owners']);
   });
+
+  it('does not submit when name is blank', async () => {
+    const { component, serviceSpy } = await setup(null);
+
+    component.draft.set({ name: ' ', email: 'ada@example.com' });
+    component.submit();
+
+    expect(serviceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('renders empty address and project options', async () => {
+    const { component, fixture } = await setup(null);
+    component.addresses.set([]);
+    component.projects.set([]);
+    component.addressLoading.set(false);
+    component.projectsLoading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('No addresses available');
+    expect(compiled.textContent).toContain('No projects available');
+  });
+
+  it('updates selected projects ids', async () => {
+    const { component } = await setup(null);
+
+    component.updateSelectedProjects(['1', 'invalid', 2]);
+
+    expect(component.selectedProjectIds()).toEqual([1, 2]);
+  });
+
+  it('updates selected address id', async () => {
+    const { component } = await setup(null);
+
+    component.updateSelectedAddress('');
+    expect(component.selectedAddressId()).toBeNull();
+
+    component.updateSelectedAddress('3');
+    expect(component.selectedAddressId()).toBe(3);
+
+    component.updateSelectedAddress('bad');
+    expect(component.selectedAddressId()).toBeNull();
+  });
+
+  it('builds payload using selected relations', async () => {
+    const { component } = await setup(null);
+
+    component.projects.set([{ id: 1, projectName: 'P1' }, { id: 2, projectName: 'P2' }]);
+    component.addresses.set([{ id: 10, street: 'S', city: 'C', state: 'TX', number: '1', zipCode: '0' }]);
+    component.selectedProjectIds.set([2]);
+    component.selectedAddressId.set(10);
+
+    const payload = component['buildUpdatePayload']({ name: 'Owner', email: 'o@example.com' });
+
+    expect(payload.projects).toEqual([{ id: 2, projectName: 'P2' }]);
+    expect(payload.address?.id).toBe(10);
+  });
 });

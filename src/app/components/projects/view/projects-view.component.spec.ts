@@ -51,4 +51,40 @@ describe('ProjectsViewComponent', () => {
     expect(serviceSpy.getFiles).toHaveBeenCalledWith(1);
     expect(serviceSpy.getAddress).toHaveBeenCalledWith(1);
   });
+
+  it('renders empty relation states', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('No address assigned.');
+    expect(compiled.textContent).toContain('No owners linked.');
+    expect(compiled.textContent).toContain('No files linked.');
+  });
+
+  it('renders owners, files, and address when available', () => {
+    component.address.set({
+      id: 10,
+      street: 'Main',
+      city: 'A',
+      state: 'TX',
+      number: '1',
+      zipCode: '0'
+    });
+    component.owners.set([{ id: 2, name: 'Ada', email: 'ada@example.com' }]);
+    component.files.set([{ id: 3, filename: 'doc.txt', path: '/doc.txt', projectId: null }]);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Main');
+    expect(compiled.textContent).toContain('Ada');
+    expect(compiled.textContent).toContain('doc.txt');
+  });
+
+  it('shows loading indicators for relations', () => {
+    component.addressLoading.set(true);
+    component.ownersLoading.set(true);
+    component.filesLoading.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Loading related data...');
+  });
 });

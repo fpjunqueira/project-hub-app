@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
@@ -111,5 +111,71 @@ describe('ProjectsFormComponent', () => {
       expect.objectContaining({ id: 1, projectName: 'Updated' })
     );
     expect(navigateSpy).toHaveBeenCalledWith(['/projects']);
+  });
+
+  it('does not submit when project name is blank', async () => {
+    const { component, serviceSpy } = await setup(null);
+
+    component.draft.set({ projectName: '  ' });
+    component.submit();
+
+    expect(serviceSpy.create).not.toHaveBeenCalled();
+  });
+
+  it('renders empty relation options', async () => {
+    const { component, fixture } = await setup(null);
+
+    component.addresses.set([]);
+    component.owners.set([]);
+    component.files.set([]);
+    component.addressLoading.set(false);
+    component.ownersLoading.set(false);
+    component.filesLoading.set(false);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('No addresses available');
+    expect(compiled.textContent).toContain('No owners available');
+    expect(compiled.textContent).toContain('No files available');
+  });
+
+  it('updates selected owners and files ids', async () => {
+    const { component } = await setup(null);
+
+    component.updateSelectedOwners(['1', 'invalid', 2]);
+    component.updateSelectedFiles(['3', 4, 'bad']);
+
+    expect(component.selectedOwnerIds()).toEqual([1, 2]);
+    expect(component.selectedFileIds()).toEqual([3, 4]);
+  });
+
+  it('updates selected address id', async () => {
+    const { component } = await setup(null);
+
+    component.updateSelectedAddress('');
+    expect(component.selectedAddressId()).toBeNull();
+
+    component.updateSelectedAddress('5');
+    expect(component.selectedAddressId()).toBe(5);
+
+    component.updateSelectedAddress('bad');
+    expect(component.selectedAddressId()).toBeNull();
+  });
+
+  it('builds payload using selected relations', async () => {
+    const { component } = await setup(null);
+
+    component.owners.set([{ id: 1, name: 'Ada', email: 'ada@example.com' }]);
+    component.files.set([{ id: 7, filename: 'doc.txt', path: '/doc.txt', projectId: null }]);
+    component.addresses.set([{ id: 20, street: 'S', city: 'C', state: 'TX', number: '1', zipCode: '0' }]);
+    component.selectedOwnerIds.set([1]);
+    component.selectedFileIds.set([7]);
+    component.selectedAddressId.set(20);
+
+    const payload = component['buildUpdatePayload']({ projectName: 'New' });
+
+    expect(payload.owners).toEqual([{ id: 1, name: 'Ada', email: 'ada@example.com' }]);
+    expect(payload.files).toEqual([{ id: 7, filename: 'doc.txt', path: '/doc.txt', projectId: null }]);
+    expect(payload.address?.id).toBe(20);
   });
 });

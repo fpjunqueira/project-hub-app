@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { ProjectsListComponent } from './projects-list.component';
@@ -55,5 +55,75 @@ describe('ProjectsListComponent', () => {
 
     expect(serviceSpy.delete).toHaveBeenCalledWith(1);
     expect(serviceSpy.list).toHaveBeenCalledTimes(2);
+  });
+
+  it('renders empty state when no projects', () => {
+    component.projects.set([]);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.table-empty')?.textContent).toContain('No projects yet.');
+  });
+
+  it('renders table rows and pagination when projects exist', () => {
+    component.projects.set([{ id: 1, projectName: 'Alpha' }]);
+    component.pageIndex.set(0);
+    component.totalPages.set(2);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelectorAll('tbody tr').length).toBe(1);
+    expect(compiled.querySelector('.pagination')?.textContent).toContain('Page 1 of 2');
+  });
+
+  it('handles array responses on refresh', () => {
+    serviceSpy.list.mockReturnValueOnce(of([{ id: 3, projectName: 'New' }]));
+
+    component.refresh();
+
+    expect(component.projects().length).toBe(1);
+    expect(component.totalPages()).toBe(1);
+    expect(component.totalElements()).toBe(1);
+  });
+
+  it('sets error when refresh fails', () => {
+    serviceSpy.list.mockReturnValueOnce(throwError(() => new Error('boom')));
+
+    component.refresh();
+
+    expect(component.error()).toBe('Failed to load projects.');
+  });
+
+  it('skips delete when id is undefined', () => {
+    component.delete();
+    expect(serviceSpy.delete).not.toHaveBeenCalled();
+  });
+
+  it('moves between pages when available', () => {
+    component.pageIndex.set(1);
+    component.totalPages.set(3);
+
+    component.previousPage();
+    component.nextPage();
+
+    expect(serviceSpy.list).toHaveBeenCalled();
+  });
+
+  it('ignores invalid page size values', () => {
+    component.pageSize.set(10);
+
+    component.updatePageSize('invalid');
+    component.updatePageSize(-1);
+
+    expect(component.pageSize()).toBe(10);
+  });
+
+  it('updates page size when value changes', () => {
+    component.pageSize.set(10);
+
+    component.updatePageSize(50);
+
+    expect(component.pageSize()).toBe(50);
+    expect(serviceSpy.list).toHaveBeenCalled();
   });
 });
