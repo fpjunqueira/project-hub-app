@@ -3,7 +3,16 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface AuthResponse {
+  token: string;
+  tokenType: string;
+  expiresAt: string;
+}
+
 export interface AuthUser {
   username: string;
-  displayName: string;
+  displayName?: string;
+  token: string;
+  tokenType: string;
+  expiresAt: string;
 }
