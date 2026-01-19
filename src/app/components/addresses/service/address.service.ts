@@ -29,13 +29,30 @@ export class AddressService {
           const safePage = Math.min(Math.max(page, 0), totalPages - 1);
           const start = safePage * size;
           const content = response.slice(start, start + size);
+          const numberOfElements = content.length;
 
           return {
             content,
             totalElements,
             totalPages,
             size,
-            number: safePage
+            number: safePage,
+            first: safePage === 0,
+            last: safePage >= totalPages - 1,
+            numberOfElements,
+            empty: totalElements === 0,
+            pageable: {
+              pageNumber: safePage,
+              pageSize: size,
+              offset: safePage * size,
+              paged: true,
+              unpaged: false
+            },
+            sort: {
+              sorted: false,
+              unsorted: true,
+              empty: true
+            }
           };
         })
       );

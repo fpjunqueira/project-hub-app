@@ -62,6 +62,9 @@
   </ng-template>
 
   <div class="pagination" *ngIf="totalPages() >= 1">
+    <span class="pagination-meta" *ngIf="totalElements() > 0">
+      Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() }}
+    </span>
     <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
       Previous
     </button>
