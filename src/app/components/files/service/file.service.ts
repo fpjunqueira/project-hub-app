@@ -8,8 +8,8 @@ import { FileRecord } from '../model/file.model';
 
 @Injectable({ providedIn: 'root' })
 export class FileService {
-  private http = inject(HttpClient);
-  private baseUrl = '/api/files';
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = '/api/files';
 
   list(page = 0, size = 10) {
     const params = new HttpParams()
@@ -75,6 +75,21 @@ export class FileService {
 
   update(id: number, file: FileRecord) {
     return this.http.put<FileRecord>(`${this.baseUrl}/${id}`, file);
+  }
+
+  upload(file: File, projectId?: number | null) {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (projectId !== undefined && projectId !== null) {
+      formData.append('projectId', String(projectId));
+    }
+    return this.http.post<FileRecord>(`${this.baseUrl}/upload`, formData);
+  }
+
+  replaceFile(id: number, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<FileRecord>(`${this.baseUrl}/${id}/upload`, formData);
   }
 
   delete(id: number) {

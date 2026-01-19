@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -18,12 +18,17 @@ import { FileService } from '../service/file.service';
   styleUrl: './files-form.component.scss'
 })
 export class FilesFormComponent implements OnInit {
-  private fileService = inject(FileService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
+  private readonly fileService = inject(FileService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
   draft = signal<FileRecord>({ filename: '', path: '', projectId: null });
+  isDragging = signal(false);
+  isUploading = signal(false);
+  uploadError = signal('');
   project = signal<Project | null>(null);
   isEdit = signal(false);
   isLoading = signal(false);
@@ -50,19 +55,23 @@ export class FilesFormComponent implements OnInit {
 
   submit(): void {
     const draft = this.draft();
-    if (!draft.filename.trim()) {
+    const filename = draft.filename.trim();
+    if (filename.length === 0) {
       return;
     }
 
     this.isLoading.set(true);
     this.error.set('');
 
-    const request = this.isEdit() && draft.id !== undefined
-      ? this.fileService.update(draft.id, draft)
-      : this.fileService.create(draft);
+    const recordId = draft.id;
+    const request = recordId === undefined
+      ? this.fileService.create(draft)
+      : this.fileService.update(recordId, draft);
 
     request.pipe(finalize(() => this.isLoading.set(false))).subscribe({
-      next: () => this.router.navigate(['/files']),
+      next: () => {
+        void this.router.navigate(['/files']);
+      },
       error: () =>
         this.error.set(this.isEdit() ? 'Failed to update file.' : 'Failed to create file.')
     });
@@ -90,10 +99,11 @@ export class FilesFormComponent implements OnInit {
       projectId: file.projectId ?? null
     });
 
-    if (file.id !== undefined) {
-      this.loadRelations(file.id);
-    } else {
+    const fileId = file.id;
+    if (fileId === undefined) {
       this.resetRelations();
+    } else {
+      this.loadRelations(fileId);
     }
   }
 
@@ -125,5 +135,60 @@ export class FilesFormComponent implements OnInit {
 
   updatePath(path: string): void {
     this.draft.update((draft) => ({ ...draft, path }));
+  }
+
+  openFilePicker(): void {
+    this.fileInput?.nativeElement.click();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (file) {
+      this.uploadFile(file);
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging.set(true);
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging.set(false);
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragging.set(false);
+    const file = event.dataTransfer?.files?.[0];
+    if (file) {
+      this.uploadFile(file);
+    }
+  }
+
+  private uploadFile(file: File): void {
+    if (this.isUploading()) {
+      return;
+    }
+
+    this.isUploading.set(true);
+    this.uploadError.set('');
+
+    const draft = this.draft();
+    const recordId = draft.id;
+    const request = recordId === undefined
+      ? this.fileService.upload(file, draft.projectId)
+      : this.fileService.replaceFile(recordId, file);
+
+    request.pipe(finalize(() => this.isUploading.set(false))).subscribe({
+      next: (saved) =>
+        this.draft.set({
+          ...saved,
+          projectId: saved.projectId ?? null
+        }),
+      error: () => this.uploadError.set('Failed to upload file.')
+    });
   }
 }

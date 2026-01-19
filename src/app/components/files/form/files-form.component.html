@@ -25,12 +25,37 @@
           placeholder="Path"
           [ngModel]="draft().path"
           (ngModelChange)="updatePath($event)"
+          readonly
         />
+        <a class="link" *ngIf="draft().path" [href]="draft().path" target="_blank" rel="noopener">
+          Open stored file
+        </a>
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
-        {{ isEdit() ? 'Update' : 'Create' }}
+        {{ draft().id !== undefined ? 'Update' : 'Create' }}
       </button>
     </div>
+  </div>
+
+  <div class="form-block">
+    <h3>File upload</h3>
+    <input #fileInput type="file" (change)="onFileSelected($event)" />
+    <button
+      type="button"
+      class="upload-dropzone"
+      [class.dragging]="isDragging()"
+      (click)="openFilePicker()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+    >
+      <div class="upload-content">
+        <strong>Drag and drop a file here</strong>
+        <span class="muted">or click to select a file from your computer</span>
+      </div>
+    </button>
+    <p class="muted" *ngIf="isUploading()">Uploading file...</p>
+    <p class="error" *ngIf="uploadError()">{{ uploadError() }}</p>
   </div>
 
   <div class="form-block" *ngIf="isEdit()">

@@ -1,3 +1,32 @@
 :host {
   display: block;
 }
+
+.upload-dropzone {
+  border: 2px dashed rgba(120, 120, 120, 0.6);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  background: rgba(120, 120, 120, 0.05);
+}
+
+.upload-dropzone.dragging {
+  border-color: rgba(30, 136, 229, 0.9);
+  background: rgba(30, 136, 229, 0.08);
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.upload-content {
+  display: grid;
+  gap: 6px;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 6px;
+}
