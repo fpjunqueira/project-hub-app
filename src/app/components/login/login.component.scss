@@ -28,26 +28,8 @@
   color: #52616b;
 }
 
-form {
-  display: grid;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-label {
-  font-weight: 600;
-  color: #1f2933;
-}
-
-input {
-  border: 1px solid #d9e2ec;
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 15px;
-}
-
 button {
-  margin-top: 12px;
+  margin-top: 16px;
   padding: 12px;
   border: none;
   border-radius: 10px;
@@ -57,15 +39,15 @@ button {
   cursor: pointer;
 }
 
+button.secondary {
+  margin-top: 10px;
+  background: #e2e8f0;
+  color: #1f2933;
+}
+
 button[disabled] {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-.error {
-  margin-top: 16px;
-  color: #c81e1e;
-  font-weight: 600;
 }
 
 .hint {
