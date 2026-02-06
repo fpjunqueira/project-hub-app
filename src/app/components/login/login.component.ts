@@ -14,7 +14,15 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  login(): void {
+  async login(): Promise<void> {
+    if (!this.authService.isAuthEnabled()) {
+      const loggedIn = await this.authService.loginLocal();
+      if (loggedIn) {
+        void this.router.navigate(['/projects']);
+      }
+      return;
+    }
+
     this.authService.login();
   }
 
@@ -22,5 +30,9 @@ export class LoginComponent {
     if (this.authService.isAuthenticated()) {
       void this.router.navigate(['/projects']);
     }
+  }
+
+  isAuthEnabled(): boolean {
+    return this.authService.isAuthEnabled();
   }
 }

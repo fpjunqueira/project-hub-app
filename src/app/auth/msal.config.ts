@@ -8,13 +8,15 @@ import {
   MsalInterceptorConfiguration
 } from '@azure/msal-angular';
 
+import { environment } from '../../environments/environment';
+
 export const msalConfig: Configuration = {
   auth: {
-    clientId: 'your-client-id',
-    authority: 'https://login.microsoftonline.com/your-tenant-id',
-    redirectUri: '/',
-    postLogoutRedirectUri: '/',
-    knownAuthorities: []
+    clientId: environment.auth.clientId,
+    authority: environment.auth.authority,
+    redirectUri: environment.auth.redirectUri,
+    postLogoutRedirectUri: environment.auth.postLogoutRedirectUri,
+    knownAuthorities: environment.auth.knownAuthorities
   },
   cache: {
     cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -25,14 +27,18 @@ export const msalConfig: Configuration = {
 export const msalGuardConfig: MsalGuardConfiguration = {
   interactionType: InteractionType.Redirect,
   authRequest: {
-    scopes: ['openid', 'profile', 'email']
+    scopes: environment.auth.scopes
   }
 };
 
 export const msalInterceptorConfig: MsalInterceptorConfiguration = {
   interactionType: InteractionType.Redirect,
-  protectedResourceMap: new Map<string, Array<string>>([
-    ['/api', ['api://project-hub/.default']],
-    ['/security', ['api://security-service/.default']]
-  ])
+  protectedResourceMap: new Map<string, Array<string>>(
+    environment.auth.enabled
+      ? [
+          ['/api', ['api://project-hub/.default']],
+          ['/security', ['api://security-service/.default']]
+        ]
+      : []
+  )
 };
