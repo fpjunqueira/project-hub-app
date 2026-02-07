@@ -13,6 +13,9 @@ import { OwnersViewComponent } from './components/owners/view/owners-view.compon
 import { ProjectsFormComponent } from './components/projects/form/projects-form.component';
 import { ProjectsListComponent } from './components/projects/list/projects-list.component';
 import { ProjectsViewComponent } from './components/projects/view/projects-view.component';
+import { TelecomFormComponent } from './components/telecom/form/telecom-form.component';
+import { TelecomListComponent } from './components/telecom/list/telecom-list.component';
+import { TelecomViewComponent } from './components/telecom/view/telecom-view.component';
 import { authGuard, loginGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
@@ -33,5 +36,41 @@ export const routes: Routes = [
   { path: 'files/new', component: FilesFormComponent, canActivate: [authGuard] },
   { path: 'files/:id/edit', component: FilesFormComponent, canActivate: [authGuard] },
   { path: 'files/:id/view', component: FilesViewComponent, canActivate: [authGuard] },
-  { path: 'files', component: FilesListComponent, canActivate: [authGuard] }
+  { path: 'files', component: FilesListComponent, canActivate: [authGuard] },
+  { path: 'documentacoes/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'documentacoes' } },
+  { path: 'documentacoes/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'documentacoes' } },
+  { path: 'documentacoes/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'documentacoes' } },
+  { path: 'documentacoes', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'documentacoes' } },
+  { path: 'faturamentos/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'faturamentos' } },
+  { path: 'faturamentos/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'faturamentos' } },
+  { path: 'faturamentos/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'faturamentos' } },
+  { path: 'faturamentos', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'faturamentos' } },
+  { path: 'informacoes-cadastro-veiculos/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'informacoesCadastroVeiculos' } },
+  { path: 'informacoes-cadastro-veiculos/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'informacoesCadastroVeiculos' } },
+  { path: 'informacoes-cadastro-veiculos/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'informacoesCadastroVeiculos' } },
+  { path: 'informacoes-cadastro-veiculos', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'informacoesCadastroVeiculos' } },
+  { path: 'cadastro-usuarios/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'cadastroUsuarios' } },
+  { path: 'cadastro-usuarios/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'cadastroUsuarios' } },
+  { path: 'cadastro-usuarios/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'cadastroUsuarios' } },
+  { path: 'cadastro-usuarios', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'cadastroUsuarios' } },
+  { path: 'site-claro/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'siteClaro' } },
+  { path: 'site-claro/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'siteClaro' } },
+  { path: 'site-claro/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'siteClaro' } },
+  { path: 'site-claro', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'siteClaro' } },
+  { path: 'site-tim/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'siteTim' } },
+  { path: 'site-tim/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'siteTim' } },
+  { path: 'site-tim/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'siteTim' } },
+  { path: 'site-tim', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'siteTim' } },
+  { path: 'site-vivo/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'siteVivo' } },
+  { path: 'site-vivo/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'siteVivo' } },
+  { path: 'site-vivo/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'siteVivo' } },
+  { path: 'site-vivo', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'siteVivo' } },
+  { path: 'cadastro-contratos/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'cadastroContratos' } },
+  { path: 'cadastro-contratos/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'cadastroContratos' } },
+  { path: 'cadastro-contratos/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'cadastroContratos' } },
+  { path: 'cadastro-contratos', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'cadastroContratos' } },
+  { path: 'chamados/new', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'chamados' } },
+  { path: 'chamados/:id/edit', component: TelecomFormComponent, canActivate: [authGuard], data: { screenKey: 'chamados' } },
+  { path: 'chamados/:id/view', component: TelecomViewComponent, canActivate: [authGuard], data: { screenKey: 'chamados' } },
+  { path: 'chamados', component: TelecomListComponent, canActivate: [authGuard], data: { screenKey: 'chamados' } }
 ];

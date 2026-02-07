@@ -1,0 +1,28 @@
+<section class="card">
+  <header class="card-header">
+    <h2>{{ screenTitle() }}</h2>
+    <button type="button" class="ghost" [routerLink]="basePath()">Back to list</button>
+  </header>
+
+  <div class="form-block">
+    <h3>Details</h3>
+    <div class="form-row">
+      <div class="field" *ngFor="let field of fields()">
+        <label [for]="field.key">{{ field.label }}</label>
+        <input
+          [id]="field.key"
+          [name]="field.key"
+          [placeholder]="field.label"
+          [ngModel]="draft()[field.key] ?? ''"
+          (ngModelChange)="updateField(field.key, $event)"
+        />
+      </div>
+      <button type="button" (click)="submit()" [disabled]="isLoading()">
+        {{ isEdit() ? 'Update' : 'Create' }}
+      </button>
+    </div>
+  </div>
+
+  <p class="muted" *ngIf="isLoading()">Loading...</p>
+  <p class="error" *ngIf="error()">{{ error() }}</p>
+</section>
