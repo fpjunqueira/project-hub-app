@@ -4,16 +4,175 @@
     <span class="brand-subtitle">Project Hub v0.1-beta</span>
   </div>
   <nav class="nav-links">
-    <a routerLink="/user-registrations" routerLinkActive="active">User Registrations</a>
-    <a routerLink="/claro-sites" routerLinkActive="active">Claro Site</a>
-    <a routerLink="/tim-sites" routerLinkActive="active">TIM Site</a>
-    <a routerLink="/vivo-sites" routerLinkActive="active">Vivo Site</a>
-    <a routerLink="/owners" routerLinkActive="active">Clients</a>
-    <a routerLink="/contract-registrations" routerLinkActive="active">Contract Registrations</a>
-    <a routerLink="/projects" routerLinkActive="active">Projects</a>
-    <a routerLink="/tickets" routerLinkActive="active">Tickets</a>
-    <a routerLink="/billings" routerLinkActive="active">Billing</a>
-    <a routerLink="/addresses" routerLinkActive="active">Addresses</a>
-    <a routerLink="/files" routerLinkActive="active">Files</a>
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item-root">
+      <span class="nav-item-icon" aria-hidden="true">
+        <!-- home icon -->
+        <svg viewBox="0 0 20 20">
+          <path
+            d="M3 9.5 10 3l7 6.5V17a1 1 0 0 1-1 1h-4v-4H8v4H4a1 1 0 0 1-1-1V9.5Z"
+          />
+        </svg>
+      </span>
+      <span class="nav-item-label">Dashboard</span>
+    </a>
+
+    <div class="nav-group">
+      <button type="button" class="nav-group-header" (click)="toggle('tickets')">
+        <span class="nav-group-header-main">
+          <span class="nav-group-header-icon" aria-hidden="true">
+            <!-- ticket icon -->
+            <svg viewBox="0 0 20 20">
+              <path
+                d="M4 5h12v4.5a1.5 1.5 0 0 0 0 3V17H4v-4.5a1.5 1.5 0 0 0 0-3V5Z"
+              />
+            </svg>
+          </span>
+          <span class="nav-group-label">Tickets</span>
+        </span>
+        <span class="nav-group-header-caret" [class.is-open]="expanded.tickets" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <path d="m7 8 3 3 3-3" />
+          </svg>
+        </span>
+      </button>
+      @if (expanded.tickets) {
+        <div class="nav-group-items">
+          <a routerLink="/tickets" routerLinkActive="active">Tickets</a>
+        </div>
+      }
+    </div>
+
+    <div class="nav-group">
+      <button type="button" class="nav-group-header" (click)="toggle('projects')">
+        <span class="nav-group-header-main">
+          <span class="nav-group-header-icon" aria-hidden="true">
+            <!-- projects icon -->
+            <svg viewBox="0 0 20 20">
+              <path d="M4 4h5v5H4V4Zm7 0h5v5h-5V4ZM4 11h5v5H4v-5Zm7 0h5v5h-5v-5Z" />
+            </svg>
+          </span>
+          <span class="nav-group-label">Projects</span>
+        </span>
+        <span class="nav-group-header-caret" [class.is-open]="expanded.projects" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <path d="m7 8 3 3 3-3" />
+          </svg>
+        </span>
+      </button>
+      @if (expanded.projects) {
+        <div class="nav-group-items">
+          <a routerLink="/projects" routerLinkActive="active">Projects</a>
+          <a routerLink="/contract-registrations" routerLinkActive="active">
+            Contract Registrations
+          </a>
+        </div>
+      }
+    </div>
+
+    <div class="nav-group">
+      <button type="button" class="nav-group-header" (click)="toggle('sites')">
+        <span class="nav-group-header-main">
+          <span class="nav-group-header-icon" aria-hidden="true">
+            <!-- location icon -->
+            <svg viewBox="0 0 20 20">
+              <path
+                d="M10 2.5a5 5 0 0 0-5 5c0 3.1 3.1 7 4.3 8.4a0.9 0.9 0 0 0 1.4 0C11.9 14.5 15 10.6 15 7.5a5 5 0 0 0-5-5Zm0 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"
+              />
+            </svg>
+          </span>
+          <span class="nav-group-label">Sites</span>
+        </span>
+        <span class="nav-group-header-caret" [class.is-open]="expanded.sites" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <path d="m7 8 3 3 3-3" />
+          </svg>
+        </span>
+      </button>
+      @if (expanded.sites) {
+        <div class="nav-group-items">
+          <a routerLink="/claro-sites" routerLinkActive="active">Claro Site</a>
+          <a routerLink="/tim-sites" routerLinkActive="active">TIM Site</a>
+          <a routerLink="/vivo-sites" routerLinkActive="active">Vivo Site</a>
+        </div>
+      }
+    </div>
+
+    <div class="nav-group">
+      <button type="button" class="nav-group-header" (click)="toggle('finance')">
+        <span class="nav-group-header-main">
+          <span class="nav-group-header-icon" aria-hidden="true">
+            <!-- finance icon -->
+            <svg viewBox="0 0 20 20">
+              <path d="M4 4h12v3H4V4Zm0 5h12v7H4V9Zm2 2v3h3v-3H6Z" />
+            </svg>
+          </span>
+          <span class="nav-group-label">Finance</span>
+        </span>
+        <span class="nav-group-header-caret" [class.is-open]="expanded.finance" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <path d="m7 8 3 3 3-3" />
+          </svg>
+        </span>
+      </button>
+      @if (expanded.finance) {
+        <div class="nav-group-items">
+          <a routerLink="/billings" routerLinkActive="active">Billing</a>
+        </div>
+      }
+    </div>
+
+    <div class="nav-group">
+      <button type="button" class="nav-group-header" (click)="toggle('clients')">
+        <span class="nav-group-header-main">
+          <span class="nav-group-header-icon" aria-hidden="true">
+            <!-- user icon -->
+            <svg viewBox="0 0 20 20">
+              <path
+                d="M10 3.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 7c-3 0-5.5 1.6-5.5 4v1h11v-1c0-2.4-2.5-4-5.5-4Z"
+              />
+            </svg>
+          </span>
+          <span class="nav-group-label">Clients</span>
+        </span>
+        <span class="nav-group-header-caret" [class.is-open]="expanded.clients" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <path d="m7 8 3 3 3-3" />
+          </svg>
+        </span>
+      </button>
+      @if (expanded.clients) {
+        <div class="nav-group-items">
+          <a routerLink="/owners" routerLinkActive="active">Clients</a>
+          <a routerLink="/user-registrations" routerLinkActive="active">User Registrations</a>
+        </div>
+      }
+    </div>
+
+    <div class="nav-group">
+      <button type="button" class="nav-group-header" (click)="toggle('general')">
+        <span class="nav-group-header-main">
+          <span class="nav-group-header-icon" aria-hidden="true">
+            <!-- settings icon -->
+            <svg viewBox="0 0 20 20">
+              <path
+                d="M10 7.5A2.5 2.5 0 1 1 7.5 10 2.5 2.5 0 0 1 10 7.5Zm-7 2L4 9l.4-1.1-1.2-2 1.4-1.4 2 1.2L8 5l.5-2h3L15 5l1.4-.3 2-1.2 1.4 1.4-1.2 2L19 9l2 .5v3L19 13l-.4 1.1 1.2 2-1.4 1.4-2-1.2L12 17l-.5 2h-3L5 17l-1.4.3-2 1.2-1.4-1.4 1.2-2L1 13l-2-.5v-3Z"
+              />
+            </svg>
+          </span>
+          <span class="nav-group-label">General</span>
+        </span>
+        <span class="nav-group-header-caret" [class.is-open]="expanded.general" aria-hidden="true">
+          <svg viewBox="0 0 20 20">
+            <path d="m7 8 3 3 3-3" />
+          </svg>
+        </span>
+      </button>
+      @if (expanded.general) {
+        <div class="nav-group-items">
+          <a routerLink="/addresses" routerLinkActive="active">Addresses</a>
+          <a routerLink="/files" routerLinkActive="active">Files</a>
+        </div>
+      }
+    </div>
   </nav>
 </aside>

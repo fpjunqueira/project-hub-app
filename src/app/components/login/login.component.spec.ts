@@ -1,32 +1,30 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { AuthService } from '../../auth/auth.service';
 import { LoginComponent } from './login.component';
 
-type AuthServiceSpy = {
-  login: ReturnType<typeof vi.fn>;
-};
-
-const setup = async () => {
-  const authServiceSpy: AuthServiceSpy = {
-    login: vi.fn().mockReturnValue(
-      of({
-        username: 'user',
-        displayName: 'User',
-        token: 'token',
-        tokenType: 'Bearer',
-        expiresAt: null
-      })
-    )
-  };
+const setup = async (options?: { authEnabled?: boolean; isAuthenticated?: boolean }) => {
+  const loginLocalSpy = vi.fn().mockResolvedValue(true);
+  const loginSpy = vi.fn();
+  const isAuthEnabled = vi.fn().mockReturnValue(options?.authEnabled ?? false);
+  const isAuthenticated = vi.fn().mockReturnValue(options?.isAuthenticated ?? false);
 
   await TestBed.configureTestingModule({
     imports: [LoginComponent],
-    providers: [provideRouter([]), { provide: AuthService, useValue: authServiceSpy }]
+    providers: [
+      provideRouter([]),
+      {
+        provide: AuthService,
+        useValue: {
+          isAuthEnabled,
+          loginLocal: loginLocalSpy,
+          login: loginSpy,
+          isAuthenticated
+        }
+      }
+    ]
   }).compileComponents();
 
   const fixture = TestBed.createComponent(LoginComponent);
@@ -36,44 +34,32 @@ const setup = async () => {
   const router = TestBed.inject(Router);
   const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-  return { component, authServiceSpy, navigateSpy };
+  return { component, loginLocalSpy, loginSpy, navigateSpy };
 };
 
 describe('LoginComponent', () => {
-  it('shows an error when credentials are missing', async () => {
-    const { component, authServiceSpy } = await setup();
+  it('calls loginLocal and navigates when auth is disabled', async () => {
+    const { component, loginLocalSpy, navigateSpy } = await setup();
 
-    component.username.set('');
-    component.password.set('');
-    component.submit();
+    await component.login();
 
-    expect(authServiceSpy.login).not.toHaveBeenCalled();
-    expect(component.error()).toBe('Please enter your login and password.');
+    expect(loginLocalSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
   });
 
-  it('logs in and navigates on success', async () => {
-    const { component, authServiceSpy, navigateSpy } = await setup();
+  it('calls login (MSAL) when auth is enabled', async () => {
+    const { component, loginSpy } = await setup({ authEnabled: true });
 
-    component.username.set(' user ');
-    component.password.set(' pass ');
-    component.submit();
+    await component.login();
 
-    expect(authServiceSpy.login).toHaveBeenCalledWith({ username: 'user', password: 'pass' });
-    expect(navigateSpy).toHaveBeenCalledWith(['/projects']);
-    expect(component.isLoading()).toBe(false);
+    expect(loginSpy).toHaveBeenCalled();
   });
 
-  it('shows a friendly message on auth error', async () => {
-    const { component, authServiceSpy } = await setup();
-    authServiceSpy.login.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 401 }))
-    );
+  it('navigates to dashboard when backToApp and authenticated', async () => {
+    const { component, navigateSpy } = await setup({ isAuthenticated: true });
 
-    component.username.set('user');
-    component.password.set('wrong');
-    component.submit();
+    component.backToApp();
 
-    expect(component.error()).toBe('Invalid login or password.');
-    expect(component.isLoading()).toBe(false);
+    expect(navigateSpy).toHaveBeenCalledWith(['/dashboard']);
   });
 });

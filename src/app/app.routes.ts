@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { AddressesFormComponent } from './components/addresses/form/addresses-form.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AddressesListComponent } from './components/addresses/list/addresses-list.component';
 import { AddressesViewComponent } from './components/addresses/view/addresses-view.component';
 import { FilesFormComponent } from './components/files/form/files-form.component';
@@ -21,6 +22,7 @@ import { authGuard, loginGuard } from './auth/auth.guard';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [loginGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'projects/new', component: ProjectsFormComponent, canActivate: [authGuard] },
   { path: 'projects/:id/edit', component: ProjectsFormComponent, canActivate: [authGuard] },
   { path: 'projects/:id/view', component: ProjectsViewComponent, canActivate: [authGuard] },

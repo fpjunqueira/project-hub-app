@@ -1,0 +1,51 @@
+.dashboard {
+  display: grid;
+  gap: 24px;
+}
+
+.dashboard-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2933;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 120px;
+
+  .summary-card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  .summary-card-value {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2933;
+    line-height: 1.2;
+  }
+
+  .summary-card-link {
+    margin-top: auto;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #3b82f6;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

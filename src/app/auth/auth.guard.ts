@@ -28,14 +28,14 @@ export const loginGuard: CanActivateFn = () => {
 
   if (!authService.isAuthEnabled()) {
     if (authService.isAuthenticated()) {
-      return router.createUrlTree(['/projects']);
+      return router.createUrlTree(['/dashboard']);
     }
 
     return true;
   }
 
   if (authService.isAuthenticated()) {
-    return router.createUrlTree(['/projects']);
+    return router.createUrlTree(['/dashboard']);
   }
 
   return true;

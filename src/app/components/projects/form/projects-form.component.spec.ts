@@ -142,8 +142,14 @@ describe('ProjectsFormComponent', () => {
   it('updates selected owners and files ids', async () => {
     const { component } = await setup(null);
 
-    component.updateSelectedOwners(['1', 'invalid', 2]);
-    component.updateSelectedFiles(['3', 4, 'bad']);
+    const mockOwnersSelect = {
+      selectedOptions: [{ value: '1' }, { value: 'invalid' }, { value: '2' }]
+    } as unknown as HTMLSelectElement;
+    const mockFilesSelect = {
+      selectedOptions: [{ value: '3' }, { value: '4' }, { value: 'bad' }]
+    } as unknown as HTMLSelectElement;
+    component.updateSelectedOwners({ target: mockOwnersSelect } as unknown as Event);
+    component.updateSelectedFiles({ target: mockFilesSelect } as unknown as Event);
 
     expect(component.selectedOwnerIds()).toEqual([1, 2]);
     expect(component.selectedFileIds()).toEqual([3, 4]);

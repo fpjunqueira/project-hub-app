@@ -18,6 +18,19 @@ describe('SidebarComponent', () => {
     const links = compiled.querySelectorAll('a');
     const labels = Array.from(links).map((link) => link.textContent?.trim());
 
-    expect(labels).toEqual(['Projects', 'Owners', 'Addresses', 'Files']);
+    expect(labels).toEqual([
+      'Dashboard',
+      'Tickets',
+      'Projects',
+      'Contract Registrations',
+      'Claro Site',
+      'TIM Site',
+      'Vivo Site',
+      'Billing',
+      'Clients',
+      'User Registrations',
+      'Addresses',
+      'Files'
+    ]);
   });
 });

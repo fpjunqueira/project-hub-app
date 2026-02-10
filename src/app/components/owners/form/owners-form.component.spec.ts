@@ -130,7 +130,10 @@ describe('OwnersFormComponent', () => {
   it('updates selected projects ids', async () => {
     const { component } = await setup(null);
 
-    component.updateSelectedProjects(['1', 'invalid', 2]);
+    const mockSelect = {
+      selectedOptions: [{ value: '1' }, { value: 'invalid' }, { value: '2' }]
+    } as unknown as HTMLSelectElement;
+    component.updateSelectedProjects({ target: mockSelect } as unknown as Event);
 
     expect(component.selectedProjectIds()).toEqual([1, 2]);
   });

@@ -18,7 +18,7 @@ export class LoginComponent {
     if (!this.authService.isAuthEnabled()) {
       const loggedIn = await this.authService.loginLocal();
       if (loggedIn) {
-        void this.router.navigate(['/projects']);
+        void this.router.navigate(['/dashboard']);
       }
       return;
     }
@@ -28,7 +28,7 @@ export class LoginComponent {
 
   backToApp(): void {
     if (this.authService.isAuthenticated()) {
-      void this.router.navigate(['/projects']);
+      void this.router.navigate(['/dashboard']);
     }
   }
 

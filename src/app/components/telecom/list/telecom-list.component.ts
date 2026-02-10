@@ -16,9 +16,9 @@ import { TelecomService } from '../service/telecom.service';
   styleUrl: './telecom-list.component.scss'
 })
 export class TelecomListComponent implements OnInit {
-  private telecomService = inject(TelecomService);
-  private route = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
+  private readonly telecomService = inject(TelecomService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   screen = signal<TelecomScreenConfig | null>(null);
   fields = signal<TelecomScreenField[]>([]);
@@ -42,7 +42,8 @@ export class TelecomListComponent implements OnInit {
           return;
         }
         this.screen.set(screen);
-        this.fields.set(screen.fields.filter((field) => field.showInList !== false));
+        const visibleFields = screen.fields.filter((field) => field.showInList !== false);
+        this.fields.set(visibleFields.length ? visibleFields : screen.fields);
         this.refresh(0);
       });
   }

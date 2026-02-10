@@ -1,0 +1,43 @@
+<div class="dashboard">
+  <h1 class="dashboard-title">Dashboard</h1>
+
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <div class="cards-grid">
+    <section class="card summary-card">
+      <h2 class="summary-card-title">Active tickets</h2>
+      <p class="summary-card-value">{{ ticketsCount() ?? '—' }}</p>
+      <a routerLink="/tickets" class="summary-card-link">View all</a>
+    </section>
+    <section class="card summary-card">
+      <h2 class="summary-card-title">Projects</h2>
+      <p class="summary-card-value">{{ projectsCount() ?? '—' }}</p>
+      <a routerLink="/projects" class="summary-card-link">View all</a>
+    </section>
+    <section class="card summary-card">
+      <h2 class="summary-card-title">Clients</h2>
+      <p class="summary-card-value">{{ clientsCount() ?? '—' }}</p>
+      <a routerLink="/owners" class="summary-card-link">View all</a>
+    </section>
+    <section class="card summary-card">
+      <h2 class="summary-card-title">Contract registrations</h2>
+      <p class="summary-card-value">{{ contractRegistrationsCount() ?? '—' }}</p>
+      <a routerLink="/contract-registrations" class="summary-card-link">View all</a>
+    </section>
+    <section class="card summary-card">
+      <h2 class="summary-card-title">Addresses</h2>
+      <p class="summary-card-value">{{ addressesCount() ?? '—' }}</p>
+      <a routerLink="/addresses" class="summary-card-link">View all</a>
+    </section>
+    <section class="card summary-card">
+      <h2 class="summary-card-title">Billing</h2>
+      <p class="summary-card-value">{{ billingsCount() ?? '—' }}</p>
+      <a routerLink="/billings" class="summary-card-link">View all</a>
+    </section>
+  </div>
+</div>
