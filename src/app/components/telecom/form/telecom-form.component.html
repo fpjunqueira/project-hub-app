@@ -7,22 +7,128 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <div class="field" *ngFor="let field of fields()">
-        <label [for]="field.key">{{ field.label }}</label>
-        <input
-          [id]="field.key"
-          [name]="field.key"
-          [placeholder]="field.label"
-          [ngModel]="draft()[field.key] ?? ''"
-          (ngModelChange)="updateField(field.key, $event)"
-        />
-      </div>
-      <button type="button" (click)="submit()" [disabled]="isLoading()">
+      @for (field of visibleFields(); track field.key) {
+        <div class="field">
+          <label [for]="field.key">{{ field.label }}</label>
+          @switch (field.inputType) {
+            @case ('select') {
+              <select
+                [id]="field.key"
+                [name]="field.key"
+                [value]="draft()[field.key] ?? ''"
+                (change)="updateField(field.key, $any($event.target).value)"
+              >
+                @for (option of field.options ?? []; track option.value) {
+                  <option [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+            }
+            @default {
+              <input
+                [id]="field.key"
+                [name]="field.key"
+                [placeholder]="field.label"
+                [value]="draft()[field.key] ?? ''"
+                [disabled]="field.readOnly || field.autoFill"
+                (input)="updateField(field.key, $any($event.target).value)"
+              />
+            }
+          }
+        </div>
+      }
+      <button type="button" (click)="submit()" [disabled]="isLoading() || !canSubmit()">
         {{ isEdit() ? 'Update' : 'Create' }}
+      </button>
+      <button type="button" class="ghost" (click)="toggleOptional()">
+        {{ showOptional() ? 'Hide optional fields' : 'Show optional fields' }}
       </button>
     </div>
   </div>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isContractScreen()) {
+    <div class="form-block">
+      <h3>Site Selection</h3>
+      @if (siteLoading()) {
+        <p class="muted">Loading related data...</p>
+      }
+      @if (!siteLoading()) {
+        <div class="form-row">
+          <div class="field">
+            <label for="site-type">Site type</label>
+            <select
+              id="site-type"
+              name="siteType"
+              [value]="draft()['siteType'] ?? 'claro'"
+              (change)="updateSiteType($any($event.target).value)"
+            >
+              <option value="claro">Claro</option>
+              <option value="tim">TIM</option>
+              <option value="vivo">Vivo</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="site-id">Site</label>
+            <select
+              id="site-id"
+              name="siteId"
+              [value]="draft()['siteId'] ?? ''"
+              (change)="updateSelectedSite($any($event.target).value)"
+            >
+              @if (siteOptions().length === 0) {
+                <option value="" disabled>No sites available</option>
+              }
+              @for (site of siteOptions(); track site.siteId ?? site.sequence) {
+                <option [value]="site.siteId ?? site.sequence ?? ''">
+                  {{ site.name ?? site.siteId ?? site.sequence }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (isTicketScreen() || isBillingScreen()) {
+    <div class="form-block">
+      <h3>Project Selection</h3>
+      @if (projectLoading()) {
+        <p class="muted">Loading related data...</p>
+      }
+      @if (!projectLoading()) {
+        <div class="form-row">
+          <div class="field">
+            <label for="project-id">Project</label>
+            <select
+              id="project-id"
+              name="projectId"
+              [value]="selectedProjectId() ?? ''"
+              (change)="updateSelectedProject($any($event.target).value)"
+            >
+              @if (projectOptions().length === 0) {
+                <option value="" disabled>No projects available</option>
+              }
+              @for (project of projectOptions(); track project.id ?? project.projectNumber) {
+                <option [value]="project.id ?? ''">
+                  {{ project.projectName ?? 'Project' }} ({{ project.projectNumber ?? 'N/A' }})
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (!canSubmit()) {
+    <p class="error">Complete prerequisite records before proceeding.</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

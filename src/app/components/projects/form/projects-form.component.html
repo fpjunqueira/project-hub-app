@@ -13,88 +13,266 @@
           id="project-name"
           name="projectName"
           placeholder="Project name"
-          [ngModel]="draft().projectName"
-          (ngModelChange)="updateProjectName($event)"
+          [value]="draft().projectName"
+          (input)="updateProjectName($any($event.target).value)"
         />
       </div>
-      <button type="button" (click)="submit()" [disabled]="isLoading()">
+      <div class="field">
+        <label for="project-type">Project type</label>
+        <input
+          id="project-type"
+          name="projectType"
+          placeholder="Project type"
+          [value]="draft().projectType ?? ''"
+          (input)="updateProjectType($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-number">Project number</label>
+        <input
+          id="project-number"
+          name="projectNumber"
+          placeholder="Project number"
+          [value]="draft().projectNumber ?? ''"
+          (input)="updateProjectNumber($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-purchase-order">Purchase order</label>
+        <input
+          id="project-purchase-order"
+          name="purchaseOrder"
+          placeholder="Purchase order"
+          [value]="draft().purchaseOrder ?? ''"
+          (input)="updatePurchaseOrder($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-service-order">Service order</label>
+        <input
+          id="project-service-order"
+          name="serviceOrder"
+          placeholder="Service order"
+          [value]="draft().serviceOrder ?? ''"
+          (input)="updateServiceOrder($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-po-number">PO</label>
+        <input
+          id="project-po-number"
+          name="poNumber"
+          placeholder="PO"
+          [value]="draft().poNumber ?? ''"
+          (input)="updatePoNumber($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-direct-client">Direct client</label>
+        <input
+          id="project-direct-client"
+          name="directClient"
+          placeholder="Direct client"
+          [value]="draft().directClient ?? ''"
+          (input)="updateDirectClient($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-direct-client-manager">Direct client manager</label>
+        <input
+          id="project-direct-client-manager"
+          name="directClientManager"
+          placeholder="Direct client manager"
+          [value]="draft().directClientManager ?? ''"
+          (input)="updateDirectClientManager($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-final-client">Final client</label>
+        <input
+          id="project-final-client"
+          name="finalClient"
+          placeholder="Final client"
+          [value]="draft().finalClient ?? ''"
+          (input)="updateFinalClient($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-final-client-manager">Final client manager</label>
+        <input
+          id="project-final-client-manager"
+          name="finalClientManager"
+          placeholder="Final client manager"
+          [value]="draft().finalClientManager ?? ''"
+          (input)="updateFinalClientManager($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-site-id">Site ID</label>
+        <input
+          id="project-site-id"
+          name="siteId"
+          placeholder="Site ID"
+          [value]="draft().siteId ?? ''"
+          (input)="updateSiteId($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="project-address-id">Address ID</label>
+        <input
+          id="project-address-id"
+          name="addressId"
+          placeholder="Address ID"
+          [value]="draft().addressId ?? ''"
+          (input)="updateAddressId($any($event.target).value)"
+        />
+      </div>
+      <button type="button" (click)="submit()" [disabled]="isLoading() || !canSubmit()">
         {{ isEdit() ? 'Update' : 'Create' }}
       </button>
     </div>
   </div>
 
   <div class="form-block">
+    <h3>Contract Registration</h3>
+    @if (contractLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (relationsError()) {
+      <p class="error">{{ relationsError() }}</p>
+    }
+    @if (!contractLoading()) {
+      <div class="field">
+        <label for="project-contract">Contract</label>
+        <select
+          id="project-contract"
+          name="projectContract"
+          [value]="selectedContractId() ?? ''"
+          (change)="updateSelectedContract($any($event.target).value)"
+        >
+          @if (contractRegistrations().length === 0) {
+            <option [value]="''" disabled>No contracts available</option>
+          }
+          @if (contractRegistrations().length > 0) {
+            <option [value]="''">No contract assigned</option>
+          }
+          @for (contract of contractRegistrations(); track contract.id ?? contract.projectNumber) {
+            <option [value]="contract.id ?? ''">
+              {{ contract.projectNumber ?? 'Contract' }} ({{ contract.directClient ?? 'Client' }})
+            </option>
+          }
+        </select>
+      </div>
+    }
+  </div>
+
+  <div class="form-block">
     <h3>Address</h3>
-    <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <div class="field" *ngIf="!addressLoading()">
-      <label for="project-address">Address</label>
-      <select
-        id="project-address"
-        name="projectAddress"
-        [ngModel]="selectedAddressId()"
-        (ngModelChange)="updateSelectedAddress($event)"
-      >
-        <option *ngIf="addresses().length === 0" [ngValue]="null" disabled>
-          No addresses available
-        </option>
-        <option *ngIf="addresses().length > 0" [ngValue]="null">
-          No address assigned
-        </option>
-        <option *ngFor="let addressOption of addresses()" [ngValue]="addressOption.id">
-          {{ addressOption.street }}, {{ addressOption.city }}, {{ addressOption.state }}
-          {{ addressOption.number }} ({{ addressOption.zipCode }})
-        </option>
-      </select>
-    </div>
+    @if (addressLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (relationsError()) {
+      <p class="error">{{ relationsError() }}</p>
+    }
+    @if (!addressLoading()) {
+      <div class="field">
+        <label for="project-address">Address</label>
+        <select
+          id="project-address"
+          name="projectAddress"
+          [value]="selectedAddressId() ?? ''"
+          (change)="updateSelectedAddress($any($event.target).value)"
+        >
+          @if (addresses().length === 0) {
+            <option [value]="''" disabled>No addresses available</option>
+          }
+          @if (addresses().length > 0) {
+            <option [value]="''">No address assigned</option>
+          }
+          @for (addressOption of addresses(); track addressOption.id ?? addressOption.zipCode) {
+            <option [value]="addressOption.id ?? ''">
+              {{ addressOption.street }}, {{ addressOption.city }}, {{ addressOption.state }}
+              {{ addressOption.number }} ({{ addressOption.zipCode }})
+            </option>
+          }
+        </select>
+      </div>
+    }
   </div>
 
   <div class="form-block">
     <h3>Owners</h3>
-    <p class="muted" *ngIf="ownersLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <div class="field" *ngIf="!ownersLoading()">
-      <label for="project-owners">Owners</label>
-      <select
-        id="project-owners"
-        name="projectOwners"
-        multiple
-        [ngModel]="selectedOwnerIds()"
-        (ngModelChange)="updateSelectedOwners($event)"
-      >
-        <option *ngIf="owners().length === 0" [ngValue]="null" disabled>
-          No owners available
-        </option>
-        <option *ngFor="let owner of owners()" [ngValue]="owner.id">
-          {{ owner.name }} ({{ owner.email }})
-        </option>
-      </select>
-    </div>
+    @if (ownersLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (relationsError()) {
+      <p class="error">{{ relationsError() }}</p>
+    }
+    @if (!ownersLoading()) {
+      <div class="field">
+        <label for="project-owners">Owners</label>
+        <select
+          id="project-owners"
+          name="projectOwners"
+          multiple
+          (change)="updateSelectedOwners($event)"
+        >
+          @if (owners().length === 0) {
+            <option [value]="''" disabled>No owners available</option>
+          }
+          @for (owner of owners(); track owner.id ?? owner.email) {
+            <option
+              [value]="owner.id ?? ''"
+              [selected]="owner.id !== undefined && selectedOwnerIds().includes(owner.id)"
+            >
+              {{ owner.name }} ({{ owner.email }})
+            </option>
+          }
+        </select>
+      </div>
+    }
   </div>
 
   <div class="form-block">
     <h3>Files</h3>
-    <p class="muted" *ngIf="filesLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <div class="field" *ngIf="!filesLoading()">
-      <label for="project-files">Files</label>
-      <select
-        id="project-files"
-        name="projectFiles"
-        multiple
-        [ngModel]="selectedFileIds()"
-        (ngModelChange)="updateSelectedFiles($event)"
-      >
-        <option *ngIf="files().length === 0" [ngValue]="null" disabled>
-          No files available
-        </option>
-        <option *ngFor="let file of files()" [ngValue]="file.id">
-          {{ file.filename }} ({{ file.path }})
-        </option>
-      </select>
-    </div>
+    @if (filesLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (relationsError()) {
+      <p class="error">{{ relationsError() }}</p>
+    }
+    @if (!filesLoading()) {
+      <div class="field">
+        <label for="project-files">Files</label>
+        <select
+          id="project-files"
+          name="projectFiles"
+          multiple
+          (change)="updateSelectedFiles($event)"
+        >
+          @if (files().length === 0) {
+            <option [value]="''" disabled>No files available</option>
+          }
+          @for (file of files(); track file.id ?? file.path) {
+            <option
+              [value]="file.id ?? ''"
+              [selected]="file.id !== undefined && selectedFileIds().includes(file.id)"
+            >
+              {{ file.filename }} ({{ file.path }})
+            </option>
+          }
+        </select>
+      </div>
+    }
   </div>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (!canSubmit()) {
+    <p class="error">Create a contract registration before a project.</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

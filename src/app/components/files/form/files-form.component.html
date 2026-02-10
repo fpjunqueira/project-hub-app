@@ -13,8 +13,8 @@
           id="file-filename"
           name="filename"
           placeholder="Filename"
-          [ngModel]="draft().filename"
-          (ngModelChange)="updateFilename($event)"
+          [value]="draft().filename"
+          (input)="updateFilename($any($event.target).value)"
         />
       </div>
       <div class="field">
@@ -23,8 +23,8 @@
           id="file-path"
           name="path"
           placeholder="Path"
-          [ngModel]="draft().path"
-          (ngModelChange)="updatePath($event)"
+          [value]="draft().path"
+          (input)="updatePath($any($event.target).value)"
         />
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
@@ -33,33 +33,50 @@
     </div>
   </div>
 
-  <div class="form-block" *ngIf="isEdit()">
-    <h3>Project</h3>
-    <p class="muted" *ngIf="projectLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!projectLoading()">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="project() as fileProject; else noProject">
-          <td>{{ fileProject.projectName }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noProject>
-      <div class="table-empty">No project linked.</div>
-    </ng-template>
-  </div>
+  @if (isEdit()) {
+    <div class="form-block">
+      <h3>Project</h3>
+      @if (projectLoading()) {
+        <p class="muted">Loading related data...</p>
+      }
+      @if (relationsError()) {
+        <p class="error">{{ relationsError() }}</p>
+      }
+      @if (!projectLoading()) {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (project(); as fileProject) {
+              <tr>
+                <td>{{ fileProject.projectName }}</td>
+                <td>
+                  <button type="button" class="ghost" [routerLink]="['/projects', fileProject.id, 'view']">
+                    View
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td colspan="2">
+                  <div class="table-empty">No project linked.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  }
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

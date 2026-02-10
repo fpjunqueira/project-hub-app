@@ -42,7 +42,7 @@ export class TelecomListComponent implements OnInit {
           return;
         }
         this.screen.set(screen);
-        this.fields.set(screen.fields);
+        this.fields.set(screen.fields.filter((field) => field.showInList !== false));
         this.refresh(0);
       });
   }

@@ -94,4 +94,8 @@ export class ProjectService {
   getAddress(id: number) {
     return this.http.get<Address | null>(`${this.baseUrl}/${id}/address`);
   }
+
+  getContract(id: number) {
+    return this.http.get<{ id?: number } | null>(`${this.baseUrl}/${id}/contract`);
+  }
 }

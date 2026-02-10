@@ -13,8 +13,8 @@
           id="owner-name"
           name="ownerName"
           placeholder="Name"
-          [ngModel]="draft().name"
-          (ngModelChange)="updateName($event)"
+          [value]="draft().name"
+          (input)="updateName($any($event.target).value)"
         />
       </div>
       <div class="field">
@@ -23,8 +23,8 @@
           id="owner-email"
           name="ownerEmail"
           placeholder="Email"
-          [ngModel]="draft().email"
-          (ngModelChange)="updateEmail($event)"
+          [value]="draft().email"
+          (input)="updateEmail($any($event.target).value)"
         />
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
@@ -35,53 +35,75 @@
 
   <div class="form-block">
     <h3>Address</h3>
-    <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <div class="field" *ngIf="!addressLoading()">
-      <label for="owner-address">Address</label>
-      <select
-        id="owner-address"
-        name="ownerAddress"
-        [ngModel]="selectedAddressId()"
-        (ngModelChange)="updateSelectedAddress($event)"
-      >
-        <option *ngIf="addresses().length === 0" [ngValue]="null" disabled>
-          No addresses available
-        </option>
-        <option *ngIf="addresses().length > 0" [ngValue]="null">
-          No address assigned
-        </option>
-        <option *ngFor="let addressOption of addresses()" [ngValue]="addressOption.id">
-          {{ addressOption.street }}, {{ addressOption.city }}, {{ addressOption.state }}
-          {{ addressOption.number }} ({{ addressOption.zipCode }})
-        </option>
-      </select>
-    </div>
+    @if (addressLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (relationsError()) {
+      <p class="error">{{ relationsError() }}</p>
+    }
+    @if (!addressLoading()) {
+      <div class="field">
+        <label for="owner-address">Address</label>
+        <select
+          id="owner-address"
+          name="ownerAddress"
+          [value]="selectedAddressId() ?? ''"
+          (change)="updateSelectedAddress($any($event.target).value)"
+        >
+          @if (addresses().length === 0) {
+            <option [value]="''" disabled>No addresses available</option>
+          }
+          @if (addresses().length > 0) {
+            <option [value]="''">No address assigned</option>
+          }
+          @for (addressOption of addresses(); track addressOption.id ?? addressOption.zipCode) {
+            <option [value]="addressOption.id ?? ''">
+              {{ addressOption.street }}, {{ addressOption.city }}, {{ addressOption.state }}
+              {{ addressOption.number }} ({{ addressOption.zipCode }})
+            </option>
+          }
+        </select>
+      </div>
+    }
   </div>
 
   <div class="form-block">
     <h3>Projects</h3>
-    <p class="muted" *ngIf="projectsLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <div class="field" *ngIf="!projectsLoading()">
-      <label for="owner-projects">Projects</label>
-      <select
-        id="owner-projects"
-        name="ownerProjects"
-        multiple
-        [ngModel]="selectedProjectIds()"
-        (ngModelChange)="updateSelectedProjects($event)"
-      >
-        <option *ngIf="projects().length === 0" [ngValue]="null" disabled>
-          No projects available
-        </option>
-        <option *ngFor="let project of projects()" [ngValue]="project.id">
-          {{ project.projectName }}
-        </option>
-      </select>
-    </div>
+    @if (projectsLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (relationsError()) {
+      <p class="error">{{ relationsError() }}</p>
+    }
+    @if (!projectsLoading()) {
+      <div class="field">
+        <label for="owner-projects">Projects</label>
+        <select
+          id="owner-projects"
+          name="ownerProjects"
+          multiple
+          (change)="updateSelectedProjects($event)"
+        >
+          @if (projects().length === 0) {
+            <option [value]="''" disabled>No projects available</option>
+          }
+          @for (project of projects(); track project.id ?? project.projectNumber) {
+            <option
+              [value]="project.id ?? ''"
+              [selected]="project.id !== undefined && selectedProjectIds().includes(project.id)"
+            >
+              {{ project.projectName }}
+            </option>
+          }
+        </select>
+      </div>
+    }
   </div>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

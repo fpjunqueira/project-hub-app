@@ -6,79 +6,93 @@
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 
-  <table class="table" *ngIf="records().length; else emptyState">
-    <thead>
-      <tr>
-        <th *ngFor="let field of fields()">{{ field.label }}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let record of records()">
-        <td *ngFor="let field of fields()">
-          {{ record[field.key] ?? '' }}
-        </td>
-        <td>
-          <div class="table-actions">
-            <button
-              type="button"
-              class="ghost"
-              [routerLink]="[basePath(), record.id, 'view']"
-            >
-              View
-            </button>
-            <button
-              type="button"
-              class="ghost"
-              [routerLink]="[basePath(), record.id, 'edit']"
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              class="danger"
-              (click)="delete(record.id)"
-              [disabled]="isDeleting(record.id)"
-            >
-              Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <ng-template #emptyState>
+  @if (records().length) {
+    <table class="table">
+      <thead>
+        <tr>
+          @for (field of fields(); track field.key) {
+            <th>{{ field.label }}</th>
+          }
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of records(); track record.id ?? record) {
+          <tr>
+            @for (field of fields(); track field.key) {
+              <td>
+                {{ record[field.key] ?? '' }}
+              </td>
+            }
+            <td>
+              <div class="table-actions">
+                <button
+                  type="button"
+                  class="ghost"
+                  [routerLink]="[basePath(), record.id, 'view']"
+                >
+                  View
+                </button>
+                <button
+                  type="button"
+                  class="ghost"
+                  [routerLink]="[basePath(), record.id, 'edit']"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="danger"
+                  (click)="delete(record.id)"
+                  [disabled]="isDeleting(record.id)"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
     <p class="table-empty">No records yet.</p>
-  </ng-template>
+  }
 
-  <div class="pagination" *ngIf="totalPages() >= 1">
-    <span class="pagination-meta" *ngIf="totalElements() > 0">
-      Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() }}
-    </span>
-    <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
-      Previous
-    </button>
-    <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
-    <select
-      class="pagination-select"
-      [value]="pageSize()"
-      (change)="updatePageSize($any($event.target).value)"
-    >
-      <option [value]="10">10</option>
-      <option [value]="50">50</option>
-      <option [value]="100">100</option>
-    </select>
-    <button
-      type="button"
-      class="ghost"
-      (click)="nextPage()"
-      [disabled]="pageIndex() + 1 >= totalPages()"
-    >
-      Next
-    </button>
-  </div>
+  @if (totalPages() >= 1) {
+    <div class="pagination">
+      @if (totalElements() > 0) {
+        <span class="pagination-meta">
+          Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() }}
+        </span>
+      }
+      <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
+        Previous
+      </button>
+      <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
+      <select
+        class="pagination-select"
+        [value]="pageSize()"
+        (change)="updatePageSize($any($event.target).value)"
+      >
+        <option [value]="10">10</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+      </select>
+      <button
+        type="button"
+        class="ghost"
+        (click)="nextPage()"
+        [disabled]="pageIndex() + 1 >= totalPages()"
+      >
+        Next
+      </button>
+    </div>
+  }
 </section>

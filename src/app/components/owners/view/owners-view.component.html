@@ -39,68 +39,87 @@
 
   <div class="form-block">
     <h3>Address</h3>
-    <p class="muted" *ngIf="addressLoading()">Loading related data...</p>
-    <table class="table" *ngIf="!addressLoading()">
-      <thead>
-        <tr>
-          <th>Street</th>
-          <th>City</th>
-          <th>State</th>
-          <th>Number</th>
-          <th>Zip code</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="address() as ownerAddress; else noOwnerAddress">
-          <td>{{ ownerAddress.street }}</td>
-          <td>{{ ownerAddress.city }}</td>
-          <td>{{ ownerAddress.state }}</td>
-          <td>{{ ownerAddress.number }}</td>
-          <td>{{ ownerAddress.zipCode }}</td>
-          <td>
-            <button
-              type="button"
-              class="ghost"
-              [routerLink]="['/addresses', ownerAddress.id, 'view']"
-            >
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noOwnerAddress>
-      <div class="table-empty">No address assigned.</div>
-    </ng-template>
+    @if (addressLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (!addressLoading()) {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Number</th>
+            <th>Zip code</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (address(); as ownerAddress) {
+            <tr>
+              <td>{{ ownerAddress.street }}</td>
+              <td>{{ ownerAddress.city }}</td>
+              <td>{{ ownerAddress.state }}</td>
+              <td>{{ ownerAddress.number }}</td>
+              <td>{{ ownerAddress.zipCode }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="ghost"
+                  [routerLink]="['/addresses', ownerAddress.id, 'view']"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td colspan="6" class="table-empty">No address assigned.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   </div>
 
   <div class="form-block">
     <h3>Projects</h3>
-    <p class="muted" *ngIf="projectsLoading()">Loading related data...</p>
-    <table class="table" *ngIf="!projectsLoading()">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let project of projects()">
-          <td>{{ project.projectName }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-        <tr *ngIf="projects().length === 0">
-          <td colspan="2" class="table-empty">No projects linked.</td>
-        </tr>
-      </tbody>
-    </table>
+    @if (projectsLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (!projectsLoading()) {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (project of projects(); track project.id ?? project.projectName) {
+            <tr>
+              <td>{{ project.projectName }}</td>
+              <td>
+                <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
+                  View
+                </button>
+              </td>
+            </tr>
+          }
+          @if (projects().length === 0) {
+            <tr>
+              <td colspan="2" class="table-empty">No projects linked.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   </div>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

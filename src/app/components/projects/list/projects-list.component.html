@@ -6,64 +6,74 @@
     </div>
   </header>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 
-  <table class="table" *ngIf="projects().length; else emptyState">
-    <thead>
-      <tr>
-        <th>Project name</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let project of projects()">
-        <td>{{ project.projectName }}</td>
-        <td>
-          <div class="table-actions">
-            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
-              View
-            </button>
-            <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'edit']">
-              Edit
-            </button>
-            <button type="button" class="danger" (click)="delete(project.id)" [disabled]="isDeleting(project.id)">
-              Delete
-            </button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <ng-template #emptyState>
+  @if (projects().length) {
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Project name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (project of projects(); track project.id ?? project.projectName) {
+          <tr>
+            <td>{{ project.projectName }}</td>
+            <td>
+              <div class="table-actions">
+                <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'view']">
+                  View
+                </button>
+                <button type="button" class="ghost" [routerLink]="['/projects', project.id, 'edit']">
+                  Edit
+                </button>
+                <button type="button" class="danger" (click)="delete(project.id)" [disabled]="isDeleting(project.id)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
     <p class="table-empty">No projects yet.</p>
-  </ng-template>
+  }
 
-  <div class="pagination" *ngIf="totalPages() >= 1">
-    <span class="pagination-meta" *ngIf="totalElements() > 0">
-      Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() }}
-    </span>
-    <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
-      Previous
-    </button>
-    <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
-    <select
-      class="pagination-select"
-      [value]="pageSize()"
-      (change)="updatePageSize($any($event.target).value)"
-    >
-      <option [value]="10">10</option>
-      <option [value]="50">50</option>
-      <option [value]="100">100</option>
-    </select>
-    <button
-      type="button"
-      class="ghost"
-      (click)="nextPage()"
-      [disabled]="pageIndex() + 1 >= totalPages()"
-    >
-      Next
-    </button>
-  </div>
+  @if (totalPages() >= 1) {
+    <div class="pagination">
+      @if (totalElements() > 0) {
+        <span class="pagination-meta">
+          Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() }}
+        </span>
+      }
+      <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
+        Previous
+      </button>
+      <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
+      <select
+        class="pagination-select"
+        [value]="pageSize()"
+        (change)="updatePageSize($any($event.target).value)"
+      >
+        <option [value]="10">10</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+      </select>
+      <button
+        type="button"
+        class="ghost"
+        (click)="nextPage()"
+        [disabled]="pageIndex() + 1 >= totalPages()"
+      >
+        Next
+      </button>
+    </div>
+  }
 </section>

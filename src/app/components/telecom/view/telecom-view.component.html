@@ -7,16 +7,18 @@
   <div class="form-block">
     <h3>Details</h3>
     <div class="form-row">
-      <div class="field" *ngFor="let field of fields()">
-        <label [for]="field.key + '-view'">{{ field.label }}</label>
-        <input
-          [id]="field.key + '-view'"
-          [name]="field.key"
-          [placeholder]="field.label"
-          [value]="record()?.[field.key] ?? ''"
-          disabled
-        />
-      </div>
+      @for (field of fields(); track field.key) {
+        <div class="field">
+          <label [for]="field.key + '-view'">{{ field.label }}</label>
+          <input
+            [id]="field.key + '-view'"
+            [name]="field.key"
+            [placeholder]="field.label"
+            [value]="record()?.[field.key] ?? ''"
+            disabled
+          />
+        </div>
+      }
       <button
         type="button"
         [routerLink]="[basePath(), record()?.id, 'edit']"
@@ -27,6 +29,10 @@
     </div>
   </div>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

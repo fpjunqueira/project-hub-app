@@ -13,8 +13,8 @@
           id="address-street"
           name="street"
           placeholder="Street"
-          [ngModel]="draft().street"
-          (ngModelChange)="updateStreet($event)"
+          [value]="draft().street"
+          (input)="updateStreet($any($event.target).value)"
         />
       </div>
       <div class="field">
@@ -23,8 +23,8 @@
           id="address-city"
           name="city"
           placeholder="City"
-          [ngModel]="draft().city"
-          (ngModelChange)="updateCity($event)"
+          [value]="draft().city"
+          (input)="updateCity($any($event.target).value)"
         />
       </div>
       <div class="field">
@@ -33,8 +33,8 @@
           id="address-state"
           name="state"
           placeholder="State"
-          [ngModel]="draft().state"
-          (ngModelChange)="updateState($event)"
+          [value]="draft().state"
+          (input)="updateState($any($event.target).value)"
         />
       </div>
       <div class="field">
@@ -43,8 +43,8 @@
           id="address-number"
           name="number"
           placeholder="Number"
-          [ngModel]="draft().number"
-          (ngModelChange)="updateNumber($event)"
+          [value]="draft().number"
+          (input)="updateNumber($any($event.target).value)"
         />
       </div>
       <div class="field">
@@ -53,8 +53,8 @@
           id="address-zip"
           name="zipCode"
           placeholder="Zip code"
-          [ngModel]="draft().zipCode"
-          (ngModelChange)="updateZipCode($event)"
+          [value]="draft().zipCode"
+          (input)="updateZipCode($any($event.target).value)"
         />
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
@@ -63,62 +63,92 @@
     </div>
   </div>
 
-  <div class="form-block" *ngIf="isEdit()">
-    <h3>Owner</h3>
-    <p class="muted" *ngIf="ownerLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!ownerLoading()">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="owner() as addressOwner; else noOwner">
-          <td>{{ addressOwner.name }}</td>
-          <td>{{ addressOwner.email }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noOwner>
-      <div class="table-empty">No owner linked.</div>
-    </ng-template>
-  </div>
+  @if (isEdit()) {
+    <div class="form-block">
+      <h3>Owner</h3>
+      @if (ownerLoading()) {
+        <p class="muted">Loading related data...</p>
+      }
+      @if (relationsError()) {
+        <p class="error">{{ relationsError() }}</p>
+      }
+      @if (!ownerLoading()) {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (owner(); as addressOwner) {
+              <tr>
+                <td>{{ addressOwner.name }}</td>
+                <td>{{ addressOwner.email }}</td>
+                <td>
+                  <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
+                    View
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td colspan="3">
+                  <div class="table-empty">No owner linked.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  }
 
-  <div class="form-block" *ngIf="isEdit()">
-    <h3>Project</h3>
-    <p class="muted" *ngIf="projectLoading()">Loading related data...</p>
-    <p class="error" *ngIf="relationsError()">{{ relationsError() }}</p>
-    <table class="table" *ngIf="!projectLoading()">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="project() as addressProject; else noProject">
-          <td>{{ addressProject.projectName }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noProject>
-      <div class="table-empty">No project linked.</div>
-    </ng-template>
-  </div>
+  @if (isEdit()) {
+    <div class="form-block">
+      <h3>Project</h3>
+      @if (projectLoading()) {
+        <p class="muted">Loading related data...</p>
+      }
+      @if (relationsError()) {
+        <p class="error">{{ relationsError() }}</p>
+      }
+      @if (!projectLoading()) {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (project(); as addressProject) {
+              <tr>
+                <td>{{ addressProject.projectName }}</td>
+                <td>
+                  <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
+                    View
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td colspan="2">
+                  <div class="table-empty">No project linked.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  }
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

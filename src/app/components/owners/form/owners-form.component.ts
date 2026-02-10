@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
@@ -16,7 +15,7 @@ import { OwnerService } from '../service/owner.service';
 @Component({
   selector: 'app-owners-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './owners-form.component.html',
   styleUrl: './owners-form.component.scss'
 })
@@ -226,10 +225,16 @@ export class OwnersFormComponent implements OnInit {
     this.draft.update((draft) => ({ ...draft, email }));
   }
 
-  updateSelectedProjects(selected: Array<number | string> | null): void {
-    const ids = Array.isArray(selected)
-      ? selected.map((value) => Number(value)).filter((value) => Number.isFinite(value))
-      : [];
+  updateSelectedProjects(event: Event): void {
+    const select = event.target as HTMLSelectElement | null;
+    if (!select) {
+      this.selectedProjectIds.set([]);
+      return;
+    }
+
+    const ids = Array.from(select.selectedOptions)
+      .map((option) => Number(option.value))
+      .filter((value) => Number.isFinite(value));
     this.selectedProjectIds.set(ids);
   }
 

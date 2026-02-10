@@ -69,58 +69,80 @@
 
   <div class="form-block">
     <h3>Owner</h3>
-    <p class="muted" *ngIf="ownerLoading()">Loading related data...</p>
-    <table class="table" *ngIf="!ownerLoading()">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="owner() as addressOwner; else noOwner">
-          <td>{{ addressOwner.name }}</td>
-          <td>{{ addressOwner.email }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noOwner>
-      <div class="table-empty">No owner linked.</div>
-    </ng-template>
+    @if (ownerLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (!ownerLoading()) {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (owner(); as addressOwner) {
+            <tr>
+              <td>{{ addressOwner.name }}</td>
+              <td>{{ addressOwner.email }}</td>
+              <td>
+                <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
+                  View
+                </button>
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td colspan="3">
+                <div class="table-empty">No owner linked.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   </div>
 
   <div class="form-block">
     <h3>Project</h3>
-    <p class="muted" *ngIf="projectLoading()">Loading related data...</p>
-    <table class="table" *ngIf="!projectLoading()">
-      <thead>
-        <tr>
-          <th>Project</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="project() as addressProject; else noProject">
-          <td>{{ addressProject.projectName }}</td>
-          <td>
-            <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #noProject>
-      <div class="table-empty">No project linked.</div>
-    </ng-template>
+    @if (projectLoading()) {
+      <p class="muted">Loading related data...</p>
+    }
+    @if (!projectLoading()) {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (project(); as addressProject) {
+            <tr>
+              <td>{{ addressProject.projectName }}</td>
+              <td>
+                <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
+                  View
+                </button>
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td colspan="2">
+                <div class="table-empty">No project linked.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   </div>
 
-  <p class="muted" *ngIf="isLoading()">Loading...</p>
-  <p class="error" *ngIf="error()">{{ error() }}</p>
+  @if (isLoading()) {
+    <p class="muted">Loading...</p>
+  }
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
 </section>

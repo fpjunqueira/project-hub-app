@@ -2,12 +2,11 @@
   <div class="login-card">
     <header>
       <h1>Project Hub</h1>
-      <p *ngIf="isAuthEnabled(); else localAuth">
-        Sign in with your organization account.
-      </p>
-      <ng-template #localAuth>
+      @if (isAuthEnabled()) {
+        <p>Sign in with your organization account.</p>
+      } @else {
         <p>Local development mode. Azure sign-in is disabled.</p>
-      </ng-template>
+      }
     </header>
 
     <button type="button" (click)="login()">
