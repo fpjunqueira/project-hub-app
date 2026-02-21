@@ -3,7 +3,7 @@
   <main class="content">
     <div class="content-stack" [class.is-auth]="showSidebar()">
       <app-topbar *ngIf="showSidebar()" class="content-panel"></app-topbar>
-      <div [class.content-panel]="showSidebar()" [class.content-body]="showSidebar()">
+      <div [class.content-panel]="showSidebar() && !isDashboard()" [class.content-body]="showSidebar()">
         <router-outlet />
       </div>
     </div>

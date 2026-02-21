@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../java/project-hub-service"
+		},
+		{
+			"path": "../../java/security-service"
+		}
+	]
+}

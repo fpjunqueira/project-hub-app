@@ -14,6 +14,7 @@ export interface TelecomScreenField {
 export interface TelecomScreenConfig {
   key: string;
   title: string;
+  viewTitle?: string;
   baseUrl: string;
   route: string;
   fields: TelecomScreenField[];

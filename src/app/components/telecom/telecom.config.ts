@@ -3,17 +3,18 @@ import { TelecomScreenConfig } from './model/telecom.model';
 export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   documentations: {
     key: 'documentations',
-    title: 'Documentation',
+    title: 'telecom.documentation',
+    viewTitle: 'telecom.documentationView',
     baseUrl: '/api/documentations',
     route: 'documentations',
     fields: [
-      { key: 'documentationType', label: 'Documentation Type' },
-      { key: 'directClient', label: 'Direct Client' },
+      { key: 'documentationType', label: 'Documentation Type', showInList: true },
+      { key: 'directClient', label: 'Direct Client', showInList: true },
       { key: 'directClientManager', label: 'Direct Client Manager' },
-      { key: 'finalClient', label: 'Final Client' },
+      { key: 'finalClient', label: 'Final Client', showInList: true },
       { key: 'finalClientManager', label: 'Final Client Manager' },
       { key: 'projectType', label: 'Project Type' },
-      { key: 'projectNumber', label: 'Project Number' },
+      { key: 'projectNumber', label: 'Project Number', showInList: true },
       { key: 'purchaseOrder', label: 'Purchase Order' },
       { key: 'serviceOrder', label: 'Service Order' },
       { key: 'technician', label: 'Technician' },
@@ -41,7 +42,8 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   billings: {
     key: 'billings',
-    title: 'Billing',
+    title: 'nav.billing',
+    viewTitle: 'nav.billingView',
     baseUrl: '/api/billings',
     route: 'billings',
     fields: [
@@ -78,16 +80,17 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   vehicleRegistrationInfos: {
     key: 'vehicleRegistrationInfos',
-    title: 'Vehicle Registration Information',
+    title: 'telecom.vehicleRegistrationInfo',
+    viewTitle: 'telecom.vehicleRegistrationInfoView',
     baseUrl: '/api/vehicle-registration-infos',
     route: 'vehicle-registration-infos',
     fields: [
-      { key: 'licensePlate', label: 'License Plate' },
-      { key: 'renavam', label: 'Renavam' },
+      { key: 'licensePlate', label: 'License Plate', showInList: true },
+      { key: 'renavam', label: 'Renavam', showInList: true },
       { key: 'chassis', label: 'Chassis' },
-      { key: 'vehicleType', label: 'Vehicle Type' },
+      { key: 'vehicleType', label: 'Vehicle Type', showInList: true },
       { key: 'category', label: 'Category' },
-      { key: 'makeModel', label: 'Make / Model' },
+      { key: 'makeModel', label: 'Make / Model', showInList: true },
       { key: 'manufactureYear', label: 'Manufacture Year' },
       { key: 'modelYear', label: 'Model Year' },
       { key: 'color', label: 'Color' },
@@ -116,18 +119,19 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   userRegistrations: {
     key: 'userRegistrations',
-    title: 'User Registration',
+    title: 'telecom.userRegistration',
+    viewTitle: 'telecom.userRegistrationView',
     baseUrl: '/api/user-registrations',
     route: 'user-registrations',
     fields: [
-      { key: 'fullName', label: 'Full Name' },
+      { key: 'fullName', label: 'Full Name', showInList: true },
       { key: 'rg', label: 'RG' },
       { key: 'issuingAuthority', label: 'Issuing Authority' },
       { key: 'issueDate', label: 'Issue Date' },
       { key: 'birthDate', label: 'Birth Date' },
       { key: 'motherName', label: "Mother's Name" },
       { key: 'fatherName', label: "Father's Name" },
-      { key: 'cpf', label: 'CPF' },
+      { key: 'cpf', label: 'CPF', showInList: true },
       { key: 'birthplace', label: 'Birthplace' },
       { key: 'birthState', label: 'Birth State' },
       { key: 'address', label: 'Address' },
@@ -140,13 +144,13 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
       { key: 'username', label: 'Username' },
       { key: 'password', label: 'Password' },
       { key: 'permissionLevel', label: 'Permission Level' },
-      { key: 'jobTitle', label: 'Job Title' },
+      { key: 'jobTitle', label: 'Job Title', showInList: true },
       { key: 'cltOrCnpj', label: 'CLT or CNPJ' },
       { key: 'hireDate', label: 'Hire Date' },
       { key: 'asoExpiry', label: 'ASO Expiry' },
       { key: 'nr10Expiry', label: 'NR10 Expiry' },
       { key: 'nr35Expiry', label: 'NR35 Expiry' },
-      { key: 'status', label: 'Status' },
+      { key: 'status', label: 'Status', showInList: true },
       { key: 'note1', label: 'Note 1' },
       { key: 'note2', label: 'Note 2' },
       { key: 'note3', label: 'Note 3' }
@@ -154,7 +158,8 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   claroSites: {
     key: 'claroSites',
-    title: 'Claro Site',
+    title: 'nav.claroSite',
+    viewTitle: 'nav.claroSiteView',
     baseUrl: '/api/claro-sites',
     route: 'claro-sites',
     fields: [
@@ -183,7 +188,8 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   timSites: {
     key: 'timSites',
-    title: 'TIM Site',
+    title: 'nav.timSite',
+    viewTitle: 'nav.timSiteView',
     baseUrl: '/api/tim-sites',
     route: 'tim-sites',
     fields: [
@@ -206,7 +212,8 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   vivoSites: {
     key: 'vivoSites',
-    title: 'Vivo Site',
+    title: 'nav.vivoSite',
+    viewTitle: 'nav.vivoSiteView',
     baseUrl: '/api/vivo-sites',
     route: 'vivo-sites',
     fields: [
@@ -230,7 +237,8 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   contractRegistrations: {
     key: 'contractRegistrations',
-    title: 'Contract Registration',
+    title: 'telecom.contractRegistration',
+    viewTitle: 'telecom.contractRegistrationView',
     baseUrl: '/api/contract-registrations',
     route: 'contract-registrations',
     fields: [
@@ -239,9 +247,9 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
         label: 'Site Type',
         inputType: 'select',
         options: [
-          { value: 'claro', label: 'Claro' },
-          { value: 'tim', label: 'TIM' },
-          { value: 'vivo', label: 'Vivo' }
+          { value: 'claro', label: 'telecom.claro' },
+          { value: 'tim', label: 'telecom.tim' },
+          { value: 'vivo', label: 'telecom.vivo' }
         ],
         required: true,
         optional: true,
@@ -264,11 +272,26 @@ export const TELECOM_SCREENS: Record<string, TelecomScreenConfig> = {
   },
   tickets: {
     key: 'tickets',
-    title: 'Tickets',
+    title: 'nav.tickets',
+    viewTitle: 'nav.ticketsView',
     baseUrl: '/api/tickets',
     route: 'tickets',
     fields: [
       { key: 'ticketNumber', label: 'Ticket Number', optional: true },
+      {
+        key: 'status',
+        label: 'Status',
+        inputType: 'select',
+        options: [
+          { value: 'OPEN', label: 'dashboard.ticketsOpen' },
+          { value: 'IN_PROGRESS', label: 'dashboard.ticketsActive' },
+          { value: 'CLOSED', label: 'dashboard.ticketsClosed' },
+          { value: 'ON_HOLD', label: 'dashboard.ticketsOnHold' }
+        ],
+        required: true,
+        showInList: true
+      },
+      { key: 'dueDate', label: 'Due Date (SLA)', optional: true, showInList: true },
       { key: 'directClient', label: 'Direct Client', autoFill: true, readOnly: true, showInList: true },
       { key: 'directClientManager', label: 'Direct Client Manager', autoFill: true, readOnly: true },
       { key: 'finalClient', label: 'Final Client', autoFill: true, readOnly: true, showInList: true },

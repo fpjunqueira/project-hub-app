@@ -1,17 +1,25 @@
 <section class="login-shell">
   <div class="login-card">
     <header>
-      <h1>Project Hub</h1>
+      <h1>{{ 'login.title' | translate }}</h1>
       @if (isAuthEnabled()) {
-        <p>Sign in with your organization account.</p>
+        <p>{{ 'login.signInOrg' | translate }}</p>
       } @else {
-        <p>Local development mode. Azure sign-in is disabled.</p>
+        <p>{{ 'login.localDevMode' | translate }}</p>
       }
     </header>
 
-    <button type="button" (click)="login()">
-      {{ isAuthEnabled() ? 'Sign in' : 'Continue' }}
+    @if (error()) {
+      <p class="login-error">{{ error() | translate }}</p>
+    }
+
+    <button type="button" (click)="login()" [disabled]="isLoading()">
+      @if (isLoading()) {
+        {{ 'login.signingIn' | translate }}
+      } @else {
+        {{ isAuthEnabled() ? ('login.signIn' | translate) : ('login.continue' | translate) }}
+      }
     </button>
-    <button type="button" class="secondary" (click)="backToApp()">Back to app</button>
+    <button type="button" class="secondary" (click)="backToApp()">{{ 'login.backToApp' | translate }}</button>
   </div>
 </section>

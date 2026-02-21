@@ -1,149 +1,149 @@
 <section class="card">
   <header class="card-header">
-    <h2>{{ isEdit() ? 'Edit Project' : 'New Project' }}</h2>
-    <button type="button" class="ghost" routerLink="/projects">Back to list</button>
+    <h2>{{ (isEdit() ? 'projects.editProject' : 'projects.newProject') | translate }}</h2>
+    <button type="button" class="ghost" routerLink="/projects">{{ 'common.backToList' | translate }}</button>
   </header>
 
   <div class="form-block">
-    <h3>Details</h3>
+    <h3>{{ 'common.details' | translate }}</h3>
     <div class="form-row">
       <div class="field">
-        <label for="project-name">Project name</label>
+        <label for="project-name">{{ 'projects.projectName' | translate }}</label>
         <input
           id="project-name"
           name="projectName"
-          placeholder="Project name"
+          [placeholder]="'projects.projectName' | translate"
           [value]="draft().projectName"
           (input)="updateProjectName($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-type">Project type</label>
+        <label for="project-type">{{ 'projects.projectType' | translate }}</label>
         <input
           id="project-type"
           name="projectType"
-          placeholder="Project type"
+          [placeholder]="'projects.projectType' | translate"
           [value]="draft().projectType ?? ''"
           (input)="updateProjectType($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-number">Project number</label>
+        <label for="project-number">{{ 'projects.projectNumber' | translate }}</label>
         <input
           id="project-number"
           name="projectNumber"
-          placeholder="Project number"
+          [placeholder]="'projects.projectNumber' | translate"
           [value]="draft().projectNumber ?? ''"
           (input)="updateProjectNumber($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-purchase-order">Purchase order</label>
+        <label for="project-purchase-order">{{ 'projects.purchaseOrder' | translate }}</label>
         <input
           id="project-purchase-order"
           name="purchaseOrder"
-          placeholder="Purchase order"
+          [placeholder]="'projects.purchaseOrder' | translate"
           [value]="draft().purchaseOrder ?? ''"
           (input)="updatePurchaseOrder($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-service-order">Service order</label>
+        <label for="project-service-order">{{ 'projects.serviceOrder' | translate }}</label>
         <input
           id="project-service-order"
           name="serviceOrder"
-          placeholder="Service order"
+          [placeholder]="'projects.serviceOrder' | translate"
           [value]="draft().serviceOrder ?? ''"
           (input)="updateServiceOrder($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-po-number">PO</label>
+        <label for="project-po-number">{{ 'projects.po' | translate }}</label>
         <input
           id="project-po-number"
           name="poNumber"
-          placeholder="PO"
+          [placeholder]="'projects.po' | translate"
           [value]="draft().poNumber ?? ''"
           (input)="updatePoNumber($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-direct-client">Direct client</label>
+        <label for="project-direct-client">{{ 'projects.directClient' | translate }}</label>
         <input
           id="project-direct-client"
           name="directClient"
-          placeholder="Direct client"
+          [placeholder]="'projects.directClient' | translate"
           [value]="draft().directClient ?? ''"
           (input)="updateDirectClient($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-direct-client-manager">Direct client manager</label>
+        <label for="project-direct-client-manager">{{ 'projects.directClientManager' | translate }}</label>
         <input
           id="project-direct-client-manager"
           name="directClientManager"
-          placeholder="Direct client manager"
+          [placeholder]="'projects.directClientManager' | translate"
           [value]="draft().directClientManager ?? ''"
           (input)="updateDirectClientManager($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-final-client">Final client</label>
+        <label for="project-final-client">{{ 'projects.finalClient' | translate }}</label>
         <input
           id="project-final-client"
           name="finalClient"
-          placeholder="Final client"
+          [placeholder]="'projects.finalClient' | translate"
           [value]="draft().finalClient ?? ''"
           (input)="updateFinalClient($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-final-client-manager">Final client manager</label>
+        <label for="project-final-client-manager">{{ 'projects.finalClientManager' | translate }}</label>
         <input
           id="project-final-client-manager"
           name="finalClientManager"
-          placeholder="Final client manager"
+          [placeholder]="'projects.finalClientManager' | translate"
           [value]="draft().finalClientManager ?? ''"
           (input)="updateFinalClientManager($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-site-id">Site ID</label>
+        <label for="project-site-id">{{ 'projects.siteId' | translate }}</label>
         <input
           id="project-site-id"
           name="siteId"
-          placeholder="Site ID"
+          [placeholder]="'projects.siteId' | translate"
           [value]="draft().siteId ?? ''"
           (input)="updateSiteId($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="project-address-id">Address ID</label>
+        <label for="project-address-id">{{ 'projects.addressId' | translate }}</label>
         <input
           id="project-address-id"
           name="addressId"
-          placeholder="Address ID"
+          [placeholder]="'projects.addressId' | translate"
           [value]="draft().addressId ?? ''"
           (input)="updateAddressId($any($event.target).value)"
         />
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading() || !canSubmit()">
-        {{ isEdit() ? 'Update' : 'Create' }}
+        {{ (isEdit() ? 'common.update' : 'common.create') | translate }}
       </button>
     </div>
   </div>
 
   <div class="form-block">
-    <h3>Contract Registration</h3>
+    <h3>{{ 'projects.contractRegistration' | translate }}</h3>
     @if (contractLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (relationsError()) {
-      <p class="error">{{ relationsError() }}</p>
+      <p class="error">{{ relationsError() | translate }}</p>
     }
     @if (!contractLoading()) {
       <div class="field">
-        <label for="project-contract">Contract</label>
+        <label for="project-contract">{{ 'projects.contract' | translate }}</label>
         <select
           id="project-contract"
           name="projectContract"
@@ -151,14 +151,14 @@
           (change)="updateSelectedContract($any($event.target).value)"
         >
           @if (contractRegistrations().length === 0) {
-            <option [value]="''" disabled>No contracts available</option>
+            <option [value]="''" disabled>{{ 'common.noContractsAvailable' | translate }}</option>
           }
           @if (contractRegistrations().length > 0) {
-            <option [value]="''">No contract assigned</option>
+            <option [value]="''">{{ 'projects.noContractAssigned' | translate }}</option>
           }
           @for (contract of contractRegistrations(); track contract.id ?? contract.projectNumber) {
             <option [value]="contract.id ?? ''">
-              {{ contract.projectNumber ?? 'Contract' }} ({{ contract.directClient ?? 'Client' }})
+              {{ contract.projectNumber ?? ('projects.contract' | translate) }} ({{ contract.directClient ?? ('telecom.client' | translate) }})
             </option>
           }
         </select>
@@ -167,16 +167,16 @@
   </div>
 
   <div class="form-block">
-    <h3>Address</h3>
+    <h3>{{ 'owners.address' | translate }}</h3>
     @if (addressLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (relationsError()) {
-      <p class="error">{{ relationsError() }}</p>
+      <p class="error">{{ relationsError() | translate }}</p>
     }
     @if (!addressLoading()) {
       <div class="field">
-        <label for="project-address">Address</label>
+        <label for="project-address">{{ 'owners.address' | translate }}</label>
         <select
           id="project-address"
           name="projectAddress"
@@ -184,10 +184,10 @@
           (change)="updateSelectedAddress($any($event.target).value)"
         >
           @if (addresses().length === 0) {
-            <option [value]="''" disabled>No addresses available</option>
+            <option [value]="''" disabled>{{ 'common.noAddressesAvailable' | translate }}</option>
           }
           @if (addresses().length > 0) {
-            <option [value]="''">No address assigned</option>
+            <option [value]="''">{{ 'common.noAddressAssigned' | translate }}</option>
           }
           @for (addressOption of addresses(); track addressOption.id ?? addressOption.zipCode) {
             <option [value]="addressOption.id ?? ''">
@@ -201,16 +201,16 @@
   </div>
 
   <div class="form-block">
-    <h3>Owners</h3>
+    <h3>{{ 'projects.owners' | translate }}</h3>
     @if (ownersLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (relationsError()) {
-      <p class="error">{{ relationsError() }}</p>
+      <p class="error">{{ relationsError() | translate }}</p>
     }
     @if (!ownersLoading()) {
       <div class="field">
-        <label for="project-owners">Owners</label>
+        <label for="project-owners">{{ 'projects.owners' | translate }}</label>
         <select
           id="project-owners"
           name="projectOwners"
@@ -218,7 +218,7 @@
           (change)="updateSelectedOwners($event)"
         >
           @if (owners().length === 0) {
-            <option [value]="''" disabled>No owners available</option>
+            <option [value]="''" disabled>{{ 'common.noOwnersAvailable' | translate }}</option>
           }
           @for (owner of owners(); track owner.id ?? owner.email) {
             <option
@@ -234,16 +234,16 @@
   </div>
 
   <div class="form-block">
-    <h3>Files</h3>
+    <h3>{{ 'files.title' | translate }}</h3>
     @if (filesLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (relationsError()) {
-      <p class="error">{{ relationsError() }}</p>
+      <p class="error">{{ relationsError() | translate }}</p>
     }
     @if (!filesLoading()) {
       <div class="field">
-        <label for="project-files">Files</label>
+        <label for="project-files">{{ 'files.title' | translate }}</label>
         <select
           id="project-files"
           name="projectFiles"
@@ -251,7 +251,7 @@
           (change)="updateSelectedFiles($event)"
         >
           @if (files().length === 0) {
-            <option [value]="''" disabled>No files available</option>
+            <option [value]="''" disabled>{{ 'common.noFilesAvailable' | translate }}</option>
           }
           @for (file of files(); track file.id ?? file.path) {
             <option
@@ -267,12 +267,12 @@
   </div>
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (!canSubmit()) {
-    <p class="error">Create a contract registration before a project.</p>
+    <p class="error">{{ 'common.createContractBeforeProject' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 </section>

@@ -1,24 +1,23 @@
 <section class="card">
   <header class="card-header">
-    <h2>Files</h2>
+    <h2>{{ 'files.title' | translate }}</h2>
     <div class="header-actions">
-      <button type="button" class="ghost" routerLink="/files/new">New</button>
+      <button type="button" class="ghost" routerLink="/files/new">{{ 'common.new' | translate }}</button>
     </div>
   </header>
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 
   @if (files().length) {
     <table class="table">
       <thead>
         <tr>
-          <th>Filename</th>
-          <th>Path</th>
+          <th>{{ 'files.filename' | translate }}</th>
           <th></th>
         </tr>
       </thead>
@@ -26,17 +25,16 @@
         @for (file of files(); track file.id ?? file.path) {
           <tr>
             <td>{{ file.filename }}</td>
-            <td>{{ file.path }}</td>
             <td>
               <div class="table-actions">
                 <button type="button" class="ghost" [routerLink]="['/files', file.id, 'view']">
-                  View
+                  {{ 'common.view' | translate }}
                 </button>
                 <button type="button" class="ghost" [routerLink]="['/files', file.id, 'edit']">
-                  Edit
+                  {{ 'common.edit' | translate }}
                 </button>
                 <button type="button" class="danger" (click)="delete(file.id)" [disabled]="isDeleting(file.id)">
-                  Delete
+                  {{ 'common.delete' | translate }}
                 </button>
               </div>
             </td>
@@ -45,20 +43,20 @@
       </tbody>
     </table>
   } @else {
-    <p class="table-empty">No files yet.</p>
+    <p class="table-empty">{{ 'common.noFilesYet' | translate }}</p>
   }
 
   @if (totalPages() >= 1) {
     <div class="pagination">
       @if (totalElements() > 0) {
         <span class="pagination-meta">
-          Showing {{ rangeStart() }}-{{ rangeEnd() }} of {{ totalElements() }}
+          {{ 'common.showing' | translate }} {{ rangeStart() }}-{{ rangeEnd() }} {{ 'common.of' | translate }} {{ totalElements() }}
         </span>
       }
       <button type="button" class="ghost" (click)="previousPage()" [disabled]="pageIndex() === 0">
-        Previous
+        {{ 'common.previous' | translate }}
       </button>
-      <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
+      <span>{{ 'common.page' | translate }} {{ pageIndex() + 1 }} {{ 'common.of' | translate }} {{ totalPages() }}</span>
       <select
         class="pagination-select"
         [value]="pageSize()"
@@ -74,7 +72,7 @@
         (click)="nextPage()"
         [disabled]="pageIndex() + 1 >= totalPages()"
       >
-        Next
+        {{ 'common.next' | translate }}
       </button>
     </div>
   }

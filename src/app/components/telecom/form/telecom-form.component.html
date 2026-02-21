@@ -1,7 +1,7 @@
 <section class="card">
   <header class="card-header">
-    <h2>{{ screenTitle() }}</h2>
-    <button type="button" class="ghost" [routerLink]="basePath()">Back to list</button>
+    <h2>{{ (isEdit() ? 'common.update' : 'common.create') | translate }} {{ (screen()?.title) | translate }}</h2>
+    <button type="button" class="ghost" [routerLink]="basePath()">{{ 'common.backToList' | translate }}</button>
   </header>
 
   <div class="form-block">
@@ -9,7 +9,7 @@
     <div class="form-row">
       @for (field of visibleFields(); track field.key) {
         <div class="field">
-          <label [for]="field.key">{{ field.label }}</label>
+          <label [for]="field.key">{{ 'telecom.' + field.key | translate }}</label>
           @switch (field.inputType) {
             @case ('select') {
               <select
@@ -20,7 +20,7 @@
               >
                 @for (option of field.options ?? []; track option.value) {
                   <option [value]="option.value">
-                    {{ option.label }}
+                    {{ option.label | translate }}
                   </option>
                 }
               </select>
@@ -29,7 +29,7 @@
               <input
                 [id]="field.key"
                 [name]="field.key"
-                [placeholder]="field.label"
+                [placeholder]="('telecom.' + field.key) | translate"
                 [value]="draft()[field.key] ?? ''"
                 [disabled]="field.readOnly || field.autoFill"
                 (input)="updateField(field.key, $any($event.target).value)"
@@ -39,37 +39,37 @@
         </div>
       }
       <button type="button" (click)="submit()" [disabled]="isLoading() || !canSubmit()">
-        {{ isEdit() ? 'Update' : 'Create' }}
+        {{ (isEdit() ? 'common.update' : 'common.create') | translate }}
       </button>
       <button type="button" class="ghost" (click)="toggleOptional()">
-        {{ showOptional() ? 'Hide optional fields' : 'Show optional fields' }}
+        {{ (showOptional() ? 'common.hideOptionalFields' : 'common.showOptionalFields') | translate }}
       </button>
     </div>
   </div>
 
   @if (isContractScreen()) {
     <div class="form-block">
-      <h3>Site Selection</h3>
+      <h3>{{ 'forms.siteSelection' | translate }}</h3>
       @if (siteLoading()) {
-        <p class="muted">Loading related data...</p>
+        <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
       }
       @if (!siteLoading()) {
         <div class="form-row">
           <div class="field">
-            <label for="site-type">Site type</label>
+            <label for="site-type">{{ 'forms.siteType' | translate }}</label>
             <select
               id="site-type"
               name="siteType"
               [value]="draft()['siteType'] ?? 'claro'"
               (change)="updateSiteType($any($event.target).value)"
             >
-              <option value="claro">Claro</option>
-              <option value="tim">TIM</option>
-              <option value="vivo">Vivo</option>
+              <option value="claro">{{ 'telecom.claro' | translate }}</option>
+              <option value="tim">{{ 'telecom.tim' | translate }}</option>
+              <option value="vivo">{{ 'telecom.vivo' | translate }}</option>
             </select>
           </div>
           <div class="field">
-            <label for="site-id">Site</label>
+            <label for="site-id">{{ 'forms.site' | translate }}</label>
             <select
               id="site-id"
               name="siteId"
@@ -77,7 +77,7 @@
               (change)="updateSelectedSite($any($event.target).value)"
             >
               @if (siteOptions().length === 0) {
-                <option value="" disabled>No sites available</option>
+                <option value="" disabled>{{ 'common.noSitesAvailable' | translate }}</option>
               }
               @for (site of siteOptions(); track site.siteId ?? site.sequence) {
                 <option [value]="site.siteId ?? site.sequence ?? ''">
@@ -93,14 +93,14 @@
 
   @if (isTicketScreen() || isBillingScreen()) {
     <div class="form-block">
-      <h3>Project Selection</h3>
+      <h3>{{ 'forms.projectSelection' | translate }}</h3>
       @if (projectLoading()) {
-        <p class="muted">Loading related data...</p>
+        <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
       }
       @if (!projectLoading()) {
         <div class="form-row">
           <div class="field">
-            <label for="project-id">Project</label>
+            <label for="project-id">{{ 'forms.project' | translate }}</label>
             <select
               id="project-id"
               name="projectId"
@@ -108,11 +108,11 @@
               (change)="updateSelectedProject($any($event.target).value)"
             >
               @if (projectOptions().length === 0) {
-                <option value="" disabled>No projects available</option>
+                <option value="" disabled>{{ 'common.noProjectsAvailable' | translate }}</option>
               }
               @for (project of projectOptions(); track project.id ?? project.projectNumber) {
                 <option [value]="project.id ?? ''">
-                  {{ project.projectName ?? 'Project' }} ({{ project.projectNumber ?? 'N/A' }})
+                  {{ project.projectName ?? ('forms.project' | translate) }} ({{ project.projectNumber ?? ('telecom.nA' | translate) }})
                 </option>
               }
             </select>
@@ -123,12 +123,12 @@
   }
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (!canSubmit()) {
-    <p class="error">Complete prerequisite records before proceeding.</p>
+    <p class="error">{{ 'common.completePrerequisite' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 </section>

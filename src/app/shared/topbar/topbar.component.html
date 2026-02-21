@@ -1,11 +1,20 @@
 <header class="topbar">
   <div class="topbar-content">
     <div class="topbar-title">
-      Project Hub <span class="topbar-mark">™ pexper</span>
+      {{ 'app.title' | translate }} <span class="topbar-mark">™ pexper</span>
     </div>
     <div class="topbar-actions">
-      <span class="user-chip">{{ userLabel() }}</span>
-      <button type="button" (click)="signOut()">Sign out</button>
+      <button
+        type="button"
+        class="lang-switch"
+        (click)="switchLanguage()"
+        [attr.aria-label]="'language.' + currentLang() | translate"
+        [title]="'language.' + currentLang() | translate"
+      >
+        {{ currentLang() === 'pt' ? 'EN' : 'PT' }}
+      </button>
+      <span class="user-chip">{{ userLabel() | translate }}</span>
+      <button type="button" (click)="signOut()">{{ 'common.signOut' | translate }}</button>
     </div>
   </div>
 </header>

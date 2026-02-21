@@ -1,49 +1,49 @@
 <section class="card">
   <header class="card-header">
-    <h2>{{ isEdit() ? 'Edit Owner' : 'New Owner' }}</h2>
-    <button type="button" class="ghost" routerLink="/owners">Back to list</button>
+    <h2>{{ (isEdit() ? 'owners.editOwner' : 'owners.newOwner') | translate }}</h2>
+    <button type="button" class="ghost" routerLink="/owners">{{ 'common.backToList' | translate }}</button>
   </header>
 
   <div class="form-block">
-    <h3>Details</h3>
+    <h3>{{ 'common.details' | translate }}</h3>
     <div class="form-row">
       <div class="field">
-        <label for="owner-name">Name</label>
+        <label for="owner-name">{{ 'owners.name' | translate }}</label>
         <input
           id="owner-name"
           name="ownerName"
-          placeholder="Name"
+          [placeholder]="'owners.name' | translate"
           [value]="draft().name"
           (input)="updateName($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="owner-email">Email</label>
+        <label for="owner-email">{{ 'owners.email' | translate }}</label>
         <input
           id="owner-email"
           name="ownerEmail"
-          placeholder="Email"
+          [placeholder]="'owners.email' | translate"
           [value]="draft().email"
           (input)="updateEmail($any($event.target).value)"
         />
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
-        {{ isEdit() ? 'Update' : 'Create' }}
+        {{ (isEdit() ? 'common.update' : 'common.create') | translate }}
       </button>
     </div>
   </div>
 
   <div class="form-block">
-    <h3>Address</h3>
+    <h3>{{ 'owners.address' | translate }}</h3>
     @if (addressLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (relationsError()) {
-      <p class="error">{{ relationsError() }}</p>
+      <p class="error">{{ relationsError() | translate }}</p>
     }
     @if (!addressLoading()) {
       <div class="field">
-        <label for="owner-address">Address</label>
+        <label for="owner-address">{{ 'owners.address' | translate }}</label>
         <select
           id="owner-address"
           name="ownerAddress"
@@ -51,10 +51,10 @@
           (change)="updateSelectedAddress($any($event.target).value)"
         >
           @if (addresses().length === 0) {
-            <option [value]="''" disabled>No addresses available</option>
+            <option [value]="''" disabled>{{ 'common.noAddressesAvailable' | translate }}</option>
           }
           @if (addresses().length > 0) {
-            <option [value]="''">No address assigned</option>
+            <option [value]="''">{{ 'common.noAddressAssigned' | translate }}</option>
           }
           @for (addressOption of addresses(); track addressOption.id ?? addressOption.zipCode) {
             <option [value]="addressOption.id ?? ''">
@@ -68,16 +68,16 @@
   </div>
 
   <div class="form-block">
-    <h3>Projects</h3>
+    <h3>{{ 'owners.projects' | translate }}</h3>
     @if (projectsLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (relationsError()) {
-      <p class="error">{{ relationsError() }}</p>
+      <p class="error">{{ relationsError() | translate }}</p>
     }
     @if (!projectsLoading()) {
       <div class="field">
-        <label for="owner-projects">Projects</label>
+        <label for="owner-projects">{{ 'owners.projects' | translate }}</label>
         <select
           id="owner-projects"
           name="ownerProjects"
@@ -85,7 +85,7 @@
           (change)="updateSelectedProjects($event)"
         >
           @if (projects().length === 0) {
-            <option [value]="''" disabled>No projects available</option>
+            <option [value]="''" disabled>{{ 'common.noProjectsAvailable' | translate }}</option>
           }
           @for (project of projects(); track project.id ?? project.projectNumber) {
             <option
@@ -101,9 +101,9 @@
   </div>
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 </section>

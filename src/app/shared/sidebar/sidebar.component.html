@@ -1,7 +1,7 @@
 <aside class="side-nav">
   <div class="brand">
-    <span class="brand-title">Project Hub</span>
-    <span class="brand-subtitle">Project Hub v0.1-beta</span>
+    <span class="brand-title">{{ 'app.title' | translate }}</span>
+    <span class="brand-subtitle">{{ 'app.brandSubtitle' | translate }}</span>
   </div>
   <nav class="nav-links">
     <a routerLink="/dashboard" routerLinkActive="active" class="nav-item-root">
@@ -13,7 +13,7 @@
           />
         </svg>
       </span>
-      <span class="nav-item-label">Dashboard</span>
+      <span class="nav-item-label">{{ 'nav.dashboard' | translate }}</span>
     </a>
 
     <div class="nav-group">
@@ -27,7 +27,7 @@
               />
             </svg>
           </span>
-          <span class="nav-group-label">Tickets</span>
+          <span class="nav-group-label">{{ 'nav.tickets' | translate }}</span>
         </span>
         <span class="nav-group-header-caret" [class.is-open]="expanded.tickets" aria-hidden="true">
           <svg viewBox="0 0 20 20">
@@ -37,7 +37,7 @@
       </button>
       @if (expanded.tickets) {
         <div class="nav-group-items">
-          <a routerLink="/tickets" routerLinkActive="active">Tickets</a>
+          <a routerLink="/tickets" routerLinkActive="active">{{ 'nav.tickets' | translate }}</a>
         </div>
       }
     </div>
@@ -51,7 +51,7 @@
               <path d="M4 4h5v5H4V4Zm7 0h5v5h-5V4ZM4 11h5v5H4v-5Zm7 0h5v5h-5v-5Z" />
             </svg>
           </span>
-          <span class="nav-group-label">Projects</span>
+          <span class="nav-group-label">{{ 'nav.projects' | translate }}</span>
         </span>
         <span class="nav-group-header-caret" [class.is-open]="expanded.projects" aria-hidden="true">
           <svg viewBox="0 0 20 20">
@@ -61,9 +61,9 @@
       </button>
       @if (expanded.projects) {
         <div class="nav-group-items">
-          <a routerLink="/projects" routerLinkActive="active">Projects</a>
+          <a routerLink="/projects" routerLinkActive="active">{{ 'nav.projects' | translate }}</a>
           <a routerLink="/contract-registrations" routerLinkActive="active">
-            Contract Registrations
+            {{ 'nav.contractRegistrations' | translate }}
           </a>
         </div>
       }
@@ -80,7 +80,7 @@
               />
             </svg>
           </span>
-          <span class="nav-group-label">Sites</span>
+          <span class="nav-group-label">{{ 'nav.sites' | translate }}</span>
         </span>
         <span class="nav-group-header-caret" [class.is-open]="expanded.sites" aria-hidden="true">
           <svg viewBox="0 0 20 20">
@@ -90,9 +90,9 @@
       </button>
       @if (expanded.sites) {
         <div class="nav-group-items">
-          <a routerLink="/claro-sites" routerLinkActive="active">Claro Site</a>
-          <a routerLink="/tim-sites" routerLinkActive="active">TIM Site</a>
-          <a routerLink="/vivo-sites" routerLinkActive="active">Vivo Site</a>
+          <a routerLink="/claro-sites" routerLinkActive="active">{{ 'nav.claroSite' | translate }}</a>
+          <a routerLink="/tim-sites" routerLinkActive="active">{{ 'nav.timSite' | translate }}</a>
+          <a routerLink="/vivo-sites" routerLinkActive="active">{{ 'nav.vivoSite' | translate }}</a>
         </div>
       }
     </div>
@@ -106,7 +106,7 @@
               <path d="M4 4h12v3H4V4Zm0 5h12v7H4V9Zm2 2v3h3v-3H6Z" />
             </svg>
           </span>
-          <span class="nav-group-label">Finance</span>
+          <span class="nav-group-label">{{ 'nav.finance' | translate }}</span>
         </span>
         <span class="nav-group-header-caret" [class.is-open]="expanded.finance" aria-hidden="true">
           <svg viewBox="0 0 20 20">
@@ -116,7 +116,7 @@
       </button>
       @if (expanded.finance) {
         <div class="nav-group-items">
-          <a routerLink="/billings" routerLinkActive="active">Billing</a>
+          <a routerLink="/billings" routerLinkActive="active">{{ 'nav.billing' | translate }}</a>
         </div>
       }
     </div>
@@ -132,7 +132,7 @@
               />
             </svg>
           </span>
-          <span class="nav-group-label">Clients</span>
+          <span class="nav-group-label">{{ 'nav.clients' | translate }}</span>
         </span>
         <span class="nav-group-header-caret" [class.is-open]="expanded.clients" aria-hidden="true">
           <svg viewBox="0 0 20 20">
@@ -142,8 +142,8 @@
       </button>
       @if (expanded.clients) {
         <div class="nav-group-items">
-          <a routerLink="/owners" routerLinkActive="active">Clients</a>
-          <a routerLink="/user-registrations" routerLinkActive="active">User Registrations</a>
+          <a routerLink="/owners" routerLinkActive="active">{{ 'nav.clients' | translate }}</a>
+          <a routerLink="/user-registrations" routerLinkActive="active">{{ 'nav.userRegistrations' | translate }}</a>
         </div>
       }
     </div>
@@ -159,7 +159,7 @@
               />
             </svg>
           </span>
-          <span class="nav-group-label">General</span>
+          <span class="nav-group-label">{{ 'nav.general' | translate }}</span>
         </span>
         <span class="nav-group-header-caret" [class.is-open]="expanded.general" aria-hidden="true">
           <svg viewBox="0 0 20 20">
@@ -169,8 +169,8 @@
       </button>
       @if (expanded.general) {
         <div class="nav-group-items">
-          <a routerLink="/addresses" routerLinkActive="active">Addresses</a>
-          <a routerLink="/files" routerLinkActive="active">Files</a>
+          <a routerLink="/addresses" routerLinkActive="active">{{ 'nav.addresses' | translate }}</a>
+          <a routerLink="/files" routerLinkActive="active">{{ 'nav.files' | translate }}</a>
         </div>
       }
     </div>

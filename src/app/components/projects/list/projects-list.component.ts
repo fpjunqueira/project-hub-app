@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -9,7 +10,7 @@ import { ProjectService } from '../service/project.service';
 @Component({
   selector: 'app-projects-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './projects-list.component.html',
   styleUrl: './projects-list.component.scss'
 })

@@ -6,12 +6,21 @@ import {
 } from '@angular/common/http';
 import {
   ApplicationConfig,
+  importProvidersFrom,
   inject,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection
 } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { provideRouter, withRouterConfig } from '@angular/router';
+import {
+  TranslateModule,
+  TranslateService,
+  provideTranslateService,
+  provideTranslateLoader
+} from '@ngx-translate/core';
+import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import {
   MsalBroadcastService,
   MsalGuard,
@@ -55,7 +64,28 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideHttpClient(withInterceptors([localAuthInterceptor]), withInterceptorsFromDi()),
-    provideAppInitializer(() => inject(AuthService).initialize()),
+    ...provideTranslateHttpLoader({ prefix: '/assets/i18n/', suffix: '.json' }),
+    ...provideTranslateService({
+      defaultLanguage: 'en',
+      loader: provideTranslateLoader(TranslateHttpLoader)
+    }),
+    importProvidersFrom(TranslateModule),
+    provideAppInitializer(async () => {
+      const translate = inject(TranslateService);
+      const authService = inject(AuthService);
+      const stored = localStorage.getItem('projectHub_lang');
+      const lang = stored === 'pt' || stored === 'en' ? stored : 'en';
+      try {
+        await firstValueFrom(translate.use(lang));
+      } catch (err) {
+        console.warn('Failed to load translations:', err);
+      }
+      try {
+        await authService.initialize();
+      } catch {
+        /* Allow app to load even when auth init fails (e.g. backend down) */
+      }
+    }),
     {
       provide: MSAL_INSTANCE,
       useFactory: msalInstanceFactory

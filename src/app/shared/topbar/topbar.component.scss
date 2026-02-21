@@ -51,3 +51,14 @@ button {
   font-weight: 600;
   cursor: pointer;
 }
+
+.lang-switch {
+  background: transparent;
+  color: #1f2933;
+  font-size: 13px;
+  min-width: 36px;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+}

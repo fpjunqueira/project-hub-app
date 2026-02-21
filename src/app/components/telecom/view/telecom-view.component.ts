@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -11,7 +12,7 @@ import { TelecomService } from '../service/telecom.service';
 @Component({
   selector: 'app-telecom-view',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './telecom-view.component.html',
   styleUrl: './telecom-view.component.scss'
 })
@@ -43,7 +44,8 @@ export class TelecomViewComponent implements OnInit {
   }
 
   screenTitle(): string {
-    return `${this.screen()?.title ?? 'Telecom'} Details`;
+    const s = this.screen();
+    return s?.viewTitle ?? `${s?.title ?? 'Telecom'} Details`;
   }
 
   basePath(): string {

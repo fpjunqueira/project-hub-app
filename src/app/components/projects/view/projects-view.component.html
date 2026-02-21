@@ -1,18 +1,18 @@
 <section class="card">
   <header class="card-header">
-    <h2>Project Details</h2>
-    <button type="button" class="ghost" routerLink="/projects">Back to list</button>
+    <h2>{{ 'projects.projectDetails' | translate }}</h2>
+    <button type="button" class="ghost" routerLink="/projects">{{ 'common.backToList' | translate }}</button>
   </header>
 
   <div class="form-block">
-    <h3>Details</h3>
+    <h3>{{ 'common.details' | translate }}</h3>
     <div class="form-row">
       <div class="field">
-        <label for="project-name-view">Project name</label>
+        <label for="project-name-view">{{ 'projects.projectName' | translate }}</label>
         <input
           id="project-name-view"
           name="projectName"
-          placeholder="Project name"
+          [placeholder]="'projects.projectName' | translate"
           [value]="project()?.projectName ?? ''"
           disabled
         />
@@ -22,26 +22,24 @@
         [routerLink]="['/projects', project()?.id, 'edit']"
         [disabled]="!project()"
       >
-        Edit
+        {{ 'common.edit' | translate }}
       </button>
     </div>
   </div>
 
   <div class="form-block">
-    <h3>Address</h3>
+    <h3>{{ 'owners.address' | translate }}</h3>
     @if (addressLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (!addressLoading()) {
       <table class="table">
         <thead>
           <tr>
-            <th>Street</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Number</th>
-            <th>Zip code</th>
-            <th>Actions</th>
+            <th>{{ 'addresses.street' | translate }}</th>
+            <th>{{ 'addresses.city' | translate }}</th>
+            <th>{{ 'addresses.state' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -50,21 +48,19 @@
               <td>{{ projectAddress.street }}</td>
               <td>{{ projectAddress.city }}</td>
               <td>{{ projectAddress.state }}</td>
-              <td>{{ projectAddress.number }}</td>
-              <td>{{ projectAddress.zipCode }}</td>
               <td>
                 <button
                   type="button"
                   class="ghost"
                   [routerLink]="['/addresses', projectAddress.id, 'view']"
                 >
-                  View
+                  {{ 'common.view' | translate }}
                 </button>
               </td>
             </tr>
           } @else {
             <tr>
-              <td colspan="6" class="table-empty">No address assigned.</td>
+              <td colspan="4" class="table-empty">{{ 'common.noAddressAssigned' | translate }}</td>
             </tr>
           }
         </tbody>
@@ -73,17 +69,17 @@
   </div>
 
   <div class="form-block">
-    <h3>Owners</h3>
+    <h3>{{ 'projects.owners' | translate }}</h3>
     @if (ownersLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (!ownersLoading()) {
       <table class="table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
+            <th>{{ 'owners.name' | translate }}</th>
+            <th>{{ 'owners.email' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -93,14 +89,14 @@
               <td>{{ owner.email }}</td>
               <td>
                 <button type="button" class="ghost" [routerLink]="['/owners', owner.id, 'view']">
-                  View
+                  {{ 'common.view' | translate }}
                 </button>
               </td>
             </tr>
           }
           @if (owners().length === 0) {
             <tr>
-              <td colspan="3" class="table-empty">No owners linked.</td>
+              <td colspan="3" class="table-empty">{{ 'common.noOwnersLinked' | translate }}</td>
             </tr>
           }
         </tbody>
@@ -109,34 +105,32 @@
   </div>
 
   <div class="form-block">
-    <h3>Files</h3>
+    <h3>{{ 'files.title' | translate }}</h3>
     @if (filesLoading()) {
-      <p class="muted">Loading related data...</p>
+      <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
     }
     @if (!filesLoading()) {
       <table class="table">
         <thead>
           <tr>
-            <th>Filename</th>
-            <th>Path</th>
-            <th>Actions</th>
+            <th>{{ 'files.filename' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           @for (file of files(); track file.id ?? file.path) {
             <tr>
               <td>{{ file.filename }}</td>
-              <td>{{ file.path }}</td>
               <td>
                 <button type="button" class="ghost" [routerLink]="['/files', file.id, 'view']">
-                  View
+                  {{ 'common.view' | translate }}
                 </button>
               </td>
             </tr>
           }
           @if (files().length === 0) {
             <tr>
-              <td colspan="3" class="table-empty">No files linked.</td>
+              <td colspan="2" class="table-empty">{{ 'common.noFilesLinked' | translate }}</td>
             </tr>
           }
         </tbody>
@@ -145,9 +139,9 @@
   </div>
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 </section>

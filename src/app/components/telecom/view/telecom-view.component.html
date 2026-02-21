@@ -1,19 +1,19 @@
 <section class="card">
   <header class="card-header">
-    <h2>{{ screenTitle() }}</h2>
-    <button type="button" class="ghost" [routerLink]="basePath()">Back to list</button>
+    <h2>{{ screenTitle() | translate }}</h2>
+    <button type="button" class="ghost" [routerLink]="basePath()">{{ 'common.backToList' | translate }}</button>
   </header>
 
   <div class="form-block">
-    <h3>Details</h3>
+    <h3>{{ 'common.details' | translate }}</h3>
     <div class="form-row">
       @for (field of fields(); track field.key) {
         <div class="field">
-          <label [for]="field.key + '-view'">{{ field.label }}</label>
+          <label [for]="field.key + '-view'">{{ 'telecom.' + field.key | translate }}</label>
           <input
             [id]="field.key + '-view'"
             [name]="field.key"
-            [placeholder]="field.label"
+            [placeholder]="('telecom.' + field.key) | translate"
             [value]="record()?.[field.key] ?? ''"
             disabled
           />
@@ -24,15 +24,15 @@
         [routerLink]="[basePath(), record()?.id, 'edit']"
         [disabled]="!record()"
       >
-        Edit
+        {{ 'common.edit' | translate }}
       </button>
     </div>
   </div>
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 </section>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 
 import { Owner } from '../model/owner.model';
@@ -9,7 +10,7 @@ import { OwnerService } from '../service/owner.service';
 @Component({
   selector: 'app-owners-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './owners-list.component.html',
   styleUrl: './owners-list.component.scss'
 })

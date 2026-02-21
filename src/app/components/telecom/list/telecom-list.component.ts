@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 
 import { TelecomScreenConfig, TelecomScreenField, TelecomRecord } from '../model/telecom.model';
@@ -11,7 +12,7 @@ import { TelecomService } from '../service/telecom.service';
 @Component({
   selector: 'app-telecom-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './telecom-list.component.html',
   styleUrl: './telecom-list.component.scss'
 })
@@ -42,8 +43,8 @@ export class TelecomListComponent implements OnInit {
           return;
         }
         this.screen.set(screen);
-        const visibleFields = screen.fields.filter((field) => field.showInList !== false);
-        this.fields.set(visibleFields.length ? visibleFields : screen.fields);
+        const visibleFields = screen.fields.filter((field) => field.showInList === true);
+        this.fields.set(visibleFields.length ? visibleFields : screen.fields.slice(0, 5));
         this.refresh(0);
       });
   }

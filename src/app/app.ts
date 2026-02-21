@@ -18,18 +18,20 @@ export class App {
   private destroyRef = inject(DestroyRef);
 
   showSidebar = signal(true);
+  isDashboard = signal(false);
 
   constructor() {
-    this.updateSidebarVisibility(this.router.url);
+    this.updateRouteState(this.router.url);
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((event) => this.updateSidebarVisibility(event.urlAfterRedirects));
+      .subscribe((event) => this.updateRouteState(event.urlAfterRedirects));
   }
 
-  private updateSidebarVisibility(url: string): void {
+  private updateRouteState(url: string): void {
     this.showSidebar.set(!url.startsWith('/login'));
+    this.isDashboard.set(url === '/dashboard' || url.startsWith('/dashboard?'));
   }
 }

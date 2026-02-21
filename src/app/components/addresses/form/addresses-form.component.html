@@ -1,84 +1,84 @@
 <section class="card">
   <header class="card-header">
-    <h2>{{ isEdit() ? 'Edit Address' : 'New Address' }}</h2>
-    <button type="button" class="ghost" routerLink="/addresses">Back to list</button>
+    <h2>{{ (isEdit() ? 'addresses.editAddress' : 'addresses.newAddress') | translate }}</h2>
+    <button type="button" class="ghost" routerLink="/addresses">{{ 'common.backToList' | translate }}</button>
   </header>
 
   <div class="form-block">
-    <h3>Details</h3>
+    <h3>{{ 'common.details' | translate }}</h3>
     <div class="form-row">
       <div class="field">
-        <label for="address-street">Street</label>
+        <label for="address-street">{{ 'addresses.street' | translate }}</label>
         <input
           id="address-street"
           name="street"
-          placeholder="Street"
+          [placeholder]="'addresses.street' | translate"
           [value]="draft().street"
           (input)="updateStreet($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="address-city">City</label>
+        <label for="address-city">{{ 'addresses.city' | translate }}</label>
         <input
           id="address-city"
           name="city"
-          placeholder="City"
+          [placeholder]="'addresses.city' | translate"
           [value]="draft().city"
           (input)="updateCity($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="address-state">State</label>
+        <label for="address-state">{{ 'addresses.state' | translate }}</label>
         <input
           id="address-state"
           name="state"
-          placeholder="State"
+          [placeholder]="'addresses.state' | translate"
           [value]="draft().state"
           (input)="updateState($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="address-number">Number</label>
+        <label for="address-number">{{ 'addresses.number' | translate }}</label>
         <input
           id="address-number"
           name="number"
-          placeholder="Number"
+          [placeholder]="'addresses.number' | translate"
           [value]="draft().number"
           (input)="updateNumber($any($event.target).value)"
         />
       </div>
       <div class="field">
-        <label for="address-zip">Zip code</label>
+        <label for="address-zip">{{ 'addresses.zipCode' | translate }}</label>
         <input
           id="address-zip"
           name="zipCode"
-          placeholder="Zip code"
+          [placeholder]="'addresses.zipCode' | translate"
           [value]="draft().zipCode"
           (input)="updateZipCode($any($event.target).value)"
         />
       </div>
       <button type="button" (click)="submit()" [disabled]="isLoading()">
-        {{ isEdit() ? 'Update' : 'Create' }}
+        {{ (isEdit() ? 'common.update' : 'common.create') | translate }}
       </button>
     </div>
   </div>
 
   @if (isEdit()) {
     <div class="form-block">
-      <h3>Owner</h3>
+      <h3>{{ 'forms.owner' | translate }}</h3>
       @if (ownerLoading()) {
-        <p class="muted">Loading related data...</p>
+        <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
       }
       @if (relationsError()) {
-        <p class="error">{{ relationsError() }}</p>
+        <p class="error">{{ relationsError() | translate }}</p>
       }
       @if (!ownerLoading()) {
         <table class="table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Actions</th>
+              <th>{{ 'owners.name' | translate }}</th>
+              <th>{{ 'owners.email' | translate }}</th>
+              <th>{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -88,14 +88,14 @@
                 <td>{{ addressOwner.email }}</td>
                 <td>
                   <button type="button" class="ghost" [routerLink]="['/owners', addressOwner.id, 'view']">
-                    View
+                    {{ 'common.view' | translate }}
                   </button>
                 </td>
               </tr>
             } @else {
               <tr>
                 <td colspan="3">
-                  <div class="table-empty">No owner linked.</div>
+                  <div class="table-empty">{{ 'common.noOwnerLinked' | translate }}</div>
                 </td>
               </tr>
             }
@@ -107,19 +107,19 @@
 
   @if (isEdit()) {
     <div class="form-block">
-      <h3>Project</h3>
+      <h3>{{ 'forms.project' | translate }}</h3>
       @if (projectLoading()) {
-        <p class="muted">Loading related data...</p>
+        <p class="muted">{{ 'common.loadingRelated' | translate }}</p>
       }
       @if (relationsError()) {
-        <p class="error">{{ relationsError() }}</p>
+        <p class="error">{{ relationsError() | translate }}</p>
       }
       @if (!projectLoading()) {
         <table class="table">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Actions</th>
+              <th>{{ 'forms.project' | translate }}</th>
+              <th>{{ 'common.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -128,14 +128,14 @@
                 <td>{{ addressProject.projectName }}</td>
                 <td>
                   <button type="button" class="ghost" [routerLink]="['/projects', addressProject.id, 'view']">
-                    View
+                    {{ 'common.view' | translate }}
                   </button>
                 </td>
               </tr>
             } @else {
               <tr>
                 <td colspan="2">
-                  <div class="table-empty">No project linked.</div>
+                  <div class="table-empty">{{ 'common.noProjectLinked' | translate }}</div>
                 </td>
               </tr>
             }
@@ -146,9 +146,9 @@
   }
 
   @if (isLoading()) {
-    <p class="muted">Loading...</p>
+    <p class="muted">{{ 'common.loading' | translate }}</p>
   }
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() | translate }}</p>
   }
 </section>

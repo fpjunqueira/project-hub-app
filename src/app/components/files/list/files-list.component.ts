@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 
 import { FileRecord } from '../model/file.model';
@@ -9,7 +10,7 @@ import { FileService } from '../service/file.service';
 @Component({
   selector: 'app-files-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './files-list.component.html',
   styleUrl: './files-list.component.scss'
 })

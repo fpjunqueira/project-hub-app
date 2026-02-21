@@ -1,43 +1,134 @@
-<div class="dashboard">
-  <h1 class="dashboard-title">Dashboard</h1>
+@if (isLoading()) {
+  <p class="muted">{{ 'common.loading' | translate }}</p>
+}
+@if (error()) {
+  <p class="error">{{ error() | translate }}</p>
+}
 
-  @if (isLoading()) {
-    <p class="muted">Loading...</p>
-  }
-  @if (error()) {
-    <p class="error">{{ error() }}</p>
-  }
+@if (!isLoading() && ticketStats(); as stats) {
+  <app-dash-card [title]="'dashboard.ticketsByStatus'">
+    <div class="pie-chart-container">
+      <div class="pie-chart"
+           [style.background]="pieChartGradient(stats)"
+           role="img"
+           [attr.aria-label]="'dashboard.ticketsByStatus' | translate"></div>
+      <div class="pie-chart-legend">
+        @for (item of STATUS_KEYS; track item.key) {
+          <div class="legend-item">
+            <span class="legend-dot" [style.background]="getStatusColor(item.key)"></span>
+            <span class="legend-label">{{ item.labelKey | translate }}</span>
+            <span class="legend-value">{{ stats[item.statKey] ?? 0 }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </app-dash-card>
 
-  <div class="cards-grid">
-    <section class="card summary-card">
-      <h2 class="summary-card-title">Active tickets</h2>
-      <p class="summary-card-value">{{ ticketsCount() ?? '—' }}</p>
-      <a routerLink="/tickets" class="summary-card-link">View all</a>
-    </section>
-    <section class="card summary-card">
-      <h2 class="summary-card-title">Projects</h2>
-      <p class="summary-card-value">{{ projectsCount() ?? '—' }}</p>
-      <a routerLink="/projects" class="summary-card-link">View all</a>
-    </section>
-    <section class="card summary-card">
-      <h2 class="summary-card-title">Clients</h2>
-      <p class="summary-card-value">{{ clientsCount() ?? '—' }}</p>
-      <a routerLink="/owners" class="summary-card-link">View all</a>
-    </section>
-    <section class="card summary-card">
-      <h2 class="summary-card-title">Contract registrations</h2>
-      <p class="summary-card-value">{{ contractRegistrationsCount() ?? '—' }}</p>
-      <a routerLink="/contract-registrations" class="summary-card-link">View all</a>
-    </section>
-    <section class="card summary-card">
-      <h2 class="summary-card-title">Addresses</h2>
-      <p class="summary-card-value">{{ addressesCount() ?? '—' }}</p>
-      <a routerLink="/addresses" class="summary-card-link">View all</a>
-    </section>
-    <section class="card summary-card">
-      <h2 class="summary-card-title">Billing</h2>
-      <p class="summary-card-value">{{ billingsCount() ?? '—' }}</p>
-      <a routerLink="/billings" class="summary-card-link">View all</a>
-    </section>
-  </div>
-</div>
+  <app-dash-card [title]="'dashboard.ticketsOverview'">
+    <div class="tickets-stats-grid">
+        @for (item of STATUS_KEYS; track item.key) {
+          <button type="button"
+                  class="ticket-stat {{ getStatusCssClass(item.key) }}"
+                  [class.selected]="selectedStatus() === item.key"
+                  [class.highlight]="(stats[item.statKey] ?? 0) > 0"
+                  [attr.aria-pressed]="selectedStatus() === item.key"
+                  (click)="selectStatus(item.key)">
+            <span class="ticket-stat-value">{{ stats[item.statKey] ?? 0 }}</span>
+            <span class="ticket-stat-label">{{ item.labelKey | translate }}</span>
+          </button>
+        }
+      </div>
+      <div class="tickets-detail-section">
+        <h3 class="tickets-detail-title tickets-detail-title-{{ getStatusCssClass(selectedStatus()) }}">{{ selectedStatusLabel() | translate }}</h3>
+
+        <div class="tickets-filter-row">
+          <div class="tickets-filter-wrap">
+            <input type="text"
+                   class="tickets-filter-input"
+                   [placeholder]="'dashboard.filterTickets' | translate"
+                   [value]="filterText()"
+                   (input)="setFilter($any($event.target).value)"
+                   aria-label="Filter tickets" />
+            <span class="tickets-filter-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </span>
+          </div>
+        </div>
+
+        @if (ticketsLoading()) {
+          <p class="muted">{{ 'common.loading' | translate }}</p>
+        } @else {
+          <div class="ticket-cards">
+            @for (ticket of filteredTickets(); track ticket.id) {
+              <article class="ticket-card ticket-card-{{ getTicketStatusStyle(ticket) }}">
+                <header class="ticket-card-header">
+                  <span class="ticket-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
+                  </span>
+                  <a [routerLink]="['/tickets', ticket.id, 'view']" class="ticket-number">{{ ticket.ticketNumber ?? '—' }}</a>
+                </header>
+                <div class="ticket-card-body">
+                  <dl class="ticket-info">
+                    <dt>{{ 'dashboard.status' | translate }}</dt>
+                    <dd>{{ ticket.status ?? '—' }}</dd>
+                    <dt>{{ 'dashboard.dueDate' | translate }}</dt>
+                    <dd>{{ ticket.dueDate ?? '—' }}</dd>
+                    <dt>{{ 'dashboard.directClient' | translate }}</dt>
+                    <dd>{{ ticket.directClient ?? '—' }}</dd>
+                    <dt>{{ 'dashboard.finalClient' | translate }}</dt>
+                    <dd>{{ ticket.finalClient ?? '—' }}</dd>
+                    <dt>{{ 'dashboard.projectNumber' | translate }}</dt>
+                    <dd>{{ ticket.projectNumber ?? '—' }}</dd>
+                    <dt>{{ 'dashboard.tbsaTicket' | translate }}</dt>
+                    <dd>{{ ticket.tbsaTicket ?? '—' }}</dd>
+                  </dl>
+                </div>
+                <div class="ticket-history-section">
+                  <button type="button"
+                          class="ticket-history-toggle"
+                          (click)="toggleHistory(ticket.id)"
+                          [attr.aria-expanded]="isHistoryExpanded(ticket.id)">
+                    <span class="ticket-history-title">{{ 'dashboard.ticketHistory' | translate }}</span>
+                    <span class="ticket-expand-icon" [class.expanded]="isHistoryExpanded(ticket.id)">▼</span>
+                  </button>
+                  @if (isHistoryExpanded(ticket.id)) {
+                    <div class="ticket-history-content">
+                    <table class="ticket-history-table">
+                      <thead>
+                        <tr>
+                          <th>{{ 'dashboard.historyFrom' | translate }}</th>
+                          <th>{{ 'dashboard.historyTo' | translate }}</th>
+                          <th>{{ 'dashboard.historyWhen' | translate }}</th>
+                          <th>{{ 'dashboard.historyChangedBy' | translate }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @if ((ticketHistories().get(ticket.id) ?? []).length === 0) {
+                          <tr>
+                            <td colspan="4">{{ 'dashboard.noHistory' | translate }}</td>
+                          </tr>
+                        } @else {
+                          @for (h of ticketHistories().get(ticket.id) ?? []; track h.id) {
+                            <tr>
+                              <td>{{ h.previousStatus ?? '—' }}</td>
+                              <td>{{ h.newStatus ?? '—' }}</td>
+                              <td>{{ h.changedAt | date:'short' }}</td>
+                              <td>{{ h.changedBy ?? '—' }}</td>
+                            </tr>
+                          }
+                        }
+                      </tbody>
+                    </table>
+                    </div>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+          @if (filteredTickets().length === 0) {
+            <p class="tickets-empty">{{ 'dashboard.noTicketsForStatus' | translate }}</p>
+          }
+        }
+      </div>
+  </app-dash-card>
+}
