@@ -9,17 +9,51 @@
       }
     </header>
 
-    @if (error()) {
-      <p class="login-error">{{ error() | translate }}</p>
+    @if (isAuthEnabled()) {
+      <button type="button" (click)="login()" [disabled]="isLoading()">
+        @if (isLoading()) {
+          {{ 'login.signingIn' | translate }}
+        } @else {
+          {{ 'login.signIn' | translate }}
+        }
+      </button>
+    } @else {
+      <form (ngSubmit)="login()">
+        <div class="form-group">
+          <label for="username">{{ 'login.username' | translate }}</label>
+          <input
+            id="username"
+            type="text"
+            [value]="username()"
+            (input)="username.set($any($event.target).value)"
+            [placeholder]="'login.usernamePlaceholder' | translate"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">{{ 'login.password' | translate }}</label>
+          <input
+            id="password"
+            type="password"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            [placeholder]="'login.passwordPlaceholder' | translate"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        @if (error()) {
+          <p class="login-error">{{ error() | translate }}</p>
+        }
+        <button type="submit" [disabled]="isLoading() || !username() || !password()">
+          @if (isLoading()) {
+            {{ 'login.signingIn' | translate }}
+          } @else {
+            {{ 'login.continue' | translate }}
+          }
+        </button>
+      </form>
     }
-
-    <button type="button" (click)="login()" [disabled]="isLoading()">
-      @if (isLoading()) {
-        {{ 'login.signingIn' | translate }}
-      } @else {
-        {{ isAuthEnabled() ? ('login.signIn' | translate) : ('login.continue' | translate) }}
-      }
-    </button>
-    <button type="button" class="secondary" (click)="backToApp()">{{ 'login.backToApp' | translate }}</button>
   </div>
 </section>

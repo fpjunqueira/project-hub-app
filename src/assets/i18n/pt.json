@@ -71,12 +71,16 @@
   "login": {
     "title": "Project Hub",
     "signInOrg": "Entre com sua conta organizacional.",
-    "localDevMode": "Modo de desenvolvimento local. Entrada Azure desativada.",
+    "localDevMode": "Digite seu usuário e senha para entrar.",
     "signIn": "Entrar",
-    "continue": "Continuar",
+    "continue": "Entrar",
     "backToApp": "Voltar ao app",
-    "error": "Não foi possível entrar. Verifique se o backend está rodando na porta 8080.",
-    "signingIn": "Entrando..."
+    "error": "Usuário ou senha inválidos.",
+    "signingIn": "Entrando...",
+    "username": "Usuário",
+    "password": "Senha",
+    "usernamePlaceholder": "Digite seu usuário",
+    "passwordPlaceholder": "Digite sua senha"
   },
   "dashboard": {
     "title": "Painel",

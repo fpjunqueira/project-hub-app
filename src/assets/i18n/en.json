@@ -71,12 +71,16 @@
   "login": {
     "title": "Project Hub",
     "signInOrg": "Sign in with your organization account.",
-    "localDevMode": "Local development mode. Azure sign-in is disabled.",
+    "localDevMode": "Enter your username and password to sign in.",
     "signIn": "Sign in",
-    "continue": "Continue",
+    "continue": "Sign in",
     "backToApp": "Back to app",
-    "error": "Unable to sign in. Ensure the backend is running on port 8080.",
-    "signingIn": "Signing in..."
+    "error": "Invalid username or password.",
+    "signingIn": "Signing in...",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Enter your username",
+    "passwordPlaceholder": "Enter your password"
   },
   "dashboard": {
     "title": "Dashboard",

@@ -191,18 +191,34 @@ There is no proxy for `/security` — the security-service is not involved in DE
 | project-hub-service (port 8080) | ✅ Yes | Provides `/api/auth/login` and CRUD APIs |
 | security-service (port 8081) | ❌ No | Only used when `auth.enabled: true` (MSAL) |
 
+### Default Test Credentials
+
+| Username | Password | Role |
+|----------|----------|------|
+| `admin`  | `admin123` | ADMIN |
+
+These are created by the backend at startup when running in local mode.
+
 ### Steps to Run in DEV Mode
 
-1. Start project-hub-service:
-   ```bash
-   cd path/to/project-hub-service
-   ./mvnw spring-boot:run
-   ```
-2. Start the Angular dev server:
-   ```bash
-   ng serve
-   ```
-3. Open `http://localhost:4200` and log in with `admin` / `admin123`.
+**Backend** (project-hub-service) — local auth, H2 in-memory DB:
+
+```bash
+cd path/to/project-hub-service
+mvn spring-boot:run
+```
+
+Uses default profile `h2` and `app.auth.mode: local`. No extra flags needed.
+
+**Frontend** (Angular app):
+
+```bash
+ng serve
+```
+
+Uses the **development** build configuration by default (`auth.enabled: false` → username/password login).
+
+**Then:** Open `http://localhost:4200` and log in with `admin` / `admin123`.
 
 ---
 
@@ -281,7 +297,7 @@ spring:
 6. `PermissionService` maps roles to application permissions.
 7. The controller returns identity or permission data.
 
-**3. Endpoints**
+**3. Endpoints**mm
 
 - `GET /me` — identity and claims.
 - `GET /permissions` — resolved permissions from roles and claims.
@@ -291,7 +307,7 @@ spring:
 The project-hub-service uses a **custom JWT flow** for local/DEV usage. It does not validate Azure Entra ID tokens.
 
 **1. Custom JWT flow (used in DEV mode)**
-
+adm
 - `AuthController`: `POST /api/auth/login` accepts username and password.
 - `AuthService`: authenticates against `UserDetailsService`, issues a JWT via `JwtService`.
 - `JwtService`: signs JWTs with an HS256 secret from configuration.

@@ -8,12 +8,14 @@ type LocalAuthSession = {
   token: string;
   tokenType: string;
   expiresAt: string;
+  username: string;
 };
 
 type LocalAuthResponse = {
   token: string;
   tokenType: string;
   expiresAt: string;
+  username?: string;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -66,13 +68,14 @@ export class AuthService {
 
   getCurrentUser(): { username: string; displayName?: string | null } | null {
     if (!this.authEnabled) {
-      if (!this.isLocalSessionValid()) {
+      const session = this.getLocalSession();
+      if (!session || !this.isLocalSessionValid(session) || !session.username) {
         return null;
       }
 
       return {
-        username: environment.auth.mockUser.username,
-        displayName: environment.auth.mockUser.displayName ?? null
+        username: session.username,
+        displayName: session.username
       };
     }
 
@@ -106,7 +109,7 @@ export class AuthService {
     };
   }
 
-  async loginLocal(): Promise<boolean> {
+  async loginLocal(username: string, password: string): Promise<boolean> {
     if (this.authEnabled) {
       return false;
     }
@@ -115,15 +118,13 @@ export class AuthService {
       return true;
     }
 
-    const username = environment.auth.mockUser.username;
-    const password = environment.auth.mockUser.password;
-    if (!username || !password) {
+    if (!username?.trim() || !password) {
       return false;
     }
 
     try {
       const response = await firstValueFrom(
-        this.http.post<LocalAuthResponse>('/api/auth/login', { username, password })
+        this.http.post<LocalAuthResponse>('/api/auth/login', { username: username.trim(), password })
       );
       this.saveLocalSession(response);
       return true;
@@ -157,7 +158,7 @@ export class AuthService {
   }
 
   private async initializeLocal(): Promise<void> {
-    await this.loginLocal();
+    /* Local auth: user must enter credentials on login page; no auto-login */
   }
 
   private getLocalSession(): LocalAuthSession | null {
@@ -177,7 +178,8 @@ export class AuthService {
     const session: LocalAuthSession = {
       token: response.token,
       tokenType: response.tokenType,
-      expiresAt: response.expiresAt
+      expiresAt: response.expiresAt,
+      username: response.username ?? ''
     };
     localStorage.setItem(this.localStorageKey, JSON.stringify(session));
   }

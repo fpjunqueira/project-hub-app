@@ -48,6 +48,41 @@ button {
   cursor: pointer;
 }
 
+.form-group {
+  margin-top: 16px;
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+  }
+}
+
+form button[type='submit'] {
+  margin-top: 20px;
+  width: 100%;
+}
+
 button.secondary {
   margin-top: 10px;
   background: #e2e8f0;
